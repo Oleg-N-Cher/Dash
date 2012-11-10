@@ -1,0 +1,747 @@
+<html><head><title>javax_microedition_lcdui</title></head>
+<body bgcolor="white">
+<hr><pre>
+<b>FOREIGN MODULE </b><font color="#cc0033">javax_microedition_lcdui</font>;
+
+<b>IMPORT</b>
+    <a href="java_lang.html">java_lang</a> := "java.lang",
+    <a href="java_util.html">java_util</a> := "java.util",
+    <a href="com_sun_midp_lcdui.html">com_sun_midp_lcdui</a> := "com.sun.midp.lcdui",
+    <a href="javax_microedition_midlet.html">javax_microedition_midlet</a> := "javax.microedition.midlet";
+
+<b>TYPE</b>
+
+  <a name="type-Alert"></a><font color="#cc0033">Alert</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Screen">Screen</a>)    <a href="#meths-Alert"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+           <b>STATIC</b>
+             <font color="#cc0033">FOREVER</font>* = -2;
+             <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                             p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                             p2 : <a href="#type-Image">Image</a>;
+                             p3 : <a href="#type-AlertType">AlertType</a>) : <a href="#type-Alert">Alert</a><b>,CONSTRUCTOR</b>;
+             <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-Alert">Alert</a><b>,CONSTRUCTOR</b>;
+           <b>END</b>;
+
+  <a name="type-AlertType"></a><font color="#cc0033">AlertType</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-AlertType"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+               <b>STATIC</b>
+                 <a name="type-ALARM"></a><font color="#cc0033">ALARM</font>*        : <a href="#type-AlertType">AlertType</a>;
+                 <a name="type-CONFIRMATION"></a><font color="#cc0033">CONFIRMATION</font>* : <a href="#type-AlertType">AlertType</a>;
+                 <a name="type-ERROR"></a><font color="#cc0033">ERROR</font>*        : <a href="#type-AlertType">AlertType</a>;
+                 <a name="type-INFO"></a><font color="#cc0033">INFO</font>*         : <a href="#type-AlertType">AlertType</a>;
+                 <a name="type-WARNING"></a><font color="#cc0033">WARNING</font>*      : <a href="#type-AlertType">AlertType</a>;
+                 <b>PROCEDURE </b><font color="#cc0033">Init</font>!() : <a href="#type-AlertType">AlertType</a><b>,CONSTRUCTOR</b>;
+               <b>END</b>;
+
+  <a name="type-Canvas"></a><font color="#cc0033">Canvas</font>* = <b>POINTER TO </b><b>ABSTRACT RECORD</b> (<a href="#type-Displayable">Displayable</a>)    <a href="#meths-Canvas"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+            <b>STATIC</b>
+              <font color="#cc0033">DOWN</font>*      = 6;
+              <font color="#cc0033">FIRE</font>*      = 8;
+              <font color="#cc0033">GAME_A</font>*    = 9;
+              <font color="#cc0033">GAME_B</font>*    = 10;
+              <font color="#cc0033">GAME_C</font>*    = 11;
+              <font color="#cc0033">GAME_D</font>*    = 12;
+              <font color="#cc0033">KEY_NUM0</font>*  = 48;
+              <font color="#cc0033">KEY_NUM1</font>*  = 49;
+              <font color="#cc0033">KEY_NUM2</font>*  = 50;
+              <font color="#cc0033">KEY_NUM3</font>*  = 51;
+              <font color="#cc0033">KEY_NUM4</font>*  = 52;
+              <font color="#cc0033">KEY_NUM5</font>*  = 53;
+              <font color="#cc0033">KEY_NUM6</font>*  = 54;
+              <font color="#cc0033">KEY_NUM7</font>*  = 55;
+              <font color="#cc0033">KEY_NUM8</font>*  = 56;
+              <font color="#cc0033">KEY_NUM9</font>*  = 57;
+              <font color="#cc0033">KEY_POUND</font>* = 35;
+              <font color="#cc0033">KEY_STAR</font>*  = 42;
+              <font color="#cc0033">LEFT</font>*      = 2;
+              <font color="#cc0033">RIGHT</font>*     = 5;
+              <font color="#cc0033">UP</font>*        = 1;
+              <b>PROCEDURE </b><font color="#cc0033">Init</font>!() : <a href="#type-Canvas">Canvas</a><b>,CONSTRUCTOR</b>;
+            <b>END</b>;
+
+  <a name="type-Choice"></a><font color="#cc0033">Choice</font>* = <b>POINTER TO </b><b>INTERFACE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Choice"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+            <b>STATIC</b>
+              <font color="#cc0033">EXCLUSIVE</font>* = 1;
+              <font color="#cc0033">IMPLICIT</font>*  = 3;
+              <font color="#cc0033">MULTIPLE</font>*  = 2;
+            <b>END</b>;
+
+  <a name="type-ChoiceGroup"></a><font color="#cc0033">ChoiceGroup</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Item">Item</a> + <a href="#type-Choice">Choice</a>)    <a href="#meths-ChoiceGroup"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+                 <b>STATIC</b>
+                   <b>PROCEDURE </b><font color="#cc0033">Init</font>*(    p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                       p1 : INTEGER;
+                                   IN  p2 : <b>ARRAY </b><b>OF </b><a href="java_lang.html#type-String">java_lang.String</a>;
+                                   IN  p3 : <b>ARRAY </b><b>OF </b><a href="#type-Image">Image</a>) : <a href="#type-ChoiceGroup">ChoiceGroup</a><b>,CONSTRUCTOR</b>;
+                   <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                   p1 : INTEGER) : <a href="#type-ChoiceGroup">ChoiceGroup</a><b>,CONSTRUCTOR</b>;
+                 <b>END</b>;
+
+  <a name="type-Command"></a><font color="#cc0033">Command</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Command"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+             <b>STATIC</b>
+               <font color="#cc0033">BACK</font>*   = 2;
+               <font color="#cc0033">CANCEL</font>* = 3;
+               <font color="#cc0033">EXIT</font>*   = 7;
+               <font color="#cc0033">HELP</font>*   = 5;
+               <font color="#cc0033">ITEM</font>*   = 8;
+               <font color="#cc0033">OK</font>*     = 4;
+               <font color="#cc0033">SCREEN</font>* = 1;
+               <font color="#cc0033">STOP</font>*   = 6;
+               <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                               p1 : INTEGER;
+                               p2 : INTEGER) : <a href="#type-Command">Command</a><b>,CONSTRUCTOR</b>;
+             <b>END</b>;
+
+  <a name="type-CommandListener"></a><font color="#cc0033">CommandListener</font>* = <b>POINTER TO </b><b>INTERFACE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-CommandListener"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+                     <b>END</b>;
+
+  <a name="type-DateField"></a><font color="#cc0033">DateField</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Item">Item</a>)    <a href="#meths-DateField"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+               <b>STATIC</b>
+                 <font color="#cc0033">DATE</font>*      = 1;
+                 <font color="#cc0033">DATE_TIME</font>* = 3;
+                 <font color="#cc0033">TIME</font>*      = 2;
+                 <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                 p1 : INTEGER;
+                                 p2 : <a href="java_util.html#type-TimeZone">java_util.TimeZone</a>) : <a href="#type-DateField">DateField</a><b>,CONSTRUCTOR</b>;
+                 <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                 p1 : INTEGER) : <a href="#type-DateField">DateField</a><b>,CONSTRUCTOR</b>;
+               <b>END</b>;
+
+  <a name="type-Display"></a><font color="#cc0033">Display</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Display"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+             <b>STATIC</b>
+               <b>PROCEDURE </b><font color="#cc0033">getDisplay</font>*(p0 : <a href="javax_microedition_midlet.html#type-MIDlet">javax_microedition_midlet.MIDlet</a>) : <a href="#type-Display">Display</a>;
+             <b>END</b>;
+
+  <a name="type-Displayable"></a><font color="#cc0033">Displayable</font>* = <b>POINTER TO </b><b>ABSTRACT RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Displayable"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+                 <b>END</b>;
+
+  <a name="type-Font"></a><font color="#cc0033">Font</font>* = <b>POINTER TO </b><b>RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Font"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+          <b>STATIC</b>
+            <font color="#cc0033">FACE_MONOSPACE</font>*    = 32;
+            <font color="#cc0033">FACE_PROPORTIONAL</font>* = 64;
+            <font color="#cc0033">FACE_SYSTEM</font>*       = 0;
+            <font color="#cc0033">SIZE_LARGE</font>*        = 16;
+            <font color="#cc0033">SIZE_MEDIUM</font>*       = 0;
+            <font color="#cc0033">SIZE_SMALL</font>*        = 8;
+            <font color="#cc0033">STYLE_BOLD</font>*        = 1;
+            <font color="#cc0033">STYLE_ITALIC</font>*      = 2;
+            <font color="#cc0033">STYLE_PLAIN</font>*       = 0;
+            <font color="#cc0033">STYLE_UNDERLINED</font>*  = 4;
+            <b>PROCEDURE </b><font color="#cc0033">getDefaultFont</font>*() : <a href="#type-Font">Font</a>;
+            <b>PROCEDURE </b><font color="#cc0033">getFont</font>*(p0 : INTEGER;
+                               p1 : INTEGER;
+                               p2 : INTEGER) : <a href="#type-Font">Font</a>;
+          <b>END</b>;
+
+  <a name="type-Form"></a><font color="#cc0033">Form</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Screen">Screen</a>)    <a href="#meths-Form"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+          <b>STATIC</b>
+            <b>PROCEDURE </b><font color="#cc0033">Init</font>*(    p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                            IN  p1 : <b>ARRAY </b><b>OF </b><a href="#type-Item">Item</a>) : <a href="#type-Form">Form</a><b>,CONSTRUCTOR</b>;
+            <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-Form">Form</a><b>,CONSTRUCTOR</b>;
+          <b>END</b>;
+
+  <a name="type-Gauge"></a><font color="#cc0033">Gauge</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Item">Item</a>)    <a href="#meths-Gauge"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+           <b>STATIC</b>
+             <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                             p1 : BOOLEAN;
+                             p2 : INTEGER;
+                             p3 : INTEGER) : <a href="#type-Gauge">Gauge</a><b>,CONSTRUCTOR</b>;
+           <b>END</b>;
+
+  <a name="type-Graphics"></a><font color="#cc0033">Graphics</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Graphics"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+              <b>STATIC</b>
+                <font color="#cc0033">BASELINE</font>* = 64;
+                <font color="#cc0033">BOTTOM</font>*   = 32;
+                <font color="#cc0033">DOTTED</font>*   = 1;
+                <font color="#cc0033">HCENTER</font>*  = 1;
+                <font color="#cc0033">LEFT</font>*     = 4;
+                <font color="#cc0033">RIGHT</font>*    = 8;
+                <font color="#cc0033">SOLID</font>*    = 0;
+                <font color="#cc0033">TOP</font>*      = 16;
+                <font color="#cc0033">VCENTER</font>*  = 2;
+              <b>END</b>;
+
+  <a name="type-Image"></a><font color="#cc0033">Image</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Image"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+           <b>STATIC</b>
+             <b>PROCEDURE </b><font color="#cc0033">createImage</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-Image">Image</a>;
+             <b>PROCEDURE </b><font color="#cc0033">createImage</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BYTE;
+                                        p1 : INTEGER;
+                                        p2 : INTEGER) : <a href="#type-Image">Image</a>;
+             <b>PROCEDURE </b><font color="#cc0033">createImage</font>*(p0 : INTEGER;
+                                    p1 : INTEGER) : <a href="#type-Image">Image</a>;
+             <b>PROCEDURE </b><font color="#cc0033">createImage</font>*(p0 : <a href="#type-Image">Image</a>) : <a href="#type-Image">Image</a>;
+           <b>END</b>;
+
+  <a name="type-ImageItem"></a><font color="#cc0033">ImageItem</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Item">Item</a>)    <a href="#meths-ImageItem"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+               <b>STATIC</b>
+                 <font color="#cc0033">LAYOUT_CENTER</font>*         = 3;
+                 <font color="#cc0033">LAYOUT_DEFAULT</font>*        = 0;
+                 <font color="#cc0033">LAYOUT_LEFT</font>*           = 1;
+                 <font color="#cc0033">LAYOUT_NEWLINE_AFTER</font>*  = 512;
+                 <font color="#cc0033">LAYOUT_NEWLINE_BEFORE</font>* = 256;
+                 <font color="#cc0033">LAYOUT_RIGHT</font>*          = 2;
+                 <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                 p1 : <a href="#type-Image">Image</a>;
+                                 p2 : INTEGER;
+                                 p3 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-ImageItem">ImageItem</a><b>,CONSTRUCTOR</b>;
+               <b>END</b>;
+
+  <a name="type-Item"></a><font color="#cc0033">Item</font>* = <b>POINTER TO </b><b>ABSTRACT RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Item"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+          <b>END</b>;
+
+  <a name="type-ItemStateListener"></a><font color="#cc0033">ItemStateListener</font>* = <b>POINTER TO </b><b>INTERFACE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-ItemStateListener"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+                       <b>END</b>;
+
+  <a name="type-List"></a><font color="#cc0033">List</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Screen">Screen</a> + <a href="#type-Choice">Choice</a>)    <a href="#meths-List"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+          <b>STATIC</b>
+            <a name="type-SELECT_COMMAND"></a><font color="#cc0033">SELECT_COMMAND</font>* : <a href="#type-Command">Command</a>;
+            <b>PROCEDURE </b><font color="#cc0033">Init</font>*(    p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                p1 : INTEGER;
+                            IN  p2 : <b>ARRAY </b><b>OF </b><a href="java_lang.html#type-String">java_lang.String</a>;
+                            IN  p3 : <b>ARRAY </b><b>OF </b><a href="#type-Image">Image</a>) : <a href="#type-List">List</a><b>,CONSTRUCTOR</b>;
+            <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                            p1 : INTEGER) : <a href="#type-List">List</a><b>,CONSTRUCTOR</b>;
+          <b>END</b>;
+
+  <a name="type-Screen"></a><font color="#cc0033">Screen</font>* = <b>POINTER TO </b><b>ABSTRACT RECORD</b> (<a href="#type-Displayable">Displayable</a>)    <a href="#meths-Screen"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+            <b>END</b>;
+
+  <a name="type-StringItem"></a><font color="#cc0033">StringItem</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Item">Item</a>)    <a href="#meths-StringItem"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+                <b>STATIC</b>
+                  <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                  p1 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-StringItem">StringItem</a><b>,CONSTRUCTOR</b>;
+                <b>END</b>;
+
+  <a name="type-TextBox"></a><font color="#cc0033">TextBox</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Screen">Screen</a>)    <a href="#meths-TextBox"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+             <b>STATIC</b>
+               <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                               p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                               p2 : INTEGER;
+                               p3 : INTEGER) : <a href="#type-TextBox">TextBox</a><b>,CONSTRUCTOR</b>;
+             <b>END</b>;
+
+  <a name="type-TextField"></a><font color="#cc0033">TextField</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="#type-Item">Item</a>)    <a href="#meths-TextField"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+               <b>STATIC</b>
+                 <font color="#cc0033">ANY</font>*             = 0;
+                 <font color="#cc0033">CONSTRAINT_MASK</font>* = 65535;
+                 <font color="#cc0033">EMAILADDR</font>*       = 1;
+                 <font color="#cc0033">NUMERIC</font>*         = 2;
+                 <font color="#cc0033">PASSWORD</font>*        = 65536;
+                 <font color="#cc0033">PHONENUMBER</font>*     = 3;
+                 <font color="#cc0033">URL</font>*             = 4;
+                 <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                 p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                 p2 : INTEGER;
+                                 p3 : INTEGER) : <a href="#type-TextField">TextField</a><b>,CONSTRUCTOR</b>;
+               <b>END</b>;
+
+  <a name="type-Ticker"></a><font color="#cc0033">Ticker</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-Ticker"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+            <b>STATIC</b>
+              <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-Ticker">Ticker</a><b>,CONSTRUCTOR</b>;
+            <b>END</b>;
+
+
+
+<a name="meths-Alert"></a>
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">addCommand</font>*(p0 : <a href="#type-Command">Command</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">getDefaultTimeout</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">getImage</font>*() : <a href="#type-Image">Image</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">getString</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">getTimeout</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">getType</font>*() : <a href="#type-AlertType">AlertType</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">setCommandListener</font>*(p0 : <a href="#type-CommandListener">CommandListener</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">setImage</font>*(p0 : <a href="#type-Image">Image</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">setString</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">setTimeout</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Alert) <font color="#cc0033">setType</font>*(p0 : <a href="#type-AlertType">AlertType</a>)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-AlertType"></a>
+<b>PROCEDURE </b>(self:AlertType) <font color="#cc0033">playSound</font>*(p0 : <a href="#type-Display">Display</a>) : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Canvas"></a>
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">getGameAction</font>*(p0 : INTEGER) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">getHeight</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">getKeyCode</font>*(p0 : INTEGER) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">getKeyName</font>*(p0 : INTEGER) : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">getWidth</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">hasPointerEvents</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">hasPointerMotionEvents</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">hasRepeatEvents</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">hideNotify</font>!()<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">isDoubleBuffered</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">keyPressed</font>!(p0 : INTEGER)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">keyReleased</font>!(p0 : INTEGER)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">keyRepeated</font>!(p0 : INTEGER)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">paint</font>!(p0 : <a href="#type-Graphics">Graphics</a>)<b>,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">pointerDragged</font>!(p0 : INTEGER;
+                                        p1 : INTEGER)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">pointerPressed</font>!(p0 : INTEGER;
+                                        p1 : INTEGER)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">pointerReleased</font>!(p0 : INTEGER;
+                                         p1 : INTEGER)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">repaint</font>*();
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">repaint</font>*(p0 : INTEGER;
+                                 p1 : INTEGER;
+                                 p2 : INTEGER;
+                                 p3 : INTEGER);
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">serviceRepaints</font>*()<b>,NEW</b>;
+
+<b>PROCEDURE </b>(self:Canvas) <font color="#cc0033">showNotify</font>!()<b>,EXTENSIBLE</b>;
+<a name="meths-Choice"></a>
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">append</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                p1 : <a href="#type-Image">Image</a>) : INTEGER<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">delete</font>*(p0 : INTEGER)<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">getImage</font>*(p0 : INTEGER) : <a href="#type-Image">Image</a><b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">getSelectedFlags</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BOOLEAN) : INTEGER<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">getSelectedIndex</font>*() : INTEGER<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">getString</font>*(p0 : INTEGER) : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">insert</font>*(p0 : INTEGER;
+                                p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                p2 : <a href="#type-Image">Image</a>)<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">isSelected</font>*(p0 : INTEGER) : BOOLEAN<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">set</font>*(p0 : INTEGER;
+                             p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                             p2 : <a href="#type-Image">Image</a>)<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">setSelectedFlags</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BOOLEAN)<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">setSelectedIndex</font>*(p0 : INTEGER;
+                                          p1 : BOOLEAN)<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:Choice) <font color="#cc0033">size</font>*() : INTEGER<b>,NEW,ABSTRACT</b>;
+<a name="meths-ChoiceGroup"></a>
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">append</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                     p1 : <a href="#type-Image">Image</a>) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">delete</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">getImage</font>*(p0 : INTEGER) : <a href="#type-Image">Image</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">getSelectedFlags</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BOOLEAN) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">getSelectedIndex</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">getString</font>*(p0 : INTEGER) : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">insert</font>*(p0 : INTEGER;
+                                     p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                     p2 : <a href="#type-Image">Image</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">isSelected</font>*(p0 : INTEGER) : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">set</font>*(p0 : INTEGER;
+                                  p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                  p2 : <a href="#type-Image">Image</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">setSelectedFlags</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BOOLEAN)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">setSelectedIndex</font>*(p0 : INTEGER;
+                                               p1 : BOOLEAN)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ChoiceGroup) <font color="#cc0033">size</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Command"></a>
+<b>PROCEDURE </b>(self:Command) <font color="#cc0033">getCommandType</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Command) <font color="#cc0033">getLabel</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Command) <font color="#cc0033">getPriority</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-CommandListener"></a>
+<b>PROCEDURE </b>(self:CommandListener) <font color="#cc0033">commandAction</font>*(p0 : <a href="#type-Command">Command</a>;
+                                                p1 : <a href="#type-Displayable">Displayable</a>)<b>,NEW,ABSTRACT</b>;
+<a name="meths-DateField"></a>
+<b>PROCEDURE </b>(self:DateField) <font color="#cc0033">getDate</font>*() : <a href="java_util.html#type-Date">java_util.Date</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:DateField) <font color="#cc0033">getInputMode</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:DateField) <font color="#cc0033">setDate</font>*(p0 : <a href="java_util.html#type-Date">java_util.Date</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:DateField) <font color="#cc0033">setInputMode</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:DateField) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,EXTENSIBLE</b>;
+<a name="meths-Display"></a>
+<b>PROCEDURE </b>(self:Display) <font color="#cc0033">callSerially</font>*(p0 : <a href="java_lang.html#type-Runnable">java_lang.Runnable</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Display) <font color="#cc0033">getCurrent</font>*() : <a href="#type-Displayable">Displayable</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Display) <font color="#cc0033">isColor</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Display) <font color="#cc0033">numColors</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Display) <font color="#cc0033">setCurrent</font>*(p0 : <a href="#type-Alert">Alert</a>;
+                                     p1 : <a href="#type-Displayable">Displayable</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Display) <font color="#cc0033">setCurrent</font>*(p0 : <a href="#type-Displayable">Displayable</a>)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Displayable"></a>
+<b>PROCEDURE </b>(self:Displayable) <font color="#cc0033">addCommand</font>*(p0 : <a href="#type-Command">Command</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Displayable) <font color="#cc0033">isShown</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Displayable) <font color="#cc0033">removeCommand</font>*(p0 : <a href="#type-Command">Command</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Displayable) <font color="#cc0033">setCommandListener</font>*(p0 : <a href="#type-CommandListener">CommandListener</a>)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Font"></a>
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">charsWidth</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR;
+                                      p1 : INTEGER;
+                                      p2 : INTEGER) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">charWidth</font>*(p0 : CHAR) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">getBaselinePosition</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">getFace</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">getHeight</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">getSize</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">getStyle</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">isBold</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">isItalic</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">isPlain</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">isUnderlined</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">stringWidth</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Font) <font color="#cc0033">substringWidth</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                      p1 : INTEGER;
+                                      p2 : INTEGER) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Form"></a>
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">append</font>*(p0 : <a href="#type-Image">Image</a>) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">append</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">append</font>*(p0 : <a href="#type-Item">Item</a>) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">delete</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">get</font>*(p0 : INTEGER) : <a href="#type-Item">Item</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">insert</font>*(p0 : INTEGER;
+                              p1 : <a href="#type-Item">Item</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">set</font>*(p0 : INTEGER;
+                           p1 : <a href="#type-Item">Item</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">setItemStateListener</font>*(p0 : <a href="#type-ItemStateListener">ItemStateListener</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Form) <font color="#cc0033">size</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Gauge"></a>
+<b>PROCEDURE </b>(self:Gauge) <font color="#cc0033">getMaxValue</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Gauge) <font color="#cc0033">getValue</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Gauge) <font color="#cc0033">isInteractive</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Gauge) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Gauge) <font color="#cc0033">setMaxValue</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Gauge) <font color="#cc0033">setValue</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Graphics"></a>
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">clipRect</font>*(p0 : INTEGER;
+                                    p1 : INTEGER;
+                                    p2 : INTEGER;
+                                    p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawArc</font>*(p0 : INTEGER;
+                                   p1 : INTEGER;
+                                   p2 : INTEGER;
+                                   p3 : INTEGER;
+                                   p4 : INTEGER;
+                                   p5 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawChar</font>*(p0 : CHAR;
+                                    p1 : INTEGER;
+                                    p2 : INTEGER;
+                                    p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawChars</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR;
+                                         p1 : INTEGER;
+                                         p2 : INTEGER;
+                                         p3 : INTEGER;
+                                         p4 : INTEGER;
+                                         p5 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawImage</font>*(p0 : <a href="#type-Image">Image</a>;
+                                     p1 : INTEGER;
+                                     p2 : INTEGER;
+                                     p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawLine</font>*(p0 : INTEGER;
+                                    p1 : INTEGER;
+                                    p2 : INTEGER;
+                                    p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawRect</font>*(p0 : INTEGER;
+                                    p1 : INTEGER;
+                                    p2 : INTEGER;
+                                    p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawRoundRect</font>*(p0 : INTEGER;
+                                         p1 : INTEGER;
+                                         p2 : INTEGER;
+                                         p3 : INTEGER;
+                                         p4 : INTEGER;
+                                         p5 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawString</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                      p1 : INTEGER;
+                                      p2 : INTEGER;
+                                      p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">drawSubstring</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                         p1 : INTEGER;
+                                         p2 : INTEGER;
+                                         p3 : INTEGER;
+                                         p4 : INTEGER;
+                                         p5 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">fillArc</font>*(p0 : INTEGER;
+                                   p1 : INTEGER;
+                                   p2 : INTEGER;
+                                   p3 : INTEGER;
+                                   p4 : INTEGER;
+                                   p5 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">fillRect</font>*(p0 : INTEGER;
+                                    p1 : INTEGER;
+                                    p2 : INTEGER;
+                                    p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">fillRoundRect</font>*(p0 : INTEGER;
+                                         p1 : INTEGER;
+                                         p2 : INTEGER;
+                                         p3 : INTEGER;
+                                         p4 : INTEGER;
+                                         p5 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getBlueComponent</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getClipHeight</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getClipWidth</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getClipX</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getClipY</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getColor</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getFont</font>*() : <a href="#type-Font">Font</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getGrayScale</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getGreenComponent</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getRedComponent</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getStrokeStyle</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getTranslateX</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">getTranslateY</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">setClip</font>*(p0 : INTEGER;
+                                   p1 : INTEGER;
+                                   p2 : INTEGER;
+                                   p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">setColor</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">setColor</font>*(p0 : INTEGER;
+                                    p1 : INTEGER;
+                                    p2 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">setFont</font>*(p0 : <a href="#type-Font">Font</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">setGrayScale</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">setStrokeStyle</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Graphics) <font color="#cc0033">translate</font>*(p0 : INTEGER;
+                                     p1 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Image"></a>
+<b>PROCEDURE </b>(self:Image) <font color="#cc0033">getGraphics</font>*() : <a href="#type-Graphics">Graphics</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Image) <font color="#cc0033">getHeight</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Image) <font color="#cc0033">getWidth</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Image) <font color="#cc0033">isMutable</font>*() : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-ImageItem"></a>
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">getAltText</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">getImage</font>*() : <a href="#type-Image">Image</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">getLayout</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">setAltText</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">setImage</font>*(p0 : <a href="#type-Image">Image</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:ImageItem) <font color="#cc0033">setLayout</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Item"></a>
+<b>PROCEDURE </b>(self:Item) <font color="#cc0033">getLabel</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Item) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-ItemStateListener"></a>
+<b>PROCEDURE </b>(self:ItemStateListener) <font color="#cc0033">itemStateChanged</font>*(p0 : <a href="#type-Item">Item</a>)<b>,NEW,ABSTRACT</b>;
+<a name="meths-List"></a>
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">append</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                              p1 : <a href="#type-Image">Image</a>) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">delete</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">getImage</font>*(p0 : INTEGER) : <a href="#type-Image">Image</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">getSelectedFlags</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BOOLEAN) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">getSelectedIndex</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">getString</font>*(p0 : INTEGER) : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">insert</font>*(p0 : INTEGER;
+                              p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                              p2 : <a href="#type-Image">Image</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">isSelected</font>*(p0 : INTEGER) : BOOLEAN<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">set</font>*(p0 : INTEGER;
+                           p1 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                           p2 : <a href="#type-Image">Image</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">setSelectedFlags</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>BOOLEAN)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">setSelectedIndex</font>*(p0 : INTEGER;
+                                        p1 : BOOLEAN)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:List) <font color="#cc0033">size</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Screen"></a>
+<b>PROCEDURE </b>(self:Screen) <font color="#cc0033">getTicker</font>*() : <a href="#type-Ticker">Ticker</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Screen) <font color="#cc0033">getTitle</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Screen) <font color="#cc0033">setTicker</font>*(p0 : <a href="#type-Ticker">Ticker</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Screen) <font color="#cc0033">setTitle</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-StringItem"></a>
+<b>PROCEDURE </b>(self:StringItem) <font color="#cc0033">getText</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:StringItem) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:StringItem) <font color="#cc0033">setText</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-TextBox"></a>
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">delete</font>*(p0 : INTEGER;
+                                 p1 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">getCaretPosition</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">getChars</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">getConstraints</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">getMaxSize</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">getString</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">insert</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                 p1 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">insert</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR;
+                                     p1 : INTEGER;
+                                     p2 : INTEGER;
+                                     p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">setChars</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR;
+                                       p1 : INTEGER;
+                                       p2 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">setConstraints</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">setMaxSize</font>*(p0 : INTEGER) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">setString</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextBox) <font color="#cc0033">size</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-TextField"></a>
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">delete</font>*(p0 : INTEGER;
+                                   p1 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">getCaretPosition</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">getChars</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">getConstraints</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">getMaxSize</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">getString</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">insert</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>;
+                                   p1 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">insert</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR;
+                                       p1 : INTEGER;
+                                       p2 : INTEGER;
+                                       p3 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">setChars</font>*(IN  p0 : <b>ARRAY </b><b>OF </b>CHAR;
+                                         p1 : INTEGER;
+                                         p2 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">setConstraints</font>*(p0 : INTEGER)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">setLabel</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">setMaxSize</font>*(p0 : INTEGER) : INTEGER<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">setString</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:TextField) <font color="#cc0033">size</font>*() : INTEGER<b>,NEW,EXTENSIBLE</b>;
+<a name="meths-Ticker"></a>
+<b>PROCEDURE </b>(self:Ticker) <font color="#cc0033">getString</font>*() : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW,EXTENSIBLE</b>;
+
+<b>PROCEDURE </b>(self:Ticker) <font color="#cc0033">setString</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>)<b>,NEW,EXTENSIBLE</b>;
+
+<b>END </b><font color="#cc0033">javax_microedition_lcdui</font>.
+</font></pre></hr></body></html>

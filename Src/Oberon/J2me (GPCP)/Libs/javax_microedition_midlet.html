@@ -1,0 +1,43 @@
+<html><head><title>javax_microedition_midlet</title></head>
+<body bgcolor="white">
+<hr><pre>
+<b>FOREIGN MODULE </b><font color="#cc0033">javax_microedition_midlet</font>;
+
+<b>IMPORT</b>
+    <a href="java_lang.html">java_lang</a> := "java.lang",
+    <a href="com_sun_midp_midlet.html">com_sun_midp_midlet</a> := "com.sun.midp.midlet",
+    <a href="com_sun_midp_lcdui.html">com_sun_midp_lcdui</a> := "com.sun.midp.lcdui",
+    <a href="java_io.html">java_io</a> := "java.io";
+
+<b>TYPE</b>
+
+  <a name="type-MIDlet"></a><font color="#cc0033">MIDlet</font>* = <b>POINTER TO </b><b>ABSTRACT RECORD</b> (<a href="java_lang.html#type-Object">java_lang.Object</a>)    <a href="#meths-MIDlet"><font color="#cc0033">(* Typebound Procedures *)</font></a>
+            <b>STATIC</b>
+              <b>PROCEDURE </b><font color="#cc0033">Init</font>!() : <a href="#type-MIDlet">MIDlet</a><b>,CONSTRUCTOR</b>;
+            <b>END</b>;
+
+  <a name="type-MIDletStateChangeException"></a><font color="#cc0033">MIDletStateChangeException</font>* = <b>POINTER TO </b><b>EXTENSIBLE RECORD</b> (<a href="java_lang.html#type-Exception">java_lang.Exception</a>)
+                                <b>STATIC</b>
+                                  <b>PROCEDURE </b><font color="#cc0033">Init</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="#type-MIDletStateChangeException">MIDletStateChangeException</a><b>,CONSTRUCTOR</b>;
+                                  <b>PROCEDURE </b><font color="#cc0033">Init</font>*() : <a href="#type-MIDletStateChangeException">MIDletStateChangeException</a><b>,CONSTRUCTOR</b>;
+                                <b>END</b>;
+
+
+
+<a name="meths-MIDlet"></a>
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">destroyApp</font>!(p0 : BOOLEAN)<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">getAppProperty</font>*(p0 : <a href="java_lang.html#type-String">java_lang.String</a>) : <a href="java_lang.html#type-String">java_lang.String</a><b>,NEW</b>;
+
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">notifyDestroyed</font>*()<b>,NEW</b>;
+
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">notifyPaused</font>*()<b>,NEW</b>;
+
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">pauseApp</font>!()<b>,NEW,ABSTRACT</b>;
+
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">resumeRequest</font>*()<b>,NEW</b>;
+
+<b>PROCEDURE </b>(self:MIDlet) <font color="#cc0033">startApp</font>!()<b>,NEW,ABSTRACT</b>;
+
+<b>END </b><font color="#cc0033">javax_microedition_midlet</font>.
+</font></pre></hr></body></html>
