@@ -2,6 +2,7 @@ MODULE GrScr;
 IMPORT
   lcdui := javax_microedition_lcdui,
   midlet := javax_microedition_midlet,
+  lang := java_lang,
   GrCfg;
   
 TYPE
@@ -16,6 +17,8 @@ VAR
   
 PROCEDURE (self: Main) startApp* ;
 (** Точка входа - вызывается самой JVM при запуске нашего приложения. *)
+VAR
+  Main: lang.Class; MainObj: lang.Object;
 BEGIN
   (* Получение ссылки на объект Display пакета javax.microedition.lcdui
      для работы с экраном, формами (javax.microedition.lcdui.Form) или же
@@ -23,6 +26,10 @@ BEGIN
   display := lcdui.Display.getDisplay(self);
   command := NIL;
   form := lcdui.Form.Init(GrCfg.AppTitle);
+  
+  (* Получим ссылку на главный модуль и запустим его *)
+  Main := lang.Class.forName("CP.Dash");
+  MainObj := Main.newInstance();
 END startApp;
 
 PROCEDURE (self: Main) pauseApp* ;
