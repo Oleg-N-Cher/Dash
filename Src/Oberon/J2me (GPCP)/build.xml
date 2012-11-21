@@ -1,0 +1,26 @@
+<project name="Dash" default="dist" basedir=".">
+
+	<!--  Target: dist  -->
+	<target name="dist" description="Generate the distribution">
+		<mkdir dir="${dist}/bin" />
+		<jar destfile="${dist}/${ant.project.name}.jar" manifest="MANIFEST.MF">
+			<fileset dir="${build}/preverified" />
+			<fileset dir=".">
+				<include name="icon.png" />
+				<include name="Rsrc/*.*" />
+				<exclude name="Rsrc/AlmasAlter.png" />
+			</fileset>
+		</jar>
+		<!-- <jarsize file="${dist}/${ant.project.name}.jar" /> -->
+		<unjar src="${dist}/${ant.project.name}.jar" dest="${dist}/bin">
+			<patternset includes="META-INF/MANIFEST.MF" />
+		</unjar>
+		<move file="${dist}/bin/META-INF/MANIFEST.MF" tofile="${dist}/${ant.project.name}.jad" />
+		<move file="${dist}/Dash.jar" tofile="../Dash.jar" />
+		<move file="${dist}/Dash.jad" tofile="../Dash.jad" />
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+
+	</target>
+	
+</project>
