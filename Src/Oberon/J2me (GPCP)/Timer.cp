@@ -1,5 +1,9 @@
-MODULE GrTiles;
+MODULE Timer;
 
+IMPORT
+  lang := java_lang;
+
+(*
 private void sleep(){
       repaint();
       long startTime=System.currentTimeMillis();
@@ -8,7 +12,11 @@ private void sleep(){
          timeTaken=System.currentTimeMillis()-startTime;
       }
    }
+*)
 
+PROCEDURE Delay* (msec: INTEGER);
+BEGIN
+  lang.Thread.sleep(msec);
+END Delay;
 
-END GrTiles.
-
+END Timer.
