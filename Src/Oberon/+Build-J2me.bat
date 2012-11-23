@@ -7,7 +7,9 @@
 @DEL *.cps
 
 @IF NOT EXIST GrCfg.cps   CALL Bin\cprun gpcp GrCfg.cp
-@IF NOT EXIST Timer.cps   CALL Bin\cprun gpcp Timer.cp
+@DEL CP\GrCfg\GrCfg.class
+@RMDIR CP\GrCfg
+@REM IF NOT EXIST Timer.cps   CALL Bin\cprun gpcp Timer.cp
 @IF NOT EXIST GrScr.cps   CALL Bin\cprun gpcp GrScr.cp
 @IF NOT EXIST Rsrc.cps    CALL Bin\cprun gpcp Rsrc.cp
 @IF NOT EXIST GrTiles.cps CALL Bin\cprun gpcp GrTiles.cp
