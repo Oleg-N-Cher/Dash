@@ -1,11 +1,18 @@
-MODULE GrScr;
+(* Universal graphic library for Oberon (GPCP) for J2ME.  *)
+(* Copyright (c) 2012, Oleg N. Cher . *)
+(* VEDAsoft Oberon Club - http://zx.oberon2.ru *)
+
+(*============================================================================*)
+(*                            CP.GrScr.GrScr.class                            *)
+(*============================================================================*)
+MODULE GrScr; (** non-portable *)
 (* Thanks to Raydac (Igor A. Maznitsa) for consultations. *)
 
 IMPORT
-  lcdui := javax_microedition_lcdui,
-  midlet := javax_microedition_midlet,
-  lang := java_lang,
-  GrCfg;
+  lcdui := javax_microedition_lcdui,  (* J2ME display. *)
+  midlet := javax_microedition_midlet, (* J2ME midlet. *)
+  lang := java_lang,    (* Base Java language library. *)
+  GrCfg; (* Configuration module. Don't add it to JAR. *)
   
 TYPE
   Screen* = POINTER TO RECORD (lcdui.Canvas + lang.Runnable)
@@ -26,22 +33,31 @@ VAR
   command: lcdui.Command;
   canvas: lcdui.Canvas;
 
+(*============================================================================*)
+(*                         CP.GrScr.GrScr_Screen.class                        *)
+(*============================================================================*)
 PROCEDURE (screen: Screen) paint* (g: lcdui.Graphics);
+(** Наследник Runnable - вызывается самой VM, когда нужно перерисовать экран. *)
 BEGIN
   g.drawImage(screen.i, 0, 0, 20);
 END paint;
 
+(*----------------------------------------------------------------------------*)
 PROCEDURE (screen: Screen) run* , NEW;
+(** Находим главный класс приложения и отдаём ему управление (с точки BEGIN). *)
 VAR
   mainClass: lang.Class;
 BEGIN
-  (* Получим ссылку на главный класс и запустим его *)
+  (* Получим ссылку на главный класс и запустим его. *)
   mainClass := lang.Class.forName(GrCfg.MainClass);
   (* Пока ограничимся стандартной обработкой исключения: *)
   (* "Java application has thrown Exception and will be closed". *)
   (* RESCUE (classnotfoundexception); *)
 END run;
 
+(*============================================================================*)
+(*                         CP.GrScr.GrScr_Midlet.class                        *)
+(*============================================================================*)
 PROCEDURE Init* (): Midlet, BASE (); (* Midlet's CONSTRUCTOR *)
 BEGIN
   Main := SELF;
@@ -50,6 +66,7 @@ BEGIN
   RETURN SELF;
 END Init;
 
+(*----------------------------------------------------------------------------*)
 PROCEDURE (midlet: Midlet) startApp* ;
 (** Точка входа - вызывается самой JVM при запуске нашего приложения. *)
 BEGIN
@@ -70,21 +87,23 @@ BEGIN
     midlet.screen.repaint;
     midlet.screen.serviceRepaints;
   END;
-  (* Если процесс существует, он продолжится; иначе создадим его. *)
+  (* Если поток существует, он продолжит свою работу; иначе создадим его. *)
   IF ~midlet.threadStarted THEN
     midlet.thread := lang.Thread.Init(midlet.screen);
-    midlet.thread.start;
+    midlet.thread.start; (* Запустим наследника Runnable.run в новом потоке. *)
     midlet.threadStarted := TRUE;
   END;
 END startApp;
 
+(*----------------------------------------------------------------------------*)
 PROCEDURE (midlet: Midlet) pauseApp* ;
-(** вызывается когда на наше устройство поступает звонок, SMS и т.д. *)
+(** Вызывается самой VM когда на наше устройство поступает звонок, SMS и т.д. *)
 END pauseApp;
 
+(*----------------------------------------------------------------------------*)
 PROCEDURE (midlet: Midlet) destroyApp* (c: BOOLEAN);
-(** вызывается тогда, когда он вызывается. *)
-(* данный метод указан, как необходимый к реализации, в то время
+(** Вызывается тогда, когда он вызывается. *)
+(* Данный метод указан, как необходимый к реализации, в то время
    как практической пользы он не несёт. Методы startApp() и pauseApp()
    используются самой AMS, а destroyApp() - нет. По сложившейся традиции
    обычно блок данной функции выглядит следующим образом:
@@ -98,10 +117,12 @@ PROCEDURE (midlet: Midlet) destroyApp* (c: BOOLEAN);
    предназначение последней так и останется тайной... *)
 END destroyApp;
 
+(*----------------------------------------------------------------------------*)
 PROCEDURE (midlet: Midlet) commandAction* (c: lcdui.Command; d: lcdui.Displayable), NEW;
 BEGIN
   (*self.*)command := c;
 END commandAction;
+(*----------------------------------------------------------------------------*)
 
 (*
    g.setColor(0x000000);
