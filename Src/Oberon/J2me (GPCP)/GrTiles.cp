@@ -8,7 +8,7 @@ TYPE
   
 PROCEDURE PutTile* (x, y: INTEGER; tile: Tile);
 BEGIN
-  GrScr.graphics.drawImage(tile, x, y, 20);
+  GrScr.Main.screen.g.drawImage(tile, x, y, 20);
 END PutTile;
 
 END GrTiles.

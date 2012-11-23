@@ -1,4 +1,6 @@
 MODULE GrScr;
+(* Thanks to Raydac (Igor A. Maznitsa) for consultations. *)
+
 IMPORT
   lcdui := javax_microedition_lcdui,
   midlet := javax_microedition_midlet,
@@ -7,45 +9,42 @@ IMPORT
   
 TYPE
   Screen* = POINTER TO RECORD (lcdui.Canvas + lang.Runnable)
-    g: lcdui.Graphics;
+    g-: lcdui.Graphics;
     i: lcdui.Image;
   END;
 
   Midlet* = POINTER TO RECORD (midlet.MIDlet + lcdui.CommandListener)
-    screen: Screen;
+    screen-: Screen;
+    thread: lang.Thread;
     threadStarted: BOOLEAN;
   END;
 
 VAR
+  Main-: Midlet;
   display: lcdui.Display;
   form: lcdui.Form;
-  graphics*: lcdui.Graphics;
   command: lcdui.Command;
   canvas: lcdui.Canvas;
 
-PROCEDURE (self: Screen) paint* (g: lcdui.Graphics);
+PROCEDURE (screen: Screen) paint* (g: lcdui.Graphics);
 BEGIN
-  g.drawImage(self.i, 0, 0, 20);
+  g.drawImage(screen.i, 0, 0, 20);
 END paint;
 
-PROCEDURE (self: Screen) run* , NEW;
+PROCEDURE (screen: Screen) run* , NEW;
+VAR
+  mainClass: lang.Class;
 BEGIN
-  self.g.setColor(99, 99, 99);
-  self.g.fillRect(0, 0, 40, 39);
-  self.g.setColor(255, 255, 255);
-  self.g.fillRect(0, 16, 40, 40 - 16);
-  self.repaint();
-  self.serviceRepaints();
+  (* Получим ссылку на главный класс и запустим его *)
+  mainClass := lang.Class.forName(GrCfg.MainClass);
+  (* Пока ограничимся стандартной обработкой исключения: *)
+  (* "Java application has thrown Exception and will be closed". *)
+  (* RESCUE (classnotfoundexception); *)
 END run;
-
-PROCEDURE Repaint* ;
-BEGIN
-  canvas.repaint;
-  canvas.serviceRepaints;
-END Repaint;
 
 PROCEDURE Init* (): Midlet, BASE (); (* Midlet's CONSTRUCTOR *)
 BEGIN
+  Main := SELF;
   SELF.screen := NIL;
   SELF.threadStarted := FALSE;
   RETURN SELF;
@@ -53,8 +52,6 @@ END Init;
 
 PROCEDURE (midlet: Midlet) startApp* ;
 (** Точка входа - вызывается самой JVM при запуске нашего приложения. *)
-VAR
-  MainObj: lang.Object;
 BEGIN
   (* Получение ссылки на объект Display пакета javax.microedition.lcdui
      для работы с экраном, формами (javax.microedition.lcdui.Form) или же
@@ -75,11 +72,8 @@ BEGIN
   END;
   (* Если процесс существует, он продолжится; иначе создадим его. *)
   IF ~midlet.threadStarted THEN
-    midlet.screen.run;
-    (* Получим ссылку на главный модуль и запустим его *)
-    MainObj := lang.Class.forName("CP.Dash.Dash").newInstance();
-    IF MainObj # NIL THEN lang.Thread.sleep(15000); END;
-    (* MainObj := Main.newInstance(); *)
+    midlet.thread := lang.Thread.Init(midlet.screen);
+    midlet.thread.start;
     midlet.threadStarted := TRUE;
   END;
 END startApp;
@@ -117,5 +111,11 @@ END commandAction;
       midlet.screenHeight=getHeight();
      }
 *)
+
+PROCEDURE Repaint* ; (** Перерисовать экран из буфера. *)
+BEGIN
+  Main.screen.repaint;
+  Main.screen.serviceRepaints;
+END Repaint;
 
 END GrScr.

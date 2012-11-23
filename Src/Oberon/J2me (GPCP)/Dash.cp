@@ -1,7 +1,8 @@
 MODULE Dash;
 IMPORT
-  Rsrc, Til := GrTiles;
+  GrScr, Rsrc, Til := GrTiles;
   
 BEGIN
   Til.PutTile(0, 5, Rsrc.StopMan);
+  GrScr.Repaint;
 END Dash.
