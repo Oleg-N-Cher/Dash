@@ -3,12 +3,55 @@ IMPORT
   lcdui := javax_microedition_lcdui;
 
 TYPE
+  Resource = INTEGER; (* For a while. *)
   Tile = lcdui.Image;
 
+CONST
+  Title* = "/Rsrc/Title.bin";
+  TitleSize* = 114; (** Cells, a cell occupies 3 bytes. *)
+  
 VAR
   None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
   DownMan-, DownMan1-, Mina1-, Babo1-, LastTile-: Tile;
+
+PROCEDURE Open* (rsrc: Resource);
+BEGIN
+END Open;
+
+PROCEDURE ReadByte* (rsrc: Resource): BYTE;
+BEGIN
+  RETURN 0;
+END ReadByte;
+
+PROCEDURE Close* (rsrc: Resource);
+BEGIN
+END Close;
+
+PROCEDURE GetTileByNum* (num: INTEGER): Tile;
+BEGIN
+  CASE num OF
+  |  0: RETURN None;
+  |  1: RETURN Grass;
+  |  2: RETURN Stone;
+  |  3: RETURN Almas;
+  |  4: RETURN StopMan;
+  |  5: RETURN Wall;
+  |  6: RETURN Mina;
+  |  7: RETURN Babo;
+  |  8: RETURN LeftMan;
+  |  9: RETURN LeftMan1;
+  | 10: RETURN RightMan;
+  | 11: RETURN RightMan1;
+  | 12: RETURN UpMan;
+  | 13: RETURN UpMan1;
+  | 14: RETURN DownMan;
+  | 15: RETURN DownMan1;
+  | 16: RETURN Mina1;
+  | 17: RETURN Babo1;
+  END;
+  RETURN NIL;
+END GetTileByNum;
 
 BEGIN
   None      := lcdui.Image.createImage("/Rsrc/None.png");
