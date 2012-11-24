@@ -13,17 +13,23 @@ TYPE
 CONST
   Title* = "/Rsrc/Title.bin";
   TitleSize* = 114; (** Cells, a cell occupies 3 bytes. *)
+  MaxTileNum = 17;
   
 VAR
   None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
   DownMan-, DownMan1-, Mina1-, Babo1-, LastTile-: Tile;
 
+  tileByNum: ARRAY MaxTileNum + 1 OF Tile; (* For returning the tiles by a number. *)
+
+(*============================================================================*)
+(*                            Work with resources                             *)
+(*============================================================================*)
 PROCEDURE Open* (IN name: Ident): Resource;
 BEGIN
   RETURN GrScr.Main.getClass().getResourceAsStream(name);
   RESCUE (exception);
-  RETURN NIL;
+  RETURN NIL
 END Open;
 
 PROCEDURE ReadByte* (rsrc: Resource): BYTE;
@@ -33,7 +39,7 @@ BEGIN
   IF rsrc.read(abyte, 0, 1) = -1 THEN RETURN 0 END;
   RETURN abyte[0];
   RESCUE (exception);
-  RETURN 0;
+  RETURN 0
 END ReadByte;
 
 PROCEDURE Close* (rsrc: Resource);
@@ -44,27 +50,7 @@ END Close;
 
 PROCEDURE GetTileByNum* (num: INTEGER): Tile;
 BEGIN
-  CASE num OF
-  |  0: RETURN None;
-  |  1: RETURN Grass;
-  |  2: RETURN Stone;
-  |  3: RETURN Almas;
-  |  4: RETURN StopMan;
-  |  5: RETURN Wall;
-  |  6: RETURN Mina;
-  |  7: RETURN Babo;
-  |  8: RETURN LeftMan;
-  |  9: RETURN LeftMan1;
-  | 10: RETURN RightMan;
-  | 11: RETURN RightMan1;
-  | 12: RETURN UpMan;
-  | 13: RETURN UpMan1;
-  | 14: RETURN DownMan;
-  | 15: RETURN DownMan1;
-  | 16: RETURN Mina1;
-  | 17: RETURN Babo1;
-  END;
-  RETURN NIL;
+  RETURN tileByNum[num]
 END GetTileByNum;
 
 BEGIN
@@ -87,6 +73,14 @@ BEGIN
   Mina1     := lcdui.Image.createImage("/Rsrc/Mina1.png");
   Babo1     := lcdui.Image.createImage("/Rsrc/Babo1.png");
   LastTile  := Babo1;
+  (* For returning the tiles by a number. *)
+  tileByNum[ 0] := None;     tileByNum[ 1] := Grass;    tileByNum[ 2] := Stone;
+  tileByNum[ 3] := Almas;    tileByNum[ 4] := StopMan;  tileByNum[ 5] := Wall;
+  tileByNum[ 6] := Mina;     tileByNum[ 7] := Babo;     tileByNum[ 8] := LeftMan;
+  tileByNum[ 9] := LeftMan1; tileByNum[10] := RightMan; tileByNum[11] := RightMan1;
+  tileByNum[12] := UpMan;    tileByNum[13] := UpMan1;   tileByNum[14] := DownMan;
+  tileByNum[15] := DownMan1; tileByNum[16] := Mina1;    tileByNum[17] := Babo1;
+
 (*
     try {
       displayIm = Image.createImage("/num/display.PNG");
