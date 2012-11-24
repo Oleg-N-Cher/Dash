@@ -1,9 +1,13 @@
 MODULE Rsrc; (** non-portable: J2ME *)
 IMPORT
-  lcdui := javax_microedition_lcdui;
+  lcdui := javax_microedition_lcdui,
+  lang := java_lang,
+  io := java_io,
+  GrScr;
 
 TYPE
-  Resource = INTEGER; (* For a while. *)
+  Resource = io.InputStream;
+  Ident* = lang.String;
   Tile = lcdui.Image;
 
 CONST
@@ -15,17 +19,27 @@ VAR
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
   DownMan-, DownMan1-, Mina1-, Babo1-, LastTile-: Tile;
 
-PROCEDURE Open* (rsrc: Resource);
+PROCEDURE Open* (IN name: Ident): Resource;
 BEGIN
+  RETURN GrScr.Main.getClass().getResourceAsStream(name);
+  RESCUE (exception);
+  RETURN NIL;
 END Open;
 
 PROCEDURE ReadByte* (rsrc: Resource): BYTE;
+VAR
+  abyte: ARRAY 2 OF BYTE;
 BEGIN
+  IF rsrc.read(abyte, 0, 1) = -1 THEN RETURN 0 END;
+  RETURN abyte[0];
+  RESCUE (exception);
   RETURN 0;
 END ReadByte;
 
 PROCEDURE Close* (rsrc: Resource);
 BEGIN
+  rsrc.close;
+  RESCUE (exception);
 END Close;
 
 PROCEDURE GetTileByNum* (num: INTEGER): Tile;
