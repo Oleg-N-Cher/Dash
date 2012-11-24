@@ -6,7 +6,7 @@ IMPORT
   GrScr;
 
 TYPE
-  Resource = io.InputStream;
+  Resource* = io.InputStream;
   Ident* = lang.String;
   Tile = lcdui.Image;
 
