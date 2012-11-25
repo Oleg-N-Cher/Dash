@@ -1,0 +1,31 @@
+===========================
+|   Bolder Dash (DASH)    |
+===========================
+
+A goal of this project is not only produce a small funny game.
+It demonstates the power of Oberon technologies, shows how a game
+can be written to be launched under many of popular platforms.
+
+Portability is a strong feature of Oberons, and I use it, - Dash
+has portable game code (common for defferent platforms, written
+in Oberon-1) and non-portable layers to a hardware platform.
+
+Dash shows the portability and cross-platform in widely look,
+more than mainstream solutions can propose us. Yes, I believe
+that Oberon technologies are very perspective for future.
+
+
+List of supported platforms
+---------------------------
+
+J2ME (Java 2 Micro Edition) MIDP 1.0 (widely used in cellular phones)
+MS-DOS (old classic OS for IBM PC platform, CPU 80x86, 16 bits)
+Sinclair ZX Spectrum 48k (classic retro, CPU Z80, 8 bits)
+
+
+2012, Dnepropetrovsk, Ukraine.
+
+--
+Oleg N. Cher
+VEDAsoft Oberon Club
+http://zx.oberon2.ru
