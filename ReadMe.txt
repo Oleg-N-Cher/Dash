@@ -23,6 +23,11 @@ MS-DOS (old classic OS for IBM PC platform, CPU 80x86, 16 bits)
 Sinclair ZX Spectrum 48k (classic retro, CPU Z80, 8 bits)
 
 
+Download    - https://sourceforge.net/projects/bolderdash/
+Ver.control - https://github.com/Oleg-N-Cher/Dash/
+Support     - http://zx.oberon2.ru/forum/viewforum.php?f=27
+
+
 2012, Dnepropetrovsk, Ukraine.
 
 --
