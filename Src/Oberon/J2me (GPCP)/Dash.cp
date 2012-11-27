@@ -8,12 +8,12 @@ VAR
 BEGIN
   Til.SetSize(10, 10, 5, 5);
   title := Rsrc.Open(Rsrc.Title);
-  titleSize := Rsrc.TitleSize;
-  WHILE titleSize # 0 DO
-    GrTiles.PutTile(Rsrc.ReadByte(title), Rsrc.ReadByte(title),
+  titleSize := Rsrc.TitleSize; (* Must be > 0 *)
+  REPEAT
+    Til.PutTile(Rsrc.ReadByte(title), Rsrc.ReadByte(title),
       Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
     DEC(titleSize);
-  END;
+  UNTIL titleSize = 0;
   Rsrc.Close(title);
   GrScr.Repaint;
 END Dash.

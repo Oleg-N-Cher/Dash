@@ -12,7 +12,7 @@ TYPE
 
 CONST
   Title* = "/Rsrc/Title.bin";
-  TitleSize* = 114; (** Cells, a cell occupies 3 bytes. *)
+  TitleSize* = 114; (** Number of cells, a cell occupies 3 bytes. Must be > 0 *)
   MaxTileNum = 17;
   
 VAR
