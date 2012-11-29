@@ -5,11 +5,12 @@ IMPORT
 
 TYPE
   Tile* = lcdui.Image;
+  Coords* = INTEGER;
 
 VAR
   tileWidth, tileHeight, tileStepX, tileStepY: INTEGER;
   
-PROCEDURE PutTile* (x, y: INTEGER; tile: Tile);
+PROCEDURE PutTile* (x, y: Coords; tile: Tile);
 BEGIN
   GrScr.Main.screen.g.drawImage(tile, x * tileStepX, y * tileStepY, 20);
 END PutTile;
