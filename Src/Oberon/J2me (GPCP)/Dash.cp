@@ -1,10 +1,13 @@
 MODULE Dash;
 IMPORT
-  GrScr, Rsrc, Til := GrTiles;
+  Platform, GrScr, Rsrc, Til := GrTiles;
 
+TYPE
+  SHORTCARD = Platform.SHORTCARD;
 VAR
   title: Rsrc.Resource;
-  titleSize: INTEGER;
+  titleSize: SHORTCARD;
+
 BEGIN
   Til.SetSize(10, 10, 5, 5);
   title := Rsrc.Open(Rsrc.Title);

@@ -6,14 +6,16 @@
 @CD "J2me (GPCP)"
 @DEL *.cps
 
-@IF NOT EXIST GrCfg.cps   CALL Bin\cprun gpcp GrCfg.cp
+@IF NOT EXIST Platform.cps CALL Bin\cprun gpcp Platform.cp
+@DEL CP\GrCfg\Platform.class
+@IF NOT EXIST GrCfg.cps    CALL Bin\cprun gpcp GrCfg.cp
 @DEL CP\GrCfg\GrCfg.class
 @RMDIR CP\GrCfg
-@REM IF NOT EXIST Timer.cps   CALL Bin\cprun gpcp Timer.cp
-@IF NOT EXIST GrScr.cps   CALL Bin\cprun gpcp GrScr.cp
-@IF NOT EXIST Rsrc.cps    CALL Bin\cprun gpcp Rsrc.cp
-@IF NOT EXIST GrTiles.cps CALL Bin\cprun gpcp GrTiles.cp
-@IF NOT EXIST Dash.cps    CALL Bin\cprun gpcp Dash.cp
+@REM IF NOT EXIST Timer.cps    CALL Bin\cprun gpcp Timer.cp
+@IF NOT EXIST GrScr.cps    CALL Bin\cprun gpcp GrScr.cp
+@IF NOT EXIST Rsrc.cps     CALL Bin\cprun gpcp Rsrc.cp
+@IF NOT EXIST GrTiles.cps  CALL Bin\cprun gpcp GrTiles.cp
+@IF NOT EXIST Dash.cps     CALL Bin\cprun gpcp Dash.cp
 
 @IF NOT EXIST ${build}\obfuscate MKDIR ${build}\obfuscate
 @XCOPY /I /S /Y CP ${build}\obfuscate\CP > NUL
