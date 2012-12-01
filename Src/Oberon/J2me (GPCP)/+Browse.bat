@@ -1,3 +1,4 @@
+@CALL cprun Browse -html -sort Platform.cps
 @CALL cprun Browse -html -sort GrCfg.cps
 @CALL cprun Browse -html -sort GrScr.cps
 @CALL cprun Browse -html -sort GrTiles.cps
