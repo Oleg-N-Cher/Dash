@@ -4,7 +4,7 @@
 
 A goal of this project is not only produce a small funny game.
 It demonstates the power of Oberon technologies, shows how a game
-can be written to be launched under many of popular platforms.
+can be written to be launched under such different platforms.
 
 Portability is a strong feature of Oberons, and I use it, - Dash
 has portable game code (common for defferent platforms, written
