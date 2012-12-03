@@ -1,0 +1,6 @@
+;my disk
+
+EXTENDED "ZXDev"
+HOBETA "..\..\..\..\ZXDev\Bin\Boot.$b","boot","B"
+BINARY "Dash.bin","Dash","C",26000
+;end of disk
