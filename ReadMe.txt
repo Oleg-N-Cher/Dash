@@ -7,7 +7,7 @@ It demonstates the power of Oberon technologies, shows how a game
 can be written to be launched under such different platforms.
 
 Portability is a strong feature of Oberons, and I use it, - Dash
-has portable game code (common for defferent platforms, written
+has portable game code (common for different platforms, written
 in Oberon-1) and non-portable layers to a hardware platform.
 
 Dash shows the portability and cross-platform in widely look,
@@ -28,7 +28,7 @@ Ver.control - https://github.com/Oleg-N-Cher/Dash/
 Support     - http://zx.oberon2.ru/forum/viewforum.php?f=27
 
 
-2012, Dnepropetrovsk, Ukraine.
+2012-2013, Dnepropetrovsk, Ukraine.
 
 --
 Oleg N. Cher
