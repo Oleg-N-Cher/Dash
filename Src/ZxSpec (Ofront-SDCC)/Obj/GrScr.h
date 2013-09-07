@@ -5,12 +5,13 @@
 
 #include "SYSTEM.h"
 
-#define GrScr_Repaint()
+
 
 
 import void GrScr_Close (void);
 import void GrScr_ClrScr (void);
-import void GrScr__init(void);
+import void GrScr_Repaint (void);
+import void *GrScr__init(void);
 
 
 #endif

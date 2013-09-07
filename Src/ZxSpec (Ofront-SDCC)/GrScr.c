@@ -6,14 +6,14 @@
 
 export void GrScr_Close (void);
 export void GrScr_ClrScr (void);
-export void *GrScr__init (void);
+export void GrScr__init (void);
 
 
 export void GrScr_ClrScr (void)
 {{
 }}/*GrScr_ClrScr*/
 
-export void *GrScr__init (void)
+export void GrScr__init (void)
 {{
   __asm
     //XOR  A

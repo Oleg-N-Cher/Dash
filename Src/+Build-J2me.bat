@@ -7,7 +7,8 @@
 @DEL *.cps
 
 @IF NOT EXIST Platform.cps CALL Bin\cprun gpcp Platform.cp
-@DEL CP\GrCfg\Platform.class
+@DEL CP\Platform\Platform.class
+@RMDIR CP\Platform
 @IF NOT EXIST GrCfg.cps    CALL Bin\cprun gpcp GrCfg.cp
 @DEL CP\GrCfg\GrCfg.class
 @RMDIR CP\GrCfg

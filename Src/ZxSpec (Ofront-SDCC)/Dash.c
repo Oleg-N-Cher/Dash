@@ -1,4 +1,4 @@
-/*  Ofront 1.2 -xtspkae */
+/*  Ofront 1.2 -xtspkaem */
 #include "SYSTEM.h"
 #include "GrScr.h"
 #include "Platform.h"
@@ -13,14 +13,14 @@ static SHORTINT Dash_titleSize, Dash_x, Dash_y;
 
 
 
-export void *Dash__init(void)
+export main(int argc, char **argv)
 {
-	__DEFMOD;
-	__IMPORT(GrScr);
-	__IMPORT(Platform);
-	__IMPORT(Rsrc);
-	__IMPORT(GrTiles);
-	__REGMOD("Dash", 0);
+	__INIT(argc, argv);
+	__IMPORT(GrScr__init);
+	__IMPORT(Platform__init);
+	__IMPORT(Rsrc__init);
+	__IMPORT(GrTiles__init);
+	__REGMAIN("Dash", 0);
 /* BEGIN */
 	Dash_title = Rsrc_Open(Rsrc_Title);
 	Dash_titleSize = 114;
@@ -33,5 +33,5 @@ export void *Dash__init(void)
 	Rsrc_Close(Dash_title);
 	GrScr_Repaint();
 	GrScr_Close();
-	__ENDMOD;
+	__FINI;
 }
