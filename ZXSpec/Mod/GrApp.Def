@@ -1,0 +1,11 @@
+MODULE GrApp;
+
+TYPE
+	Coords* = SHORTINT;
+	Color* = INTEGER;
+
+PROCEDURE Close* ; END Close;
+PROCEDURE FillArea* (color: Color); END FillArea;
+PROCEDURE Redraw* ; END Redraw;
+
+END GrApp.

@@ -1,0 +1,6 @@
+MODULE Timer;
+
+PROCEDURE Start* ; END Start;
+PROCEDURE Until* (ticks: SHORTINT); END Until;
+
+END Timer.

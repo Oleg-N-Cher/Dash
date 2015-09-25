@@ -1,0 +1,54 @@
+MODULE Rsrc; (* non-portable (z80) *)
+
+CONST
+  TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
+  SpriteSize*    =2784; (* bytes *)
+  SpriteWidth*   =  32; (* pixels *)
+  SpriteHeight*  =  29; (* pixels *)
+  MaxLevelNumber*=  75;
+  LevelSize*     =  96; (* bytes *)
+  CharSize*      =  12; (* bytes *)
+  FontSize*      = 128 * CharSize; (* bytes *)
+	ResSectionName = "1";
+
+(* set of game sprites: *)
+  None*         =   0;
+  Grass*        =   1;
+  Stone*        =   2;
+  Almas*        =   3;
+  StopMan*      =   4;
+  Wall*         =   5;
+  Mina*         =   6;
+  Babo*         =   7;
+  LeftMan*      =   8;
+  LeftMan1*     =   9;
+  RightMan*     =  10;
+  RightMan1*    =  11;
+  UpMan*        =  12;
+  UpMan1*       =  13;
+  DownMan*      =  14;
+  DownMan1*     =  15;
+  Mina1*        =  16;
+  Babo1*        =  17;
+  LastSprite*   =  Babo1;
+
+TYPE
+	BYTE = SHORTINT;
+	ADDRESS = INTEGER;
+	Ident* = ADDRESS;
+	Resource* = ADDRESS;
+	Tile = BYTE;
+
+VAR
+	Title-, Sprites-, Levels-, Font-: ADDRESS;
+
+(*============================================================================*)
+(*                            Work with resources                             *)
+(*============================================================================*)
+
+PROCEDURE Open* (name: Ident): Resource; BEGIN RETURN 0 END Open;
+PROCEDURE ReadByte* (rsrc: Resource): BYTE; BEGIN RETURN 0 END ReadByte;
+PROCEDURE Close* (rsrc: Resource); END Close;
+PROCEDURE GetTileByNum* (num: BYTE): Tile; BEGIN RETURN 0 END GetTileByNum;
+
+END Rsrc.
