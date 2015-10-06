@@ -1,14 +1,9 @@
-/*  Ofront 1.2 -xtspkae */
-
 #ifndef GrTiles__h
 #define GrTiles__h
 
-#include "SYSTEM.h"
 
+extern void GrTiles_PutTile (unsigned char x, unsigned char y, unsigned char* tile);
 
-
-
-import void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile);
 #define GrTiles__init()
 
 

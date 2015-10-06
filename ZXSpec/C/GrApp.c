@@ -4,23 +4,49 @@
 #include "GrCfg.h"
 
 void GrApp_Close (void);
-void GrApp_ClrScr (void);
+void GrApp_FillArea (unsigned char color);
+void GrApp_SetPalette (void);
 void GrApp__init (void);
+
+extern unsigned char GrApp_ink, GrApp_paper;
 /*================================== Header ==================================*/
 
-void GrApp_ClrScr (void) {
+void GrApp_FillArea (unsigned char color) {
 } //GrApp_ClrScr
+
+/*--------------------------------- Cut here ---------------------------------*/
+unsigned char GrApp_ink, GrApp_paper;
+
+void GrApp_SetPalette (void) __naked {
+  __asm
+    LD   HL,(_GrApp_ink)
+    LD   A,H ; 0000PPPP
+    ADD  A
+    ADD  A
+    ADD  A   ; 0PPPP000
+    ADD  L   ; 00000III
+    LD   HL,#0x5800
+    LD   DE,#0x5801
+    LD   BC,#0x2FF
+    LD   (HL),A
+    LDIR
+    LD   A,(_GrApp_paper)
+    JP   0x229B
+  __endasm;
+} //GrApp_SetPalette
 
 /*--------------------------------- Cut here ---------------------------------*/
 void GrApp__init (void) {
   __asm
-    XOR  A          ; Black
-    CALL 0x229B     ;  => border color
-    LD   A,#5       ; Cyan
-    LD   (0x5C48),A ;  => low lines atr
-    LD   (0x5C8D),A ;  => screen atr
-    CALL 0xD6B      ; Clear screen
-    DI
+    XOR  A                ; Black
+    LD   (_GrApp_paper),A
+    CALL 0x229B           ;  => border color
+    LD   A,#5             ; Cyan
+    LD   (_GrApp_ink),A
+    LD   (0x5C48),A       ;  => low lines atr
+    LD   (0x5C8D),A       ;  => screen atr
+    CALL 0xD6B            ; Clear screen
+    DI              ; запрещаем прерывания на время установки IM 2
 
 ; ************************************************
 ; *              Fill screen table               *
@@ -56,8 +82,6 @@ IMON$:
     LD   (HL),#0xFF  ; адрес перехода #FFFF (65535)
     LD   A,H         ; запоминаем старший байт адреса таблицы
     LDIR             ; заполняем таблицу
-;   DI               ; запрещаем прерывания на время
-                     ; установки второго режима
     LD   I,A         ; задаем в регистре I старший байт адреса
                      ; таблицы для векторов прерываний
     IM   2           ; назначаем второй режим прерываний
@@ -68,8 +92,16 @@ IM2PROC$:
     PUSH AF
     PUSH HL
     LD   HL,(#0x5C78) ;
-    INC  HL           ; INC(FRAMES_CNTR)
+    DEC  HL           ; DEC(FRAMES_CNTR)
     LD   (#0x5C78),HL ;
+/*  PUSH BC
+    PUSH DE
+    PUSH IY
+    LD   IY,#0x5C3A
+    CALL 0x2BF        ; Keyboard
+    POP  IY
+    POP  DE
+    POP  BC */
     POP  HL
     POP  AF
     EI

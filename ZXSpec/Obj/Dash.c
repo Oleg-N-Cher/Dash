@@ -1,13 +1,16 @@
 /*  Ofront 1.2 -xtspkaem */
 #include "SYSTEM.h"
-#include "GrApp.h"
-#include "Rsrc.h"
+#include "Control.h"
 #include "GrTiles.h"
+#include "Rsrc.h"
+#include "GrApp.h"
+#include "Sound.h"
 #include "Timer.h"
 
 
 
 
+static CHAR Dash_ReadKeyBeep (void);
 static void Dash_ShowTitle (void);
 
 
@@ -20,7 +23,7 @@ static void Dash_ShowTitle (void)
 	title = Rsrc_Open(Rsrc_Title);
 	titleSize = 114;
 	for (;;) {
-		Timer_Start();
+		Timer_Start(3);
 		if (titleSize != 0) {
 			x = Rsrc_ReadByte(title);
 			y = Rsrc_ReadByte(title);
@@ -30,17 +33,31 @@ static void Dash_ShowTitle (void)
 		} else {
 			Rsrc_Close(title);
 		}
-		Timer_Until(1);
+		Sound_TitleNext();
+		if (Control_PressedAnyKey()) {
+			GrApp_FillArea(0);
+		}
+		Timer_Until();
 	}
+}
+
+static CHAR Dash_ReadKeyBeep (void)
+{
+	CHAR key;
+	key = Control_ReadKey();
+	Sound_KeyPressed();
+	return key;
 }
 
 
 export main(int argc, char **argv)
 {
 	__INIT(argc, argv);
-	__IMPORT(GrApp__init);
-	__IMPORT(Rsrc__init);
+	__IMPORT(Control__init);
 	__IMPORT(GrTiles__init);
+	__IMPORT(Rsrc__init);
+	__IMPORT(GrApp__init);
+	__IMPORT(Sound__init);
 	__IMPORT(Timer__init);
 	__REGMAIN("Dash", 0);
 /* BEGIN */

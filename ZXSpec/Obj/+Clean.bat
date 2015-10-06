@@ -6,5 +6,4 @@
 @DEL *.bin
 @DEL *.asm
 @DEL *.lk
-@ATTRIB -H *.sbm
-@DEL *.sbm
+@DEL Dash.rel

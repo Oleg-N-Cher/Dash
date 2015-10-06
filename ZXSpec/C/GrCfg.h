@@ -6,6 +6,8 @@
 
 #define GrCfg_ScreenTable  0xFC  /* This memory #FC00; #FD00 used for screen table. */
 
+#define GrCfg_UseSound
+
 #define GrCfg__init()
 
 

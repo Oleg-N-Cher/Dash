@@ -18,6 +18,7 @@
 @DEL %1.c
 @IF NOT EXIST ..\C\%1.c GOTO exit
 %sdcc% -c ..\C\%1.c -mz80 --opt-code-size -I ..\C -I "." -I %Lib%\C -I %Lib%
+@IF errorlevel 1 PAUSE
 @GOTO exit
 
 :noxdev

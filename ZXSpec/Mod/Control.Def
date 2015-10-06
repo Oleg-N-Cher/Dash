@@ -1,0 +1,11 @@
+MODULE Control;
+
+TYPE
+  Key* = CHAR;
+
+PROCEDURE ReadKey* (): Key; BEGIN RETURN 0X END ReadKey;(* With auto-repeat *)
+PROCEDURE PressedAnyKey* (): BOOLEAN; BEGIN RETURN TRUE END PressedAnyKey;
+PROCEDURE Pressed* (key: Key): BOOLEAN; BEGIN RETURN TRUE END Pressed;
+PROCEDURE Close* ; END Close;
+
+END Control.

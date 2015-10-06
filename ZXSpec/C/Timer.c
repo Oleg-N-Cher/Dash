@@ -1,33 +1,13 @@
-void Timer_Start (void);
-void Timer_Until (unsigned char ticks);
+void Timer_Until (void);
 /*================================== Header ==================================*/
 
-void Timer_Start (void) {
+void Timer_Until (void) __naked {
   __asm
-  LD   HL,(#0x5C78)  ; WARNING: 65535/50/60 ~= 21.845 minutes (max delay time)
-  LD   (time$+1),HL
-  __endasm;
-}
-
-/*--------------------------------- Cut here ---------------------------------*/
-void Timer_Until (unsigned char ticks) __naked {
-  __asm
-  POP  HL
-  POP  DE
-  PUSH DE
-  PUSH HL
-  LD   D,#0
-  LD   HL,(#0x5C78)  ; WARNING: 65535/50/60 ~= 21.845 minutes (max delay time)
-time$:
-  LD   BC,#0
-  XOR  A
-  SBC  HL,BC         ; Elapsed ticks
-  SBC  HL,DE         ; Remained ticks
-  RET  NC
 loop$:
-  RET  Z
+  LD   A,(#0x5C78+1) ; High byte
+  AND  #0x80
+	RET  NZ
   HALT
-  INC  L
   JR   loop$
   __endasm;
 } //Timer_Until
