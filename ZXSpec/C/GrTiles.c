@@ -1,8 +1,9 @@
-#include "SYSTEM.h"
 #include "GrCfg.h"
 
-export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile) {
-/* Попробуй ускорить с помощью LDI */
+void GrTiles_PutTile (unsigned char x, unsigned char y, unsigned char* tile);
+/*================================== Header ==================================*/
+
+void GrTiles_PutTile (unsigned char x, unsigned char y, unsigned char* tile) {
 /*
   unsigned char i; int* spr_addr;
 
@@ -15,214 +16,124 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile) {
   END
 */
   __asm
-    POP  HL
-    POP  BC      ; B = y; C = x
-    POP  DE      ; DE = tile address
+    POP  BC
+    POP  DE      ; D = y; E = x
+    POP  HL      ; HL = tile address
+    PUSH HL
     PUSH DE
     PUSH BC
-    PUSH HL
 #ifdef GrCfg_CheckTileCoords
     LD   A,#0x1E
-    CP   A,C     ; IF x <= 30 THEN RETURN
+    CP   A,E     ; IF x <= 30 THEN RETURN
     RET  C
-    CP   A,B     ; IF y <= 30 THEN RETURN
+    CP   A,D     ; IF y <= 30 THEN RETURN
     RET  C
 #endif
-    LD   A,B     ; y
+    LD   A,D     ; y
     ADD  A
-    ADD  B
+    ADD  D       ; * 6
     ADD  A
-    LD   L,A     ; HL = #TAB[y * 6]
-    LD   H,#GrCfg_ScreenTable
-    LD   A,C     ; x
-    PUSH AF
+    LD   C,A     ; BC = #TAB[y * 6]
+    LD   B,#GrCfg_ScreenTable
+    LD   A,(BC)
+    ADD  E       ; + x
+    LD   E,A     ; low screen addr byte
+    INC  B
+    LD   A,(BC)
+    LD   D,A     ; high screen addr byte
 ; #1
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
 ; #2
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
+    LD   A,D
+    AND  #7
+    CALL Z,DOWN_DE8$
 ; #3
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
 ; #4
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
+    LD   A,D
+    AND  #7
+    CALL Z,DOWN_DE8$
 ; #5
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
 ; #6
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
+    LD   A,D
+    AND  #7
+    CALL Z,DOWN_DE8$
 ; #7
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
 ; #8
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
+    LD   A,D
+    AND  #7
+    CALL Z,DOWN_DE8$
 ; #9
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
 ; #10
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
+    LD   A,D
+    AND  #7
+    CALL Z,DOWN_DE8$
 ; #11
-    POP  AF      ; x
-    PUSH AF
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    DEC  H
-    LD   A,(DE)  ; tile addr
-    LD   (BC),A  ; screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
-    INC  DE
-    INC  L
+    LDI          ; LD (DE),(HL): INC HL: INC DE: DEC BC
+    LDI
+    DEC  DE      ; calculate next screen addr
+    DEC  DE
+    INC  D
 ; #12
-    POP  AF      ; x
-    ADD  (HL)
-    LD   C,A
-    INC  H
-    LD   B,(HL)
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
-    INC  C
-    INC  DE
-    LD   A,(DE)
-    LD   (BC),A
+    LDI          ; 16t
+    LD   A,(HL)  ; 7t
+    LD   (DE),A  ; 7t
+    RET
+DOWN_DE8$:
+    LD   A,E
+    ADD  #32
+    LD   E,A
+    RET  C
+    LD   A,D
+    SUB  #8
+    LD   D,A
   __endasm;
 } //GrTiles_PutTile

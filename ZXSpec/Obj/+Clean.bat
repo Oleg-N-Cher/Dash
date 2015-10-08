@@ -6,6 +6,5 @@
 @DEL *.bin
 @DEL *.asm
 @DEL *.lk
-@DEL Dash.c
 @DEL Dash.rel
 @DEL GrCfg.rel
