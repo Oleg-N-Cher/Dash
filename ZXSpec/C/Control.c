@@ -42,6 +42,7 @@ NEXT_PAPER$:      ; Change paper
     JR   Z,NEXT_PAPER$
 SET_PALETTE$:
     CALL _GrApp_SetPalette
+    SCF           ; Set flag C if pallette was changed
   __endasm;
 } //Control_ChangePalette
 
@@ -102,16 +103,15 @@ KEY3$:
 unsigned char Control_PressedAnyKey (void) {
   Control_ChangePalette();
   __asm
-    CALL  0x28E     ; Scan keys
-    LD    L,#0      ; FALSE
+    JR    C,RET_FALSE$ ; RETURN FALSE if palette was changed
+    CALL  0x28E        ; Scan keys
     INC   DE
     LD    A,E
     OR    D
-    RET   Z
-    ;CALL  _ChangePalette
-    ; Если палитра не менялась, то RETURN TRUE
-RET_TRUE$:
-    LD    L,#1      ; TRUE
+    LD    L,#1         ; TRUE
+    RET   NZ
+RET_FALSE$:
+    LD    L,#0         ; FALSE
   __endasm;
 } //Control_PressedAnyKey
 
