@@ -1,6 +1,7 @@
 /* Ver 1.0.0 for ZX Spectrum 48/128 */
 /* Use ZXDev to compile this module */
 
+#include "Timer.h"
 #include "GrCfg.h"
 
 void GrApp_Close (void);
@@ -91,9 +92,9 @@ IMON$:
 IM2PROC$:
     PUSH AF
     PUSH HL
-    LD   HL,(#0x5C78) ;
-    DEC  HL           ; DEC(FRAMES_CNTR)
-    LD   (#0x5C78),HL ;
+    LD   HL,(_Timer_ticks)
+    DEC  HL
+    LD   (_Timer_ticks),HL
 /*  PUSH BC
     PUSH DE
     PUSH IY
