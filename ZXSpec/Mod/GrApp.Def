@@ -4,8 +4,8 @@ TYPE
 	Coords* = SHORTINT;
 	Color* = INTEGER;
 
-PROCEDURE Close* ; END Close;
-PROCEDURE FillArea* (color: Color); END FillArea;
+PROCEDURE Close*  ; END Close;
+PROCEDURE Cls*    ; END Cls;
 PROCEDURE Redraw* ; END Redraw;
 
 END GrApp.

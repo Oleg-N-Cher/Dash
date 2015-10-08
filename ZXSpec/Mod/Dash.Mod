@@ -5,38 +5,38 @@ IMPORT
 (*
 static void game_title (void)             // PROCEDURE ShowTitle;
 {{                                        // BEGIN
- struct title_item * i;                   //
- unsigned p = 0;                          //
- static unsigned pal = 0, bgr = 0;        //
-
+ struct title_item * i;                   //   -> Rsrc
+ unsigned p = 0;                          //   -> Sound.BEGIN
+ static unsigned pal = 0, bgr = 0;        //   -> GrApp
+                                          //
  i = title_list;                          // title := Rsrc.Open(Rsrc.Title);
  while (1) {                              // LOOP
-  unsigned m = p, k;
-
-  run_delay (1);                          // Timer.Start;
+  unsigned m = p, k;                      //   -> Sound.TitleNext
+                                          //
+  run_delay (1);                          // Timer.Start(3);
   if (i < title_list + numtl)             // IF titleSize # 0 THEN
-   sprite (i -> x, i -> y, i -> z), i ++; // Tile.PutTile(..); DEC(titleSize);
-  m = ++ p;
-  for (k = 0; m; m >>= 1)
-   if (m & 1)
-    k ++;
-  snd (30 + (k << 4), 30);
+   sprite (i -> x, i -> y, i -> z), i ++; // Gr.PutTile(..); DEC(titleSize);
+  m = ++ p;                               //   -> Sound.TitleNext
+  for (k = 0; m; m >>= 1)                 //   -> Sound.TitleNext
+   if (m & 1)                             //   -> Sound.TitleNext
+    k ++;                                 //   -> Sound.TitleNext
+  snd (30 + (k << 4), 30);                // Sound.TitleNext;
   switch (pressed (ANY_KEY)) {            // IF Keys.PressedAnyKey() THEN
    case NO_KEY :                          //
     break;                                //
-   case KEYF1 :                           //
-    palcolor (++ pal);                    //
-    press_off (KEYF1);                    //
+   case KEYF1 :                           //   -> Control.PressedAnyKey
+    palcolor (++ pal);                    //   -> Control.PressedAnyKey
+    press_off (KEYF1);                    //   -> Control.PressedAnyKey
     break;                                //
-   case KEYF2 :                           //
-    backcolor (++ bgr);                   //
-    press_off (KEYF2);                    //
+   case KEYF2 :                           //   -> Control.PressedAnyKey
+    backcolor (++ bgr);                   //   -> Control.PressedAnyKey
+    press_off (KEYF2);                    //   -> Control.PressedAnyKey
     break;                                //
    default :                              //
-    cls ();                               //  GrApp.FillArea(0)
-    return;                               //  RETURN
+    cls ();                               // Scr.Cls;
+    return;                               // RETURN
     }                                     //
-  wait_delay ();                          // Timer.Until(3)
+  wait_delay ();                          // Timer.Until;
    }                                      //
 }}                                        // END ShowTitle; *)
 
@@ -48,29 +48,19 @@ VAR
 BEGIN
   title := Rsrc.Open(Rsrc.Title);
   titleSize := Rsrc.TitleSize; (* Must be > 0. *)
-
   LOOP
     Timer.Start(3);
-
-    IF titleSize # 0 THEN
-      x := Rsrc.ReadByte(title);
-      y := Rsrc.ReadByte(title); (* x, y used for correct order. *)
-      Gr.PutTile(x, y, Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
-      Scr.Redraw; DEC(titleSize);
-    ELSE
-      Rsrc.Close(title);
-    END;
-(*
-    INC(p); k := 0; m := p;
-    WHILE m # 0 DO
-      IF ODD(m) THEN INC(k) END;
-      m := m DIV 2;
-    END;
-    Sound.Beep(24858 DIV (k*8 + 15) * 4, 8(*?*));
-*)
-    Sound.TitleNext;
-    IF Ctrl.PressedAnyKey() THEN Scr.FillArea(0); END;
-
+      IF titleSize # 0 THEN
+        DEC(titleSize);
+        x := Rsrc.ReadByte(title);
+        y := Rsrc.ReadByte(title); (* x, y used for correct order. *)
+        Gr.PutTile(x, y, Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
+        Scr.Redraw;
+      ELSE
+        Rsrc.Close(title);
+      END;
+      Sound.TitleNext;
+      IF Ctrl.PressedAnyKey() THEN Scr.Cls; RETURN END;
     Timer.Until;
   END;
 END ShowTitle;
@@ -94,7 +84,7 @@ BEGIN
 END ReadKeyBeep;
 
 BEGIN
-  REPEAT UNTIL ReadKeyBeep() = " ";
+  (*REPEAT UNTIL ReadKeyBeep() = " ";*)
   ShowTitle;
   Scr.Close;
 END Dash.

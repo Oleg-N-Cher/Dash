@@ -4,15 +4,15 @@
 #include "GrCfg.h"
 
 void GrApp_Close (void);
-void GrApp_FillArea (unsigned char color);
+void GrApp_Cls (void);
 void GrApp_SetPalette (void);
 void GrApp__init (void);
 
 extern unsigned char GrApp_ink, GrApp_paper;
 /*================================== Header ==================================*/
 
-void GrApp_FillArea (unsigned char color) {
-} //GrApp_ClrScr
+void GrApp_Cls (void) {
+} //GrApp_Cls
 
 /*--------------------------------- Cut here ---------------------------------*/
 unsigned char GrApp_ink, GrApp_paper;

@@ -25,17 +25,18 @@ static void Dash_ShowTitle (void)
 	for (;;) {
 		Timer_Start(3);
 		if (titleSize != 0) {
+			titleSize -= 1;
 			x = Rsrc_ReadByte(title);
 			y = Rsrc_ReadByte(title);
 			GrTiles_PutTile(x, y, Rsrc_GetTileByNum(Rsrc_ReadByte(title)));
 			GrApp_Redraw();
-			titleSize -= 1;
 		} else {
 			Rsrc_Close(title);
 		}
 		Sound_TitleNext();
 		if (Control_PressedAnyKey()) {
-			GrApp_FillArea(0);
+			GrApp_Cls();
+			return;
 		}
 		Timer_Until();
 	}

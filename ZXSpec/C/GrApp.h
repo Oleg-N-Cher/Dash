@@ -4,7 +4,7 @@
 
 extern unsigned char GrApp_ink, GrApp_paper;
 
-extern void GrApp_FillArea (unsigned char color);
+extern void GrApp_Cls (void);
 extern void GrApp_SetPalette (void);
 #define GrApp_Redraw()
 extern void GrApp_Close (void);

@@ -1,8 +1,7 @@
 #include "SYSTEM.h"
 #include "GrCfg.h"
 
-export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
-{{
+export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile) {
 /* Попробуй ускорить с помощью LDI */
 /*
   unsigned char i; int* spr_addr;
@@ -16,49 +15,53 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
   END
 */
   __asm
-#ifdef __SDCC
-  PUSH IX
-  LD   IX,#0
-  ADD  IX,SP
-#endif
+    POP  HL
+    POP  BC      ; B = y; C = x
+    POP  DE      ; DE = tile address
+    PUSH DE
+    PUSH BC
+    PUSH HL
+#ifdef GrCfg_CheckTileCoords
     LD   A,#0x1E
-    CP   A,4(IX) ; x
-    RET  C       ; IF x <= 30 THEN RETURN
-    LD   C,5(IX) ; y
-    CP   A,C
-    RET  C       ; IF y <= 30 THEN RETURN
-    LD   E,6(IX) ; tile
-    LD   D,7(IX)
-    LD   A,C
+    CP   A,C     ; IF x <= 30 THEN RETURN
+    RET  C
+    CP   A,B     ; IF y <= 30 THEN RETURN
+    RET  C
+#endif
+    LD   A,B     ; y
     ADD  A
-    ADD  C
+    ADD  B
     ADD  A
     LD   L,A     ; HL = #TAB[y * 6]
     LD   H,#GrCfg_ScreenTable
+    LD   A,C     ; x
+    PUSH AF
 ; #1
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
-    INC   C
-    INC   DE
-    LD    A,(DE)
-    LD    (BC),A
-    INC   DE
-    INC   L
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
+    INC  C
+    INC  DE
+    LD   A,(DE)
+    LD   (BC),A
+    INC  DE
+    INC  L
 ; #2
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -66,14 +69,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #3
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -81,14 +85,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #4
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -96,14 +101,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #5
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -111,14 +117,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #6
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -126,14 +133,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #7
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -141,14 +149,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #8
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -156,14 +165,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #9
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -171,14 +181,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #10
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -186,14 +197,15 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #11
-    LD   A,4(IX)
+    POP  AF      ; x
+    PUSH AF
     ADD  (HL)
     LD   C,A
     INC  H
     LD   B,(HL)
     DEC  H
-    LD   A,(DE)  ; Sprite addr
-    LD   (BC),A  ; Screen addr
+    LD   A,(DE)  ; tile addr
+    LD   (BC),A  ; screen addr
     INC  C
     INC  DE
     LD   A,(DE)
@@ -201,7 +213,7 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     INC  L
 ; #12
-    LD   A,4(IX)
+    POP  AF      ; x
     ADD  (HL)
     LD   C,A
     INC  H
@@ -212,9 +224,5 @@ export void GrTiles_PutTile (SHORTINT x, SHORTINT y, BYTE* tile)
     INC  DE
     LD   A,(DE)
     LD   (BC),A
-#ifdef __SDCC
-  POP  IX
-#endif
   __endasm;
-}} /*GrTiles_PutTile*/
-
+} //GrTiles_PutTile
