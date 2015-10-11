@@ -117,7 +117,8 @@ void GrApp_Close (void) {
 ; ************************************************
 IMOFF$:
     DI
-    LD   A,#63
+    LD   IY,#0x5C3A
+    LD   A,#0x3F
     LD   I,A
     IM   1
     EI
