@@ -46,8 +46,17 @@ void Sound_GetAlmas (unsigned int xn_plus_yn) {
 void Sound_KeyPressed (void) {
 /*
   snd (64, 64);
+
+  PC
+  ==
+  SpkrPort = fr * 6 = 64 * 6 = 384
+  Hz = 1193181 / 384 = 3107.2421875
+  
+  ZX
+  ==
+  HL = 437500 / Hz - 30.125 ~= 110.675
 */
-  BEEPER(50, 110);
+  BEEPER(50, 111);
 } //Sound_KeyPressed
 
 /*--------------------------------- Cut here ---------------------------------*/
