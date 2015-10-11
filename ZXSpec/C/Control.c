@@ -120,15 +120,11 @@ unsigned char Control_ReadKey (void) { // With auto-repeat
 __asm
   LD   IY,#0x5C3A
   RES  5,1(IY)
-  DI
-  IM   0
-  EI
+  IM   1
 LOOP_REPEAT$:
   BIT  5,1(IY)
   JR   Z,LOOP_REPEAT$
   LD   L,-50(IY)
-  DI
   IM   2
-  EI
 __endasm;
 } //Input_Read_Repeat

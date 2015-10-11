@@ -9,7 +9,7 @@ void Timer_Until (void) __naked {
 loop$:
   LD   A,(_Timer_ticks+1) ; High byte
   AND  #0x80
-	RET  NZ
+  RET  NZ
   HALT
   JR   loop$
   __endasm;

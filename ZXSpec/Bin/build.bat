@@ -3,7 +3,7 @@
 @SET Name=Dash
 @SET Modules=Rsrc.rel GrApp.rel GrTiles.rel Control.rel Timer.rel Sound.rel
 @SET CodeAddr=32000
-@SET DataAddr=34488
+@SET DataAddr=54488
 @SET Bin=%XDev%\ZXDev\Bin
 @SET Lib=%XDev%\ZXDev\Lib
 
