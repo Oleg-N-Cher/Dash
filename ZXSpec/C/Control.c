@@ -1,9 +1,9 @@
 #include "GrApp.h"
 
 void Control_ChangePalette (void);
-unsigned char Control_ReadKey (void);
-unsigned char Control_Pressed (unsigned char key);
+unsigned char Control_Get (void);
 unsigned char Control_PressedAnyKey (void);
+unsigned char Control_ReadKey (void);
 /*================================== Header ==================================*/
 
 void Control_ChangePalette (void) {
@@ -47,59 +47,6 @@ SET_PALETTE$:
 } //Control_ChangePalette
 
 /*--------------------------------- Cut here ---------------------------------*/
-#define KEY_UP    0x39
-#define KEY_DOWN  0x38
-#define KEY_LEFT  0x36
-#define KEY_RIGHT 0x37
-
-unsigned char Control_Pressed (unsigned char key) {
-  //ChangePalette();
-  __asm
-    POP  HL
-    POP  DE
-    PUSH DE
-    PUSH HL
-    LD   A,E      ; key
-    LD   L,#0     ; FALSE
-    CP   #KEY_UP
-    JR   NZ,KEY1$
-    LD   A,#0xFB
-    IN   A,(#254)
-    RRCA          ; "Q"
-    RET  C
-    INC  L
-    RET
-KEY1$:
-    CP    #KEY_DOWN
-    JR    NZ,KEY2$
-    LD    A,#253
-    IN    A,(#254)
-    RRCA              ; "A"
-    RET   C
-    INC   L
-    RET
-KEY2$:
-    CP    #KEY_RIGHT
-    JR    NZ,KEY3$
-    LD    A,#223
-    IN    A,(#254)
-    RRCA              ; "P"
-    RET   C
-    INC   L
-    RET
-KEY3$:
-    CP    #KEY_LEFT
-    RET   NZ
-    LD    A,#223
-    IN    A,(#254)
-    RRCA
-    RRCA              ; "O"
-    RET   C
-    INC   L
-  __endasm;
-} //Control_Pressed
-
-/*--------------------------------- Cut here ---------------------------------*/
 unsigned char Control_PressedAnyKey (void) {
   Control_ChangePalette();
   __asm
@@ -128,3 +75,74 @@ LOOP_REPEAT$:
   IM   2
 __endasm;
 } //Input_Read_Repeat
+
+/*--------------------------------- Cut here ---------------------------------*/
+unsigned char Control_Get (void) __naked {
+__asm
+/* Из журнала Deja Vu #09, Кемерово, 1999
+ (C) Rezonance group
+ Добавлен опрос Kempston-джойстика */
+
+;Кроме стандартных Q, A, O, P, E, здесь
+;опрашиваются Sinclair 1/2 и Kempston. На выходе
+;в регистре 'L' в формате кемпстон джойстика
+;мы имеем требуемое направление движения.
+
+KEY1A$: LD    HL,#KEY1F$
+        LD    C,#0
+        LD    A,(HL)
+KEY1B$: INC   HL
+        IN    A,(#0xFE)
+        AND   (HL)
+        INC   HL
+        JR    NZ,KEY1C$
+        LD    A,(HL)
+        OR    C
+        LD    C,A
+KEY1C$: INC   HL
+        LD    A,(HL)
+        AND   A
+        JR    NZ,KEY1B$
+        LD    L,C
+.globl __KEMPSTON
+__KEMPSTON:
+        .DB   0xC9  ; RET or IN
+        .DB   0x1F
+        OR    L
+        LD    L,A
+        RET
+KEY1F$: ;Ст.байт порта,бит кнопки,бит результата
+        .DB   0xDF,0x01,0x01 ;P
+        .DB   0xEF,0x08,0x01 ;7
+        .DB   0xF7,0x02,0x01 ;2
+        .DB   0xDF,0x02,0x02 ;O
+        .DB   0xEF,0x10,0x02 ;6
+        .DB   0xF7,0x01,0x02 ;1
+        .DB   0xFD,0x01,0x04 ;A
+        .DB   0xEF,0x04,0x04 ;8
+        .DB   0xF7,0x04,0x04 ;3
+        .DB   0xFB,0x01,0x08 ;Q
+        .DB   0xEF,0x02,0x08 ;9
+        .DB   0xF7,0x08,0x08 ;4
+        .DB   0x7F,0x04,0x10 ;M
+        .DB   0xEF,0x01,0x10 ;0
+        .DB   0xF7,0x10,0x10 ;5
+        .DB   0xFB,0x04,0x20 ;E
+        .DB   0
+__endasm;
+} //Control_Get()
+
+void Control__init (void) {
+__asm
+; AUTOconfig
+      LD     HL,#__KEMPSTON
+      LD     (HL),#0xC9   ;RET
+      LD     B,#250
+A_config01$:
+      IN     A,(#0x1F)
+      AND    #0x1F
+      RET    NZ
+      DJNZ   A_config01$
+      LD     (HL),#0xDB   ;IN
+__endasm;
+} //Control__init

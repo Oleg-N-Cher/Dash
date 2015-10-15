@@ -1,11 +1,21 @@
 MODULE Control;
 
+CONST
+  (* Направление в формате кемпстон джойстика (для скорости) *)
+  Right* = 0;
+  Left*  = 1;
+  Down*  = 2;
+  Up*    = 3;
+  Fire*  = 4;
+  Esc*   = 5;
+
 TYPE
   Key* = CHAR;
+  Keys* = SET;
 
+PROCEDURE Get* (): Keys; END Get;
 PROCEDURE ReadKey* (): Key; BEGIN RETURN 0X END ReadKey;(* With auto-repeat *)
 PROCEDURE PressedAnyKey* (): BOOLEAN; BEGIN RETURN TRUE END PressedAnyKey;
-PROCEDURE Pressed* (key: Key): BOOLEAN; BEGIN RETURN TRUE END Pressed;
 PROCEDURE Close* ; END Close;
 
 END Control.
