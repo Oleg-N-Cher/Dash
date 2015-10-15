@@ -86,5 +86,11 @@ END ReadKeyBeep;
 BEGIN
   (*REPEAT UNTIL ReadKeyBeep() = " ";*)
   ShowTitle;
+  IF ~ (Ctrl.Esc IN Ctrl.Get()) THEN (* Play game: *)
+  END;
+
+  Scr.ScrollUp(100); Scr.ScrollDown(100); LOOP END;
+
+  Ctrl.Close;
   Scr.Close;
 END Dash.

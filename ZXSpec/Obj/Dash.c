@@ -63,6 +63,13 @@ export main(int argc, char **argv)
 	__REGMAIN("Dash", 0);
 /* BEGIN */
 	Dash_ShowTitle();
+	if (!__IN(5, Control_Get())) {
+	}
+	GrApp_ScrollUp(100);
+	GrApp_ScrollDown(100);
+	for (;;) {
+	}
+	Control_Close();
 	GrApp_Close();
 	__FINI;
 }

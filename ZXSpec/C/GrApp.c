@@ -6,6 +6,8 @@
 
 void GrApp_Close (void);
 void GrApp_Cls (void);
+void GrApp_ScrollDown (unsigned char lines);
+void GrApp_ScrollUp (unsigned char lines);
 void GrApp_SetPalette (void);
 void GrApp__init (void);
 
@@ -14,6 +16,203 @@ extern unsigned char GrApp_ink, GrApp_paper;
 
 void GrApp_Cls (void) {
 } //GrApp_Cls
+
+/*--------------------------------- Cut here ---------------------------------*/
+static void GrApp_MoveLineCtoL (void /* A=from; L=to */) {
+  __asm
+    LD   H,#GrCfg_ScreenTable
+    LD   E,(HL)
+    INC  H
+    LD   D,(HL) ; DE = to
+    LD   L,C
+    LD   A,(HL)
+    DEC  H
+    LD   L,(HL)
+    LD   H,A    ; HL = from
+    LDI         ; #1
+    LDI         ; #2
+    LDI         ; #3
+    LDI         ; #4
+    LDI         ; #5
+    LDI         ; #6
+    LDI         ; #7
+    LDI         ; #8
+    LDI         ; #9
+    LDI         ; #10
+    LDI         ; #11
+    LDI         ; #12
+    LDI         ; #13
+    LDI         ; #14
+    LDI         ; #15
+    LDI         ; #16
+    LDI         ; #17
+    LDI         ; #18
+    LDI         ; #19
+    LDI         ; #20
+    LDI         ; #21
+    LDI         ; #22
+    LDI         ; #23
+    LDI         ; #24
+    LDI         ; #25
+    LDI         ; #26
+    LDI         ; #27
+    LDI         ; #28
+    LDI         ; #29
+    LDI         ; #30
+    LDI         ; #31
+    LD   A,(HL)
+    LD   (DE),A ; #31
+  __endasm;
+} //GrApp_MoveLineCtoL
+
+/*--------------------------------- Cut here ---------------------------------*/
+static void GrApp_ClearLineL (void /*register L*/) {
+  __asm
+    LD   H,#GrCfg_ScreenTable
+    LD   E,(HL)
+    INC  H
+    LD   D,(HL)
+    XOR  A
+    LD   (DE),A ; #1
+    INC  DE
+    LD   (DE),A ; #2
+    INC  DE
+    LD   (DE),A ; #3
+    INC  DE
+    LD   (DE),A ; #4
+    INC  DE
+    LD   (DE),A ; #5
+    INC  DE
+    LD   (DE),A ; #6
+    INC  DE
+    LD   (DE),A ; #7
+    INC  DE
+    LD   (DE),A ; #8
+    INC  DE
+    LD   (DE),A ; #9
+    INC  DE
+    LD   (DE),A ; #10
+    INC  DE
+    LD   (DE),A ; #11
+    INC  DE
+    LD   (DE),A ; #12
+    INC  DE
+    LD   (DE),A ; #13
+    INC  DE
+    LD   (DE),A ; #14
+    INC  DE
+    LD   (DE),A ; #15
+    INC  DE
+    LD   (DE),A ; #16
+    INC  DE
+    LD   (DE),A ; #17
+    INC  DE
+    LD   (DE),A ; #18
+    INC  DE
+    LD   (DE),A ; #19
+    INC  DE
+    LD   (DE),A ; #20
+    INC  DE
+    LD   (DE),A ; #21
+    INC  DE
+    LD   (DE),A ; #22
+    INC  DE
+    LD   (DE),A ; #23
+    INC  DE
+    LD   (DE),A ; #24
+    INC  DE
+    LD   (DE),A ; #25
+    INC  DE
+    LD   (DE),A ; #26
+    INC  DE
+    LD   (DE),A ; #27
+    INC  DE
+    LD   (DE),A ; #28
+    INC  DE
+    LD   (DE),A ; #29
+    INC  DE
+    LD   (DE),A ; #30
+    INC  DE
+    LD   (DE),A ; #31
+    INC  DE
+    LD   (DE),A ; #32
+  __endasm;
+} //GrApp_ClearLineN
+
+/*--------------------------------- Cut here ---------------------------------*/
+void GrApp_ScrollUp (unsigned char lines) {
+/*
+  unsigned media, line;
+  if (lines > 0) {
+    media = 192 - lines;
+    for (line = 0; line < media; line ++)
+      lmove (line, line + lines);
+    while (line < 192)
+      lclr (line ++);
+  }
+*/
+  __asm
+    POP  HL
+    POP  BC     ; C = lines
+    PUSH BC
+    PUSH HL
+    LD   A,#192
+    SUB  C
+    LD   B,A    ; B = media
+    LD   L,#0   ; L = line
+LMOVE_UP$:
+    PUSH BC
+    PUSH HL
+    CALL _GrApp_MoveLineCtoL
+    POP  HL
+    POP  BC
+    INC  L      ; line++
+    INC  C      ; (line + lines)++
+    DJNZ LMOVE_UP$
+    LD   A,#192
+    SUB  L
+    LD   B,A
+LCLR_UP$:
+    CALL _GrApp_ClearLineL
+    INC  L      ; line++
+    DJNZ LCLR_UP$
+  __endasm;
+} //GrApp_ScrollUp
+
+/*--------------------------------- Cut here ---------------------------------*/
+void GrApp_ScrollDown (unsigned char lines) {
+/*
+  for (line = 191; line >= lines; line --)
+    lmove (line, line - lines);
+  while (line < 192)
+    lclr (line --);
+*/
+  __asm
+    POP  HL
+    POP  BC     ; C = lines
+    PUSH BC
+    PUSH HL
+    LD   L,#192 ; L = line
+    LD   A,L
+    SUB  C
+    LD   C,A    ; C = line - lines
+    LD   B,A
+LMOVE_DOWN$:
+    DEC  L      ; line--
+    DEC  C      ; (line + lines)--
+    PUSH BC
+    PUSH HL
+    CALL _GrApp_MoveLineCtoL
+    POP  HL
+    POP  BC
+    DJNZ LMOVE_DOWN$
+    LD   B,L
+LCLR_DOWN$:
+    DEC  L      ; line--
+    CALL _GrApp_ClearLineL
+    DJNZ LCLR_DOWN$
+  __endasm;
+} //GrApp_ScrollDown
 
 /*--------------------------------- Cut here ---------------------------------*/
 unsigned char GrApp_ink, GrApp_paper;
