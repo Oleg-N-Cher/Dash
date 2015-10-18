@@ -1,14 +1,10 @@
 MODULE Rsrc; (* non-portable (z80) *)
+IMPORT SYSTEM;
 
 CONST
   TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
-  SpriteSize*    =2784; (* bytes *)
-  SpriteWidth*   =  32; (* pixels *)
-  SpriteHeight*  =  29; (* pixels *)
   MaxLevelNumber*=  75;
   LevelSize*     =  96; (* bytes *)
-  CharSize*      =  12; (* bytes *)
-  FontSize*      = 128 * CharSize; (* bytes *)
 	ResSectionName = "1";
 
 (* set of game sprites: *)
