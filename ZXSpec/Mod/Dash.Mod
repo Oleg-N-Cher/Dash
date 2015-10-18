@@ -1,6 +1,7 @@
 MODULE Dash; (*$MAIN*)
 IMPORT
-  Scr := GrApp, Rsrc, Gr := GrTiles, Ctrl := Control, Timer, Sound;
+  Scr := GrApp, IO := Console, Gr := GrTiles,
+  Msg, Rsrc, Ctrl := Control, Timer, Sound;
 
 (*
 static void game_title (void)             // PROCEDURE ShowTitle;
@@ -54,7 +55,7 @@ BEGIN
         DEC(titleSize);
         x := Rsrc.ReadByte(title);
         y := Rsrc.ReadByte(title); (* x, y used for correct order. *)
-        Gr.PutTile(x, y, Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
+        Gr.DrawTile(x, y, Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
         Scr.Redraw;
       ELSE
         Rsrc.Close(title);
@@ -83,14 +84,66 @@ BEGIN
   key := Ctrl.ReadKey(); Sound.KeyPressed; RETURN key
 END ReadKeyBeep;
 
+(*
+static unsigned menu_select (void)
+{{
+ struct menu_item * z;
+
+ cls ();
+ for (z = menu_text; z < menu_text + NMENU; z ++) {
+  locate (z -> str, z -> col);
+  print_asciz (_M[z -> msg]);
+   }
+ z = menu_text;
+ while (1) {
+  locate (z -> str, z -> col - 3);
+  print_asciz ("=>");
+  switch (key_i_beep ()) {
+   case UP_ARROW : case LEFT_ARROW :
+    if (z > menu_text) {
+     locate (z -> str, z -> col - 3);
+     print_asciz ("  ");
+     z --;
+      }
+    break;
+   case DOWN_ARROW : case RIGHT_ARROW :
+    if (z < menu_text + NMENU - 1) {
+     locate (z -> str, z -> col - 3);
+     print_asciz ("  ");
+     z ++;
+      }
+    break;
+   case ENTER : case SPACE_BAR :
+    return z - menu_text;
+    }
+   }
+}}
+*)
+
+PROCEDURE MenuSelect (): (* UNSIGNED *) SHORTINT;
+VAR
+  item: (* UNSIGNED *) SHORTINT;
+BEGIN
+  Scr.Cls; IO.Ink(IO.LWhite);
+  IO.At(Msg.MenuX, Msg.MenuY  ); IO.WriteStr(Msg.MenuPlay);
+  IO.At(Msg.MenuX, Msg.MenuY+1); IO.WriteStr(Msg.MenuKeyb);
+  IO.At(Msg.MenuX, Msg.MenuY+2); IO.WriteStr(Msg.MenuHelp);
+  IO.At(Msg.MenuX, Msg.MenuY+3); IO.WriteStr(Msg.MenuExit);
+  item := 0;
+  LOOP
+    IO.At(Msg.MenuX - 3, Msg.MenuY + item); IO.WriteStr("=>");
+  RETURN 0
+  END
+END MenuSelect;
+
 BEGIN
   (*REPEAT UNTIL ReadKeyBeep() = " ";*)
-  ShowTitle;
-  IF ~ (Ctrl.Esc IN Ctrl.Get()) THEN (* Play game: *)
-  END;
-
-  Scr.ScrollUp(100); Scr.ScrollDown(100); LOOP END;
-
+  (*ShowTitle;*)
+  IF MenuSelect() = 0 THEN END;
+  LOOP END;
+  (*IF ~ (Ctrl.Esc IN Ctrl.Get()) THEN (* Play game: *)
+    Scr.ScrollUp(100); Scr.ScrollDown(100); LOOP END;
+  END;*)
   Ctrl.Close;
   Scr.Close;
 END Dash.
