@@ -1,9 +1,9 @@
 #include "GrCfg.h"
 
-void GrTiles_PutTile (unsigned char x, unsigned char y, unsigned char* tile);
+void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile);
 /*================================== Header ==================================*/
 
-void GrTiles_PutTile (unsigned char x, unsigned char y, unsigned char* tile) {
+void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) {
 /*
   unsigned char i; int* spr_addr;
 
@@ -486,4 +486,4 @@ Y_MOD_3$: // y = {3, 7, 11, 15, 19, 23, 27}
     LD   (DE),A  ; 7t
 #endif //GrCfg_FastTiles
   __endasm;
-} //GrTiles_PutTile
+} //GrTiles_DrawTile
