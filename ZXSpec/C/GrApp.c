@@ -18,7 +18,7 @@ void GrApp_Cls (void) {
 } //GrApp_Cls
 
 /*--------------------------------- Cut here ---------------------------------*/
-static void GrApp_MoveLineCtoL (void /* A=from; L=to */) {
+static void MoveLineCtoL (void /* A=from; L=to */) {
   __asm
     LD   H,#GrCfg_ScreenTable
     LD   E,(HL)
@@ -63,10 +63,10 @@ static void GrApp_MoveLineCtoL (void /* A=from; L=to */) {
     LD   A,(HL)
     LD   (DE),A ; #31
   __endasm;
-} //GrApp_MoveLineCtoL
+} //MoveLineCtoL
 
 /*--------------------------------- Cut here ---------------------------------*/
-static void GrApp_ClearLineL (void /*register L*/) {
+static void ClearLineL (void /*register L*/) {
   __asm
     LD   H,#GrCfg_ScreenTable
     LD   E,(HL)
@@ -137,7 +137,7 @@ static void GrApp_ClearLineL (void /*register L*/) {
     INC  DE
     LD   (DE),A ; #32
   __endasm;
-} //GrApp_ClearLineN
+} //ClearLineN
 
 /*--------------------------------- Cut here ---------------------------------*/
 void GrApp_ScrollUp (unsigned char lines) {
@@ -163,7 +163,7 @@ void GrApp_ScrollUp (unsigned char lines) {
 LMOVE_UP$:
     PUSH BC
     PUSH HL
-    CALL _GrApp_MoveLineCtoL
+    CALL _MoveLineCtoL
     POP  HL
     POP  BC
     INC  L      ; line++
@@ -173,7 +173,7 @@ LMOVE_UP$:
     SUB  L
     LD   B,A
 LCLR_UP$:
-    CALL _GrApp_ClearLineL
+    CALL _ClearLineL
     INC  L      ; line++
     DJNZ LCLR_UP$
   __endasm;
@@ -202,14 +202,14 @@ LMOVE_DOWN$:
     DEC  C      ; (line + lines)--
     PUSH BC
     PUSH HL
-    CALL _GrApp_MoveLineCtoL
+    CALL _MoveLineCtoL
     POP  HL
     POP  BC
     DJNZ LMOVE_DOWN$
     LD   B,L
 LCLR_DOWN$:
     DEC  L      ; line--
-    CALL _GrApp_ClearLineL
+    CALL _ClearLineL
     DJNZ LCLR_DOWN$
   __endasm;
 } //GrApp_ScrollDown
@@ -309,17 +309,20 @@ IM2PROC$:
 } //GrApp__init
 
 /*--------------------------------- Cut here ---------------------------------*/
-void GrApp_Close (void) {
+void GrApp_Close (void) __naked {
   __asm
 ; ************************************************
 ; *              Set IM1 mode back               *
 ; ************************************************
 IMOFF$:
     DI
+    LD   HL,#0x2758
+    EXX
     LD   IY,#0x5C3A
     LD   A,#0x3F
     LD   I,A
     IM   1
     EI
+    JP   0xD6B
   __endasm;
 } //GrApp__Close
