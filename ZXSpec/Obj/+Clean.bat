@@ -8,3 +8,4 @@
 @DEL *.lk
 @DEL Dash.rel
 @DEL GrCfg.rel
+@DEL Msg.rel
