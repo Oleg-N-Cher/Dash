@@ -108,6 +108,7 @@ KEY1C$: INC   HL
 __KEMPSTON:
         .DB   0xC9  ; RET or IN
         .DB   0x1F
+        AND   #0x1F
         OR    L
         LD    L,A
         RET
