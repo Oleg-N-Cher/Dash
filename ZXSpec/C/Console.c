@@ -2,6 +2,7 @@
 #include "GrCfg.h"
 
 void Console_WriteCh (unsigned char ch); // Uses font 8x12 pixels
+void Console_WriteLn (void);
 void Console_WriteStrEx (unsigned char *str);
 void Console__init (void);
 
@@ -58,8 +59,40 @@ DrawLine$:
     LD   (HL),A  ; Set color to attributes
     LD   HL,#_Console_x
     INC  (HL)    ; Console_x++
+    BIT  5,(HL)
+    RET  Z
+.globl WriteLn
+WriteLn:
+    LD   (HL),#0 ; Console_x = 0
+    INC  HL
+    LD   A,(HL)
+    CP   #15*12 - 1
+    JR   NC,Scroll$
+    ADD  #12
+    LD   (HL),A  ; Console_y += 12
+    RET
+Scroll$:
+    LD   A,#12
+    PUSH AF
+    INC  SP
+    CALL _GrApp_ScrollUp
+    INC  SP
+    LD   HL,#0x5800
+    LD   DE,#0x5801
+    LD   BC,#767
+    LD   A,(_Console_atr)
+    LD   (HL),A
+    LDIR
   __endasm;
 } //Console_WriteCh
+
+/*--------------------------------- Cut here ---------------------------------*/
+void Console_WriteLn (void) __naked {
+  __asm
+    LD   HL,#_Console_x
+    JR   WriteLn
+  __endasm;
+} //Console_WriteLn
 
 /*--------------------------------- Cut here ---------------------------------*/
 void Console_WriteStrEx (unsigned char *str) __naked {

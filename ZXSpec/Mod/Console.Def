@@ -22,6 +22,7 @@ CONST
 PROCEDURE At* (x, y: (* UNSIGNED *) INTEGER);    END At;
 PROCEDURE Ink* (color: (* UNSIGNED *) SHORTINT); END Ink;
 PROCEDURE WriteCh* (ch: CHAR);                   END WriteCh;
+PROCEDURE WriteLn* ;                             END WriteLn;
 PROCEDURE WriteStr* (IN str: ARRAY OF CHAR);    END WriteStr;
 
 END Console.
