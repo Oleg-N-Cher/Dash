@@ -1,7 +1,7 @@
 MODULE Dash; (*$MAIN*)
 IMPORT
   Scr := GrApp, IO := Console, Gr := GrTiles,
-  Msg, Rsrc, Ctrl := Control, Timer, Sound;
+  Msg, Rsrc, Ctrl := Control, Timer, Sound, Strings;
 
 (*
 static void game_title (void)             // PROCEDURE ShowTitle;
@@ -61,7 +61,7 @@ BEGIN
         Rsrc.Close(title);
       END;
       Sound.TitleNext;
-      IF Ctrl.PressedAnyKey() THEN Scr.Cls; RETURN END;
+      IF Ctrl.PressedAnyKey() THEN RETURN END;
     Timer.Until;
   END;
 END ShowTitle;
@@ -122,7 +122,7 @@ static unsigned menu_select (void)
 
 PROCEDURE MenuSelect (): (* UNSIGNED *) SHORTINT;
 VAR
-  item: (* UNSIGNED *) SHORTINT;
+  item: (* UNSIGNED *) SHORTINT; key: Ctrl.Key; keys: Ctrl.Keys;
 BEGIN
   Scr.Cls; IO.Ink(IO.LWhite);
   IO.At(Msg.MenuX, Msg.MenuY  ); IO.WriteStr(Msg.MenuPlay);
@@ -132,18 +132,131 @@ BEGIN
   item := 0;
   LOOP
     IO.At(Msg.MenuX - 3, Msg.MenuY + item); IO.WriteStr("=>");
-  RETURN 0
+    key := ReadKeyBeep();
+    keys := Ctrl.Get();
+    IF (keys = {Ctrl.Up}) OR (keys = {Ctrl.Left}) THEN
+      IF item # 0 THEN
+        IO.At(Msg.MenuX - 3, Msg.MenuY + item); IO.WriteStr("  ");
+        DEC(item);
+      END;
+    END;
+    IF (keys = {Ctrl.Down}) OR (keys = {Ctrl.Right}) THEN
+      IF item # 3 THEN
+        IO.At(Msg.MenuX - 3, Msg.MenuY + item); IO.WriteStr("  ");
+        INC(item);
+      END;
+    END;
+    IF (keys = {Ctrl.Fire}) OR (key = " ") OR (key = 0DX) THEN
+      RETURN item
+    END;
   END
 END MenuSelect;
 
+PROCEDURE Center (y: (*UNSIGNED*) SHORTINT; IN str: ARRAY OF CHAR);
+(*
+void center (unsigned line, char * s)
+{{
+ int i = 0, j = strlen (s), k;
+
+ locate (line, 0);
+ k = 16 - (j >> 1);
+ while (i ++ < k)
+  emt16 (' ');
+ print_asciz (s);
+ k += j;
+ while (++ k < 32)
+  emt16 (' ');
+}}
+*)
+VAR
+  i, x, len: (*UNSIGNED*) SHORTINT;
 BEGIN
-  (*REPEAT UNTIL ReadKeyBeep() = " ";*)
-  (*ShowTitle;*)
-  IF MenuSelect() = 0 THEN END;
-  LOOP END;
-  (*IF ~ (Ctrl.Esc IN Ctrl.Get()) THEN (* Play game: *)
-    Scr.ScrollUp(100); Scr.ScrollDown(100); LOOP END;
-  END;*)
+  len := SHORT( Strings.Length(str) );
+  x := 16 - (len DIV 2);
+  IO.At(0, y);
+  FOR i := x TO 1 BY -1 DO IO.WriteCh(" ") END;
+  IO.WriteStr(str);
+  INC(x, len);
+  WHILE x < 31 DO IO.WriteCh(" "); INC(x) END;
+  (* IF (x = 31) & (y # 15) THEN IO.WriteCh(" ") END; *)
+END Center;
+
+PROCEDURE PressAnyKey;
+(*
+static void press_any_key (void)
+{{
+ center (15, _M[PRESS_ANY_KEY]);
+ key_i_beep ();
+}}
+*)
+BEGIN
+  Center(15, Msg.PressAnyKey); IF ReadKeyBeep() = 0X THEN END;
+END PressAnyKey;
+
+PROCEDURE Instruction (IN text: ARRAY OF CHAR);
+(*
+static void instruction (void)
+{{
+ int z = aopen ("BOLDER.TXR");
+ unsigned Z = alength (z), k;
+ static char c[2] = {0, 0};
+
+ cls ();
+ for (k = 0; k < Z; k ++) {
+  aread (z, c, 1);
+  switch ( *c) {
+   case 0 :
+    cr ();
+    break;
+   case '@' :
+    press_any_key ();
+    locate (15, 0);
+    break;
+   default :
+    print_asciz (c);
+    }
+   }
+}}
+*)
+VAR
+  i: INTEGER; ch: CHAR;
+BEGIN
+  i := 0; ch := text[i];
+  WHILE ch # 0X DO
+    CASE ch OF
+    | "#": Scr.Cls; IO.At(1, 0);
+    | "^": IO.WriteLn; IO.WriteCh(" ");
+    | "@": IO.WriteLn; PressAnyKey; IO.At(1, 15);
+    ELSE IO.WriteCh(ch);
+    END;
+    INC(i); ch := text[i];
+  END;
+END Instruction;
+
+PROCEDURE PlayGame;
+BEGIN
+  LOOP
+    CASE MenuSelect() OF
+    | 0: (*PLAY*) ;
+    | 1: (*KEYB*) ;
+    | 2: (*HELP*)
+      Instruction(Msg.Instruction1);
+      Instruction(Msg.Instruction2);
+      Instruction(Msg.Instruction3);
+      Instruction(Msg.Instruction4);
+      Instruction(Msg.Instruction5);
+      Instruction(Msg.Instruction6);
+      Instruction(Msg.Instruction7);
+    ELSE (*EXIT*)
+      Scr.Cls; Center(7, Msg.IfSureY);
+      CASE ReadKeyBeep() OF "Y", "y": RETURN ELSE END;
+    END;
+  END;
+END PlayGame;
+
+BEGIN
+  ShowTitle;
+  PlayGame;
   Ctrl.Close;
-  Scr.Close;
+  Scr.Close
 END Dash.
