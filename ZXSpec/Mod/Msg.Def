@@ -23,6 +23,9 @@ CONST
   MenuKeyb* = "KEYBOARD";
   MenuHelp* = "HELP";
   MenuExit* = "EXIT TO BASIC";
+
+  IfSureY     * = "Press Y if You sure";
+  PressAnyKey * = "Press any key ...";
 (*
 enum {INVALID, NUM_OF, LINES, MLINE, MLENGTH,	/*Internal for init_mess*/
 UNABLE_TO, AOPEN,
@@ -74,7 +77,7 @@ seek
 Invalid length of
  file #
 Exiting to DOS
-Press any key ...
+
 PLAY
 KEYBOARD
 HELP
@@ -95,7 +98,7 @@ Your new record score is
 Great Deal !
 Your new access level is
 Your new place in table is
-Press Y if You sure
+
 Level 
 Lives 
   Score 
@@ -121,4 +124,12 @@ CGA
 graphics
 
 *)
+
+  Instruction1* = "#  Bolder (boulder) Dash  is  a^chain of  puzzle-caverns.  The^cavern   consists   of   16x16^cells.  Each cell may be  of 8^cases:^  1.  Empty cell.  The man and^other  moving objects  can  go^thru this cells.";
+  Instruction2* = "^  2.  Land  cell   (usually  a^grass or a dirt). Only man can^dig thru this cells  and makes^its empty.^  3.     Falling    invaluable^objects  (usually  a  stones).^Can fall down and roll to side@of  falling.  Can  kill living^objects.";
+  Instruction3* = "  The man can push any^chains only of this ones.^  4.  Falling valuable objects^  (usually   a   diamonds   or^emeralds).  Can fall, roll and^kill (see 3).  The man can NOT^push them,  but can  and  MUST@eat   ALL   of  this  ones  to^perform   his";
+  Instruction4* = "   task   in  the^cavern.^  5.  The MAN  (in form of ant^or  real  man).   He  is  user^ (player) - controlled  living^object.   Must  collect  (eat)^valuable     objects,     push@invaluable  objects  (to  kill^other  living  objects),   and^escape";
+  Instruction5* = "  away  from all objects^falling   over   him  and  all^living  objects  chasing   for^him.^  6.  The  wall  (of  cemented^stones, bricks, wood  or other@hard stuff).  All  living  and^falling objects (including the^man) can't go thru it.";
+  Instruction6* = "^  7.   Living    and   chasing^objects  (two types, usually a^batterflies     and    pulsing^squares, or other pairs).  Can^kill the man. Can be killed by@falling object.  Can move only^in empty cells.^-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_";
+  Instruction7* = "^  Standard Bolder Dash set has^76 (0..75) caverns ...@";
 END Msg.
