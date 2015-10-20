@@ -1,8 +1,8 @@
 @IF /%XDev%==/ GOTO noxdev
 
 @SET Name=Dash
-@SET Modules=Rsrc.rel GrApp.rel GrTiles.rel Control.rel Timer.rel Sound.rel Console.rel
-@SET CodeAddr=32000
+@SET Modules=Rsrc.rel GrApp.rel GrTiles.rel Control.rel Timer.rel Sound.rel Console.rel Strings.rel
+@SET CodeAddr=32832
 @SET DataAddr=54488
 @SET Bin=%XDev%\ZXDev\Bin
 @SET Lib=%XDev%\ZXDev\Lib
