@@ -15,6 +15,32 @@ extern unsigned char GrApp_ink, GrApp_paper;
 /*================================== Header ==================================*/
 
 void GrApp_Cls (void) {
+  __asm
+    LD   L,#0
+    LD   DE,#31  ; {7, 13, 35, 37, 41, 43, 47}
+    LD   C,#0x0F ; Mask
+    CALL NextScreen$
+NextScreen$:
+    LD   H,#0x40
+NextPiece$:
+    LD   A,C
+    CPL
+    LD   C,A
+    AND  (HL)
+    LD   (HL),A
+    ADD  HL,DE
+    LD   A,H
+    CP   #0x58
+    JR   NZ,NextPiece$
+    LD   A,C
+    CPL
+    LD   C,A
+    HALT
+    LD   A,L
+    OR   A
+    RET  Z
+    JR   NextScreen$
+  __endasm;
 } //GrApp_Cls
 
 /*--------------------------------- Cut here ---------------------------------*/
