@@ -16,7 +16,7 @@
 @IF errorlevel 1 PAUSE
 
 %Bin%\hex2bin %Name%.ihx
-::%Bin%\stripbin %Name%.bin
+%Bin%\stripbin %Name%.bin
 %Bin%\bin2tap -c 24999 -a %CodeAddr% -r %CodeAddr% -b -o ..\%Name%.tap %Name%.bin
 @START ..\%Name%.tap
 @GOTO exit

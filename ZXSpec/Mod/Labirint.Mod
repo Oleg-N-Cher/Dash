@@ -83,25 +83,22 @@ END GetCell;
 
 PROCEDURE Unpack (room: Level);
 VAR
-  level: Rsrc.Resource; shiftCount: SHORTINT; idx: Index;
-  val: (* UNSIGNED *) INTEGER;
+  level: Rsrc.Resource; idx: Index; cell: Cell;
+  bitsCount, n, val: (* UNSIGNED *) SHORTINT;
 BEGIN
-  (*Timer.Start(18);*)
   level := Rsrc.OpenAt(room * Rsrc.LevelSize, Rsrc.Levels);
-  shiftCount := 0; idx := 0; val := Rsrc.ReadByte(level);
+  idx := 0; bitsCount := 0;
   REPEAT
     (* Unpacking and normalizing 3 bits from package: *)
-    Field[idx] := SHORT(SHORT(ASH(val, shiftCount))) MOD 8;
-    IF shiftCount <= -5 THEN
-      INC(shiftCount, 5); (* Shift over the byte bound. *)
-      val := 256*val + Rsrc.ReadByte(level);
-    ELSE
-      DEC(shiftCount, 3); (* Shift inside the byte bound. *)
+    cell := 0;
+    FOR n := 2 TO 0 BY -1 DO
+      IF bitsCount = 0 THEN val := Rsrc.ReadByte(level); bitsCount := 8 END;
+      DEC(bitsCount); (* INC(cell, SHORT(SHORT(ASH(val MOD 2, n)))) *)
+      cell := cell DIV 2 + 4*(val MOD 2); val := val DIV 2;
     END;
-    INC(idx);
+    Field[idx] := cell; INC(idx);
   UNTIL idx = FieldSize;
   Rsrc.Close(level);
-  (*Timer.Until*)
 END Unpack;
 
 PROCEDURE TwoStep (dy: INTEGER);
