@@ -1,10 +1,10 @@
 #ifndef Sound__h
 #define Sound__h
 
-#include "GrCfg.h"
+#include "Config.h"
 
 
-#ifdef GrCfg_UseSound
+#ifdef Config_UseSound
   extern void Sound_TitleNext (void);
   extern void Sound_Death (unsigned char y);
   extern void Sound_DropStoneOrAlmas (unsigned char y);

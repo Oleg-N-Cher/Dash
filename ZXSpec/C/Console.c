@@ -1,5 +1,5 @@
 #include "Rsrc.h"
-#include "GrCfg.h"
+#include "Config.h"
 
 void Console_WriteCh (unsigned char ch); // Uses font 8x12 pixels
 void Console_WriteLn (void);
@@ -28,7 +28,7 @@ void Console_WriteCh (unsigned char ch) { // Uses font 8x12 pixels
     ADD  HL,DE   ; + Rsrc_Font
     EX   DE,HL
     LD   HL,(_Console_y)
-    LD   H,#GrCfg_ScreenTable
+    LD   H,#Config_ScreenTable
     LD   A,#12
 DrawLine$:
     EX   AF,AF

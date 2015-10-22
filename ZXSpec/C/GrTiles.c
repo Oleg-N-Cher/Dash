@@ -1,4 +1,4 @@
-#include "GrCfg.h"
+#include "Config.h"
 
 void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile);
 /*================================== Header ==================================*/
@@ -35,25 +35,25 @@ void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) {
     PUSH HL
     PUSH DE
     PUSH BC
-#ifdef GrCfg_CheckTileCoords
+#ifdef Config_CheckTileCoords
     LD   A,#0x1E
     CP   A,E     ; IF x <= 30 THEN RETURN
     RET  C
     CP   A,D     ; IF y <= 30 THEN RETURN
     RET  C
-#endif //GrCfg_CheckTileCoords
+#endif //Config_CheckTileCoords
     LD   A,D     ; y
     ADD  A
     ADD  D       ; * 6
     ADD  A
     LD   C,A     ; BC = #TAB[y * 6]
-    LD   B,#GrCfg_ScreenTable
+    LD   B,#Config_ScreenTable
     LD   A,(BC)
     ADD  E       ; + x
     LD   E,A     ; low screen addr byte
     INC  B
     LD   A,(BC)
-#ifndef GrCfg_FastTiles
+#ifndef Config_FastTiles
     LD   D,A     ; high screen addr byte
 ; #1
     LDI
@@ -160,7 +160,7 @@ DOWN_DE8$:
     LD   A,D
     SUB  #8
     LD   D,A
-#else //GrCfg_FastTiles
+#else //Config_FastTiles
     BIT  1,D     ; y&2
     JP   NZ,Y_MOD_2_3$
 Y_MOD_0_1$:
@@ -484,6 +484,6 @@ Y_MOD_3$: // y = {3, 7, 11, 15, 19, 23, 27}
     LDI          ; #12 ; 16t
     LD   A,(HL)  ; 7t
     LD   (DE),A  ; 7t
-#endif //GrCfg_FastTiles
+#endif //Config_FastTiles
   __endasm;
 } //GrTiles_DrawTile

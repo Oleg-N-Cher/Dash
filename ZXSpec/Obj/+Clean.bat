@@ -7,5 +7,5 @@
 @DEL *.asm
 @DEL *.lk
 @DEL Dash.rel
-@DEL GrCfg.rel
+@DEL Config.rel
 @DEL Msg.rel
