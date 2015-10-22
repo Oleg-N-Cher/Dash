@@ -1,7 +1,7 @@
 MODULE Labirint; (* portable *)
 IMPORT
-  Rsrc := Resource, Sys := Lowlevel,
-  Grax, Keyboard, Timer, Sound;
+  Scr := GrApp, Gr := GrTiles, Rsrc,
+  Ctrl := Control, Timer, Sound;
 
 CONST
   MaxMonsters  = 128;
@@ -9,136 +9,134 @@ CONST
   FieldHeight  =  16;
   FieldSize    = FieldWidth * FieldHeight;
 
-  None         = Rsrc.None;
-  Grass        = Rsrc.Grass;
-  Stone        = Rsrc.Stone;
-  Almas        = Rsrc.Almas;
-  StopMan      = Rsrc.StopMan;
-  Wall         = Rsrc.Wall;
-  Mina         = Rsrc.Mina;
-  Babo         = Rsrc.Babo;
-  LeftMan      = Rsrc.LeftMan;
-  LeftMan1     = Rsrc.LeftMan1;
-  RightMan     = Rsrc.RightMan;
-  RightMan1    = Rsrc.RightMan1;
-  UpMan        = Rsrc.UpMan;
-  UpMan1       = Rsrc.UpMan1;
-  DownMan      = Rsrc.DownMan;
-  DownMan1     = Rsrc.DownMan1;
-  Mina1        = Rsrc.Mina1;
-  Babo1        = Rsrc.Babo1;
-  ActiveStone1 = Rsrc.LastSprite+1;
-  ActiveStone2 = Rsrc.LastSprite+2;
-  ActiveAlmas1 = Rsrc.LastSprite+3;
-  ActiveAlmas2 = Rsrc.LastSprite+4;
+  None         =  0;
+  Grass        =  1;
+  Stone        =  2;
+  Almas        =  3;
+  StopMan      =  4;
+  Wall         =  5;
+  Mina         =  6;
+  Babo         =  7;
+  LeftMan      =  8;
+  LeftMan1     =  9;
+  RightMan     = 10;
+  RightMan1    = 11;
+  UpMan        = 12;
+  UpMan1       = 13;
+  DownMan      = 14;
+  DownMan1     = 15;
+  Mina1        = 16;
+  Babo1        = 17;
+  LastSprite   = Babo1;
+  ActiveStone1 = LastSprite + 1;
+  ActiveStone2 = LastSprite + 2;
+  ActiveAlmas1 = LastSprite + 3;
+  ActiveAlmas2 = LastSprite + 4;
 
-  UserNoKeys = Keyboard.NoKeys;
-  UserUp     = Keyboard.Up;
-  UserDown   = Keyboard.Down;
-  UserLeft   = Keyboard.Left;
-  UserRight  = Keyboard.Right;
-  UserAbort  = Keyboard.Esc;
+  UserNoKeys = {}; (*Ctrl.NoKeys*)
+  UserUp     = Ctrl.Up;
+  UserDown   = Ctrl.Down;
+  UserLeft   = Ctrl.Left;
+  UserRight  = Ctrl.Right;
+  UserAbort  = Ctrl.Esc;
 
   SideLeft   = -2;
   SideRight  =  2;
 
 TYPE
-  COORDS  = Grax.COORDS; (* Coordinates in labirinth *)
-  CELL    = Grax.SPRITE; (* An object of labirinth   *)
-  LEVEL   = SHORTINT;   (* A number of level (room) *)
-  INDEX   = INTEGER;
+  Coords  = (* UNSIGNED *) SHORTINT; (* Coordinates in labirinth *)
+  Cell    = (* UNSIGNED *) SHORTINT; (* An object of labirinth   *)
+  Level   = SHORTINT;   (* A number of level (room) *)
+  Index   = INTEGER;
   MONSTER = RECORD
-    coordX, coordY, dirX, dirY: COORDS;
-    idx: INDEX
+    coordX, coordY, dirX, dirY: Coords;
+    idx: Index
   END;
 
 VAR
-  Field: ARRAY FieldSize OF CELL;
+  Field: ARRAY FieldSize OF Cell;
   Monsters: ARRAY MaxMonsters OF MONSTER;
   monstrsNum: INTEGER;
-  objX, objY: COORDS; objIdx: INDEX; objCell: CELL;
-  manX, manY, manDirX, manDirY: COORDS; manIdx: INDEX;
+  objX, objY: Coords; objIdx: Index; objCell: Cell;
+  manX, manY, manDirX, manDirY: Coords; manIdx: Index;
   manPresent: BOOLEAN;
   lives, score: INTEGER;(*BYTE?*)
 
 (* -------------------------------------------------------------------------------- *)
 (* Base procedures for manipulating cell array, unpack levels and display labirinth *)
 (* -------------------------------------------------------------------------------- *)
-PROCEDURE GetIndex (x, y: COORDS): INDEX; (*?*)
+PROCEDURE GetIndex (x, y: Coords): Index; (*?*)
 (* Converts coords x, y to Field index *)
 BEGIN
   RETURN ((y DIV 2) * FieldWidth) + x DIV 2
 END GetIndex;
 
-PROCEDURE SetCell (x, y: COORDS; cell: CELL); (*?*)
+PROCEDURE SetCell (x, y: Coords; cell: Cell); (*?*)
 BEGIN
   Field [((y DIV 2) * FieldWidth) + x DIV 2] := cell
 END SetCell;
 
-PROCEDURE GetCell (x, y: COORDS): CELL; (*?*)
+PROCEDURE GetCell (x, y: Coords): Cell; (*?*)
 BEGIN
   RETURN Field [((y DIV 2) * FieldWidth) + x DIV 2]
 END GetCell;
 
-PROCEDURE Unpack (room: LEVEL);
-CONST
-  Mask = 0007H;
+PROCEDURE Unpack (room: Level);
 VAR
-  rsrcRooms: Sys.ADDRESS;
-  shiftCount: SHORTINT;
-  idx: INDEX;
+  level: Rsrc.Resource; shiftCount: SHORTINT; idx: Index;
+  val: (* UNSIGNED *) INTEGER;
 BEGIN
-  rsrcRooms := room * Rsrc.LevelSize + Rsrc.Levels;
-  shiftCount := 0;
-  (*Grax.RunDelay;*)
-  idx := 0;
+  (*Timer.Start(18);*)
+  level := Rsrc.OpenAt(room * Rsrc.LevelSize, Rsrc.Levels);
+  shiftCount := 0; idx := 0; val := Rsrc.ReadByte(level);
   REPEAT
-    (*Unpacking and normalizing 3 bits from package*)
-    Field[idx]:=SHORT(Sys.AND(Sys.LSH(Sys.GetInt(rsrcRooms),shiftCount),Mask));
+    (* Unpacking and normalizing 3 bits from package: *)
+    Field[idx] := SHORT(SHORT(ASH(val, shiftCount))) MOD 8;
     IF shiftCount <= -5 THEN
-      INC(shiftCount, 5);   (*Shift over the byte bound*)
-      Sys.NextByte(rsrcRooms)   (* -> to the next byte *)
+      INC(shiftCount, 5); (* Shift over the byte bound. *)
+      val := 256*val + Rsrc.ReadByte(level);
     ELSE
-      DEC(shiftCount, 3)  (*Shift inside the byte bound*)
+      DEC(shiftCount, 3); (* Shift inside the byte bound. *)
     END;
-    INC(idx)
-  UNTIL idx >= FieldSize
-  (*Grax.WaitDelay(18)*)
+    INC(idx);
+  UNTIL idx = FieldSize;
+  Rsrc.Close(level);
+  (*Timer.Until*)
 END Unpack;
 
 PROCEDURE TwoStep (dy: INTEGER);
 BEGIN
-  Grax.RunDelay;
+  Timer.Start(1);
   dy := dy * 6;
   IF dy >= 0 THEN
-    Grax.ScrollUp(dy)
+    Scr.ScrollUp(dy)
   ELSE
-    Grax.ScrollDown(-dy)
+    Scr.ScrollDown(-dy)
   END;
-  Grax.WaitDelay(1);
-  Grax.RunDelay;
+  Timer.Until;
+  Timer.Start(1);
   IF dy >= 0 THEN
-    Grax.ScrollUp(dy)
+    Scr.ScrollUp(dy)
   ELSE
-    Grax.ScrollDown(-dy)
+    Scr.ScrollDown(-dy)
   END
 END TwoStep;
 
 PROCEDURE Display;
 VAR
-  x, y: COORDS;
+  x, y: Coords;
 BEGIN
   y := 0;
   WHILE y < FieldHeight * 2 DO
     TwoStep(+1);
     x := 0;
     WHILE x < FieldWidth * 2 DO
-      Grax.PutSprite(x, (FieldHeight-1) * 2, GetCell(x, y));
-      INC(x, 2)
+      Gr.DrawTile(x, (FieldHeight-1) * 2, Rsrc.GetTileByNum( GetCell(x, y)) );
+      INC(x, 2);
     END;
     INC(y, 2);
-    Grax.WaitDelay(1)
-  END
+    Timer.Until;
+  END;
 END Display;
 
 PROCEDURE DisplayInf;
@@ -152,21 +150,21 @@ BEGIN
   strcat (mmm, dec_asciz (score));
   center (0, mmm);*)
 
-  Grax.WaitDelay(1);
+  Timer.Until;
   i := 1;
   WHILE (i < FieldHeight) DO
     TwoStep(-1);
-    Grax.WaitDelay(1);
+    Timer.Until;
     INC(i)
   END;
-  Grax.RunDelay();
-  Grax.WaitDelay(18)
+  Timer.Start(18);
+  Timer.Until;
 END DisplayInf;
 
 PROCEDURE LookForObjects;
 VAR
-  x, y: COORDS;
-  idx: INDEX;
+  x, y: Coords;
+  idx: Index;
 BEGIN
   monstrsNum := 0; (*Выловим координаты человека, бабочек и мин*)
   manPresent := FALSE;
@@ -192,11 +190,11 @@ BEGIN
   UNTIL y = 0
 END LookForObjects;
 
-PROCEDURE SceneOfDeath (x, y: COORDS);
+PROCEDURE SceneOfDeath (x, y: Coords);
 (*Засыпание алмазами человечка, на которого наехала бабочка или мина,
 и человечка, бабочки или мины, на которых упал камень или алмаз*)
 VAR
-  plusX, minusX, plusY, minusY, tX, tY: COORDS; ctr, lim: INTEGER;
+  plusX, minusX, plusY, minusY, tX, tY: Coords; ctr, lim: INTEGER;
 BEGIN
   (*unsigned xa, ya,*)
   IF x > 2 THEN minusX := x - 2 ELSE minusX := 0 END;
@@ -208,7 +206,7 @@ BEGIN
   WHILE tY <= plusY DO
     tX := minusX;
     WHILE tX <= plusX DO
-      Grax.PutSprite(tX, tY, Almas);
+      Gr.DrawTile(tX, tY, Rsrc.Almas);
       SetCell(tX, tY, Almas);
       INC(tX, 2)
     END;
@@ -220,12 +218,14 @@ BEGIN
  for (;ctr < lim; ctr ++)
   snd (((ctr >> 3) | (ctr << 5)) & 0xFF, 8);	(*Terrible Sound Of Death*)
 *)
+(*
   ctr := y * 4; lim := ctr + 16;
   WHILE ctr < lim DO
     Sound.Beep(24858 DIV (((ctr DIV 8) + (ctr * 32)) MOD 256) * 8, 3); (*Terrible Sound Of Death*)
     (*Sound.Beep(((ctr >> 3) | (ctr << 5)) & 0xFF, 8);	(*Terrible Sound Of Death*)*)
     INC(ctr)
   END
+*)
 END SceneOfDeath;
 
 (* -------------------------------------------------------------------------------- *)
@@ -235,15 +235,17 @@ PROCEDURE Deactivate;
 (*Для летящих в клетке камней и алмазов - прилет на опору*)
 BEGIN
   IF objCell = ActiveStone2 THEN
-    Grax.PutSprite(objX, objY, Stone);
+    Gr.DrawTile(objX, objY, Rsrc.Stone);
     (*SetCell(objX, objY, Stone)*)
     Field[objIdx] := Stone
   ELSE
-    Grax.PutSprite(objX, objY, Almas);
+    Gr.DrawTile(objX, objY, Rsrc.Almas);
     (*SetCell(objX, objY, Almas)*)
     Field[objIdx] := Almas
   END;
+(*
   Sound.Beep(24858 DIV (objY + 100) * 4, 10) (*, snd (200 + (y << 1), 10),*)
+*)
   (*деактивация и звук падения. Камень или алмаз теперь лежит*)
 END Deactivate;
 
@@ -266,15 +268,15 @@ PROCEDURE NextFall;
 BEGIN
   CASE (*GetCell(objX, objY + 2)*)Field[objIdx + FieldWidth] OF
     None :
-      Grax.PutSprite(objX, objY, None);
+      Gr.DrawTile(objX, objY, Rsrc.None);
       IF objCell = ActiveStone2 THEN
-        Grax.PutSprite(objX, objY + 1, Stone);
+        Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
         (*SetCell(objX, objY, ActiveStone1);*)
         Field[objIdx] := ActiveStone1;
         (*SetCell(objX, objY + 2, ActiveStone1)*)
         Field[objIdx + FieldWidth] := ActiveStone1
       ELSE
-        Grax.PutSprite(objX, objY + 1, Almas);
+        Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
         (*SetCell(objX, objY, ActiveAlmas1);*)
         Field[objIdx] := ActiveAlmas1;
         (*SetCell(objX, objY + 2, ActiveAlmas1)*)
@@ -300,10 +302,10 @@ BEGIN
   RETURN FALSE
 END CanStartFall;
 
-PROCEDURE CanRollFrom (side: COORDS): BOOLEAN;
+PROCEDURE CanRollFrom (side: Coords): BOOLEAN;
 (*Разрешение скатывания в сторону (side = SIDE_LEFT или SIDE_RIGHT)*)
 VAR
-  x: COORDS; idx: INDEX;
+  x: Coords; idx: Index;
 BEGIN
   x := objX + side; idx := objIdx + side DIV 2;
   IF (x >= 0) & (x <= (FieldWidth-1) * 2) & (objY >= 0) & (objY < (FieldHeight-1) * 2) THEN
@@ -315,16 +317,16 @@ BEGIN
   RETURN FALSE
 END CanRollFrom;
 
-PROCEDURE RollFrom (side: COORDS);
+PROCEDURE RollFrom (side: Coords);
 (*Скатывание в сторону side на 1 клетку*)
 (* WARNING: This procedure may change global vars objX, objIdx *)
 BEGIN
   (*SetCell(objX, objY, None);*)
   Field[objIdx] := None;
-  Grax.PutSprite(objX, objY, None);
+  Gr.DrawTile(objX, objY, Rsrc.None);
   (*SetCell(objX + side, objY, objCell);*)
   Field[objIdx + side DIV 2] := objCell;
-  Grax.PutSprite(objX + side, objY, objCell);
+  Gr.DrawTile(objX + side, objY, Rsrc.GetTileByNum( objCell ));
 (*Специфично для скатывания вправо - чтобы этот камень или алмаз мог только
 скатиться и не был повторно обработан в следующей клетке - мы его новую
 клетку пропускаем*)
@@ -336,13 +338,13 @@ PROCEDURE Activate;
 (*в положение между 2 клетками*)
 BEGIN
   IF objCell = Stone THEN (*Занимает 2 клетки*)
-    Grax.PutSprite(objX, objY, None); Grax.PutSprite(objX, objY + 1, Stone);
+    Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
     (*SetCell(objX, objY, ActiveStone1);*)
     Field[objIdx] := ActiveStone1;
     (*SetCell(objX, objY + 2, ActiveStone1)*)
     Field[objIdx + FieldWidth] := ActiveStone1
   ELSE
-    Grax.PutSprite(objX, objY, None); Grax.PutSprite(objX, objY + 1, Almas);
+    Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
     (*SetCell(objX, objY, ActiveAlmas1);*)
     Field[objIdx] := ActiveAlmas1;
     (*SetCell(objX, objY + 2, ActiveAlmas1)*)
@@ -353,7 +355,7 @@ END Activate;
 (* -------------------------------------------------------------------------------- *)
 (* ---------------- Man functionality - orders of live man's world ---------------- *)
 (* -------------------------------------------------------------------------------- *)
-PROCEDURE GetManSprite (): Grax.SPRITE;
+PROCEDURE GetManSprite (): Cell;
 (*Номер спрайта первой фазы человечка для заданного направления движения*)
 BEGIN
   IF manDirX = 0 THEN (* Движение по вертикали *)
@@ -376,7 +378,7 @@ END GetManSprite;
 PROCEDURE ManCanGo (): BOOLEAN;
 (*Разрешение прохода в данном направлении*)
 VAR
-  x, y, tX, tY: COORDS; cell: CELL;
+  x, y, tX, tY: Coords; cell: Cell;
 BEGIN
   x := manX + manDirX + manDirX;
   y := manY + manDirY + manDirY;
@@ -400,15 +402,15 @@ BEGIN
           END
         END;
         SetCell(tX, tY, Stone); SetCell(x, y, None);
-        Grax.PutSprite(tX, tY, Stone);
-        Grax.PutSprite(x, y, None)
+        Gr.DrawTile(tX, tY, Rsrc.Stone);
+        Gr.DrawTile(x, y, Rsrc.None)
     ELSE END;
     RETURN TRUE (*Иначе - пройти в таком направлении можно*)
   END;
   RETURN FALSE
 END ManCanGo;
 
-PROCEDURE ManGoing (x, y: COORDS): BOOLEAN;
+PROCEDURE ManGoing (x, y: Coords): BOOLEAN;
 (*Перевод человечка из текущей клетки в положение между двумя клетками*)
 (*Разрешение дальнейшего существования человечка*)
 BEGIN
@@ -419,14 +421,16 @@ BEGIN
   | Almas, ActiveAlmas2 :
       INC(score);
       (* snd (60 + ((xn + yn) << 1), 8);*)
+(*
       Sound.Beep(24858 DIV (x+y+30) * 4, 8);
+*)
   ELSE END;
   RETURN TRUE
 END ManGoing;
 
 PROCEDURE TryMoveMan ();
 VAR
-  x, y: COORDS; manSprite: Grax.SPRITE;
+  x, y: Coords; manSprite: Cell;
 BEGIN
   IF ManCanGo() THEN
     x := manX + manDirX + manDirX;
@@ -435,28 +439,28 @@ BEGIN
     IF ~manPresent THEN RETURN (*СМЕРТЬ - ВЫХОД*) END;
       manSprite := GetManSprite();
       SetCell(x, y, manSprite); (*Отметить следующую позицию*)
-      Grax.PutSprite(manX, manY, None); (*Стереть предыдущий спрайт*)
+      Gr.DrawTile(manX, manY, Rsrc.None); (*Стереть предыдущий спрайт*)
       INC(manX, manDirX);
       INC(manY, manDirY) (*Изменить координаты*)
     ELSE
       manSprite := StopMan (*Остановить человечка*)
     END;
-  Grax.PutSprite(manX, manY, manSprite) (*Вывести новый спрайт*)
+  Gr.DrawTile(manX, manY, Rsrc.GetTileByNum( manSprite )); (*Вывести новый спрайт*)
 END TryMoveMan;
 
 PROCEDURE ManContinuesGoing;
   (*Перевод человечка из состояния между двумя клетками в одну клетку*)
   (*(продолжение предыдущего движения)*)
 VAR
-  plusX, minusX, plusY, minusY: COORDS;
+  plusX, minusX, plusY, minusY: Coords;
 BEGIN
   plusX := manX + manDirX; minusX := manX - manDirX;
   plusY := manY + manDirY; minusY := manY - manDirY;
-  Grax.PutSprite(minusX, minusY, None);
+  Gr.DrawTile(minusX, minusY, Rsrc.None);
   IF GetCell(minusX, minusY) = StopMan THEN (*Откат на полшага назад*)
     SetCell(minusX, minusY, None) (*Затирка человечка*)
   END;
-  Grax.PutSprite(plusX, plusY, GetCell(plusX, plusY) + 1); (*Бегущая фаза (следующая)*)
+  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) ) + 1); (*Бегущая фаза (следующая)*)
   SetCell(plusX, plusY, StopMan);
   manX := plusX; manY := plusY (*Следующие координаты*)
 END ManContinuesGoing;
@@ -471,26 +475,26 @@ BEGIN
   ELSE END;
   RETURN FALSE (*If the man became a victim*)
 END CheckMan;
-
-PROCEDURE GetUserControl (): Keyboard.KEY;
+(*
+PROCEDURE GetUserControl (): Ctrl.Keys;
 BEGIN
-  IF Grax.KeyPressed(Keyboard.Esc) THEN
+  IF Ctrl.Get() = {Ctrl.Esc} THEN
     RETURN UserAbort END;
-  IF Keyboard.Pressed(UserUp) THEN
+  IF Ctrl.Get() = {UserUp} THEN
     RETURN UserUp END;
-  IF Keyboard.Pressed(UserDown) THEN
+  IF Ctrl.Get() = {UserDown} THEN
     RETURN UserDown END;
-  IF Keyboard.Pressed(UserLeft) THEN
+  IF Ctrl.Get() = {UserLeft} THEN
     RETURN UserLeft END;
-  IF Keyboard.Pressed(UserRight) THEN
+  IF Ctrl.Get() = {UserRight} THEN
     RETURN UserRight END;
   RETURN UserNoKeys
 END GetUserControl;
-
+*)
 (* -------------------------------------------------------------------------------- *)
 (* --------------- Live of monsters - flyes (babo) and mines (mina) --------------- *)
 (* -------------------------------------------------------------------------------- *)
-PROCEDURE GetMonsterSprite (sprite: Grax.SPRITE): Grax.SPRITE;
+PROCEDURE GetMonsterSprite (sprite: Cell): Cell;
   (*Вычисление противофазы для бабочки или мины*)
 BEGIN
   CASE sprite OF
@@ -506,15 +510,15 @@ PROCEDURE MonsterContinuesGoing (VAR monstr: MONSTER);
 (*Продолжение движения бабочки или мины - аналогично как для камней или
 человечка. Из промежуточного положения - в целую клетку*)
 VAR
-  newX, newY, oldX, oldY: COORDS;
-  sprite: Grax.SPRITE;
+  newX, newY, oldX, oldY: Coords;
+  sprite: SHORTINT; (*Grax.SPRITE*)
 BEGIN
   newX := monstr.coordX + monstr.dirX; oldX := monstr.coordX - monstr.dirX;
   newY := monstr.coordY + monstr.dirY; oldY := monstr.coordY - monstr.dirY;
   sprite := GetMonsterSprite(GetCell(oldX, oldY));
   SetCell(oldX, oldY, None); SetCell(newX, newY, sprite);
-  Grax.PutSprite(oldX, oldY, None);
-  Grax.PutSprite(newX, newY, sprite);
+  Gr.DrawTile(oldX, oldY, Rsrc.None);
+  Gr.DrawTile(newX, newY, Rsrc.GetTileByNum( sprite ));
   monstr.coordX := newX; monstr.coordY := newY
 END MonsterContinuesGoing;
 
@@ -522,14 +526,14 @@ PROCEDURE ExcludeMonster (i: INTEGER);
 (*Исключение бабочки или мины, убитой камнем или алмазом, из списка
 действующих объектов*)
 VAR
-  tX, tY: COORDS;
+  tX, tY: Coords;
 BEGIN
   (*union object * a = object_array + n,*)
   (* * hb = object_array + num_objects; *)
   tX := Monsters[i].coordX; tY := Monsters[i].coordY;
   IF ODD(tX) OR ODD(tY) THEN
     INC(tX, Monsters[i].dirX); INC(tY, Monsters[i].dirY);
-    SetCell(tX, tY, None); Grax.PutSprite(tX, tY, None)
+    SetCell(tX, tY, None); Gr.DrawTile(tX, tY, Rsrc.None)
   END;
  	(*Удаление из промежуточной позиции*)
   DEC(monstrsNum); (*уменьшение числа объектов*)
@@ -547,11 +551,11 @@ PROCEDURE TryMoveMonster (VAR monstr: MONSTER);
   (*Попытка сдвига объекта из клетки*)
 VAR
   solutionDirX, solutionDirY, negDirX, negDirY,
-  delta, ddX, ddY, max, mark, x, y, tX, tY, vh: COORDS;
-  sprite: Grax.SPRITE;
-  DirX, DirY: ARRAY 4 OF COORDS;
+  delta, ddX, ddY, max, mark, x, y, tX, tY, vh: Coords;
+  sprite: SHORTINT; (*Grax.SPRITE*)
+  DirX, DirY: ARRAY 4 OF Coords;
   movesNum, i: INTEGER;
-PROCEDURE Sign (x: COORDS): COORDS;
+PROCEDURE Sign (x: Coords): Coords;
   (*Знак аргумента. Результат -1 для отрицательного, 1 для положительного
   и для нуля*)
   BEGIN
@@ -592,7 +596,7 @@ BEGIN
   INC(delta, 2) UNTIL delta > 1;
 (*Проверяется все множество вариантов*)
   IF movesNum = 0 THEN (*Объект зажат со всех сторон - нет выбора*)
-    SetCell(x, y, sprite); Grax.PutSprite(x, y, sprite)
+    SetCell(x, y, sprite); Gr.DrawTile(x, y, Rsrc.GetTileByNum( sprite ));
   ELSE
     IF movesNum = 1 THEN
       solutionDirX := DirX[0]; (*Объект отражается от тупика коридора*)
@@ -634,8 +638,8 @@ BEGIN
     END;
     monstr.dirX := solutionDirX; INC(monstr.coordX, solutionDirX);
     monstr.dirY := solutionDirY; INC(monstr.coordY, solutionDirY);
-    Grax.PutSprite(x, y, None);
-    Grax.PutSprite(monstr.coordX, monstr.coordY, sprite);
+    Gr.DrawTile(x, y, Rsrc.None);
+    Gr.DrawTile(monstr.coordX, monstr.coordY, Rsrc.GetTileByNum( sprite ));
     SetCell(monstr.coordX + monstr.dirX, monstr.coordY + monstr.dirY, sprite)
   END
 END TryMoveMonster;
@@ -643,35 +647,35 @@ END TryMoveMonster;
 (* -------------------------------------------------------------------------------- *)
 (* ---------------------------- Main cycle of the game ---------------------------- *)
 (* -------------------------------------------------------------------------------- *)
-PROCEDURE Play* (room: LEVEL);
+PROCEDURE Play* (room: Level);
 (* Main game - select labirinth, play game, and returns score *)
 VAR
-  x, y, side: COORDS;
-  number: INTEGER;
+  x, y, side: Coords;
+  number: INTEGER; keys: Ctrl.Keys;
 BEGIN
 (*------------Н-А-Ч-А-Л-Ь-Н-Ы-Е---Д-Е-Й-С-Т-В-И-Я-------------*)
   (*select_lab ();*)
   (*lives := 10; score := 0;*)
-  Grax.ClrScr;
+  Scr.Cls;
   (*REPEAT*) (*---В---П-О-С-Л-Е-Д-О-В-А-Т-Е-Л-Ь-Н-Ы-Х---Л-А-Б-И-Р-И-Н-Т-А-Х---*)
-    Unpack(room); Display; LookForObjects;
+    Unpack(room); Display; RETURN ; LookForObjects;
     (*Grax.SetCursorPos(0,0); WriteInt (monstrsNum);*)
     IF (~manPresent) OR (monstrsNum = 0) THEN RETURN (*0*) END;
       (* Если не с кем играть с самого начала - это нечестно *)
     side := SideRight;
     LOOP (*---В---О-Д-Н-О-М---Л-А-Б-И-Р-И-Н-Т-Е---*)
-      Grax.RunDelay;
+      Timer.Start(2);
 (*#ifdef MAN_*)
       (*---Д-Е-Й-С-Т-В-И-Я---Ч-Е-Л-О-В-Е-Ч-К-А---*)
       IF ODD(manX) OR ODD(manY) THEN (*Если нечетные координаты*)
         ManContinuesGoing (*Продолжать начатый ход*)
       ELSE (*Управлять человечком*)
-        CASE GetUserControl() OF (*Проверить и зафиксировать управление*)
-          UserUp    : manDirX := 0; manDirY :=-1; TryMoveMan
-        | UserDown  : manDirX := 0; manDirY := 1; TryMoveMan
-        | UserLeft  : manDirX :=-1; manDirY := 0; TryMoveMan
-        | UserRight : manDirX := 1; manDirY := 0; TryMoveMan
-        | UserAbort : manPresent := FALSE; EXIT (*exit loop*) (*?*)
+        keys := Ctrl.Get(); (*Проверить и зафиксировать управление*)
+        IF keys = {UserUp} THEN manDirX := 0; manDirY :=-1; TryMoveMan
+        ELSIF keys = {UserDown} THEN manDirX := 0; manDirY := 1; TryMoveMan
+        ELSIF keys = {UserLeft} THEN manDirX :=-1; manDirY := 0; TryMoveMan
+        ELSIF keys = {UserRight} THEN manDirX := 1; manDirY := 0; TryMoveMan
+        ELSIF keys = {UserAbort} THEN manPresent := FALSE; EXIT (*exit loop*) (*?*)
         ELSE
           manDirX := 0; manDirY := 0
         END;
@@ -717,15 +721,15 @@ BEGIN
            END
 	         (*Далее он сразу обрабатывается как неактивный*)
        | ActiveStone1 : (* Stone, пролетающий между клетками*)
-           Grax.PutSprite(objX, objY - 2, None);
-           Grax.PutSprite(objX, objY, Stone);
+           Gr.DrawTile(objX, objY - 2, Rsrc.None);
+           Gr.DrawTile(objX, objY, Rsrc.Stone);
            (*SetCell(objX, objY, ActiveStone2);*)
            Field[objIdx] := ActiveStone2;
            (*SetCell(objX, objY - 2, None)*)
            Field[objIdx - FieldWidth] := None
        | ActiveAlmas1 : (* Almas, пролетающий между клетками*)
-           Grax.PutSprite(objX, objY - 2, None);
-           Grax.PutSprite(objX, objY, Almas);
+           Gr.DrawTile(objX, objY - 2, Rsrc.None);
+           Gr.DrawTile(objX, objY, Rsrc.Almas);
            (*SetCell(objX, objY, ActiveAlmas2)*)
            Field[objIdx] := ActiveAlmas2;
            (*SetCell(objX, objY - 2, None);*)
@@ -739,7 +743,7 @@ BEGIN
    manPresent := CheckMan();
    IF (~manPresent) THEN EXIT END; (*Check for game end*)
    IF ((*almas*)number = 0) THEN
-     Grax.WaitDelay(2);
+     Timer.Until;
      ManContinuesGoing;
      EXIT
    END;
@@ -767,10 +771,10 @@ BEGIN
       IF ~manPresent THEN SceneOfDeath(manX, manY) END;
 (*#endif	/*OBJECTS*/*)
 
-		  Grax.WaitDelay(2);  (* (2); - 1/9 second per phase*) (*End of phase*)
+		  Timer.Until;  (* (2); - 1/9 second per phase*) (*End of phase*)
 
       (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)
-      IF ~manPresent OR Grax.terminate THEN EXIT END (* *)
+      IF ~manPresent (*OR Grax.terminate*) THEN EXIT END (* *)
     END;
   (*UNTIL FALSE*)
   DisplayInf
