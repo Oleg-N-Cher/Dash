@@ -2,7 +2,7 @@
 /* Use ZXDev to compile this module */
 
 #include "Timer.h"
-#include "GrCfg.h"
+#include "Config.h"
 
 void GrApp_Close (void);
 void GrApp_Cls (void);
@@ -14,39 +14,9 @@ void GrApp__init (void);
 extern unsigned char GrApp_ink, GrApp_paper;
 /*================================== Header ==================================*/
 
-void GrApp_Cls (void) {
-  __asm
-    LD   L,#0
-    LD   DE,#31  ; {7, 13, 35, 37, 41, 43, 47}
-    LD   C,#0x0F ; Mask
-    CALL NextScreen$
-NextScreen$:
-    LD   H,#0x40
-NextPiece$:
-    LD   A,C
-    CPL
-    LD   C,A
-    AND  (HL)
-    LD   (HL),A
-    ADD  HL,DE
-    LD   A,H
-    CP   #0x58
-    JR   NZ,NextPiece$
-    LD   A,C
-    CPL
-    LD   C,A
-    HALT
-    LD   A,L
-    OR   A
-    RET  Z
-    JR   NextScreen$
-  __endasm;
-} //GrApp_Cls
-
-/*--------------------------------- Cut here ---------------------------------*/
 static void MoveLineCtoL (void /* A=from; L=to */) {
   __asm
-    LD   H,#GrCfg_ScreenTable
+    LD   H,#Config_ScreenTable
     LD   E,(HL)
     INC  H
     LD   D,(HL) ; DE = to
@@ -94,7 +64,7 @@ static void MoveLineCtoL (void /* A=from; L=to */) {
 /*--------------------------------- Cut here ---------------------------------*/
 static void ClearLineL (void /*register L*/) {
   __asm
-    LD   H,#GrCfg_ScreenTable
+    LD   H,#Config_ScreenTable
     LD   E,(HL)
     INC  H
     LD   D,(HL)
@@ -262,6 +232,38 @@ void GrApp_SetPalette (void) __naked {
 } //GrApp_SetPalette
 
 /*--------------------------------- Cut here ---------------------------------*/
+void GrApp_Cls (void) {
+  __asm
+    LD   L,#0
+    LD   DE,#31  ; {7, 13, 35, 37, 41, 43, 47}
+    LD   C,#0x0F ; Mask
+    CALL NextScreen$
+    CALL NextScreen$
+    JR   _GrApp_SetPalette
+NextScreen$:
+    LD   H,#0x40
+NextPiece$:
+    LD   A,C
+    CPL
+    LD   C,A
+    AND  (HL)
+    LD   (HL),A
+    ADD  HL,DE
+    LD   A,H
+    CP   #0x58
+    JR   NZ,NextPiece$
+    LD   A,C
+    CPL
+    LD   C,A
+    HALT
+    LD   A,L
+    OR   A
+    RET  Z
+    JR   NextScreen$
+  __endasm;
+} //GrApp_Cls
+
+/*--------------------------------- Cut here ---------------------------------*/
 void GrApp__init (void) {
   __asm
     XOR  A                ; Black
@@ -280,7 +282,7 @@ void GrApp__init (void) {
     LD   BC,#0xC000 ; y := 192; x := 0
 00000$:
     DEC  B
-    LD   D,#GrCfg_ScreenTable
+    LD   D,#Config_ScreenTable
     LD   E,B
     LD   A,B
     CALL #0x22B1 ;   PIXEL_ADD
