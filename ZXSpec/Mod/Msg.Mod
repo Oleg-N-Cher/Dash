@@ -1,6 +1,7 @@
 MODULE Msg;
 
 CONST
+  VEDAsoft* = "VEDAsoft Oberon Club '2016";
 (*
 #define NMENU 4
 #define MENU_1COL 12
@@ -19,10 +20,13 @@ CONST
 #define EXIT_COL MENU_1COL
 *)
   MenuX* = 11; MenuY* = 6;
-  MenuPlay* = "PLAY";
-  MenuKeyb* = "KEYBOARD";
-  MenuHelp* = "HELP";
-  MenuExit* = "EXIT TO BASIC";
+  MenuPlay     * = "PLAY";
+  MenuKeyboard * = "KEYBOARD";
+  MenuKempston * = "KEMPSTON";
+  MenuSinclair * = "SINCLAIR";
+  MenuCursor   * = "CURSOR  ";
+  MenuHelp     * = "HELP";
+  MenuExit     * = "EXIT TO BASIC";
 
   IfSureY     * = "Press Y if You sure";
   PressAnyKey * = "Press any key ...";
