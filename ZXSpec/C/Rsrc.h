@@ -3,6 +3,7 @@
 
 #include "SYSTEM.h"
 
+
 #define Rsrc_TitleSize     114 /* cells, a cell occupies 3 bytes */
 #define Rsrc_TileSize       24 /* bytes */
 #define Rsrc_TileWidth      16 /* pixels */
@@ -14,12 +15,12 @@
 #define _LastTitleNum       17
 
 extern const unsigned char _Rsrc_Title [Rsrc_TitleSize * 3];
-//extern const unsigned char _Rsrc_levels [7296];
+extern const unsigned char _Rsrc_Levels [7296];
 extern const unsigned char _Rsrc_Font [Rsrc_FontSize];
 extern const unsigned char _Rsrc_Tiles [Rsrc_TileSize * (_LastTitleNum + 1)];
 
 typedef BYTE* Rsrc_Resource;
-typedef INTEGER ADDRESS;
+typedef unsigned int ADDRESS;
 
 /* Set of game tiles: */
 #define Rsrc_None      ((Rsrc_Resource)( 0 * Rsrc_TileSize + &_Rsrc_Tiles))
@@ -42,16 +43,18 @@ typedef INTEGER ADDRESS;
 #define Rsrc_Babo1     ((Rsrc_Resource)(17 * Rsrc_TileSize + &_Rsrc_Tiles))
 #define Rsrc_LastTile  Rsrc_Babo1
 
-#define Rsrc_Title (&_Rsrc_Title)
-#define Rsrc_Tiles __Rsrc_Tiles
-//#define Rsrc_Levels  (&_Rsrc_levels)
-#define Rsrc_Font  __Rsrc_Font
+#define Rsrc_Title  ((int)_Rsrc_Title)
+#define Rsrc_Tiles   __Rsrc_Tiles
+#define Rsrc_Levels ((int)_Rsrc_Levels)
+#define Rsrc_Font    __Rsrc_Font
 
 #define Rsrc_Close(rsrc)
 extern Rsrc_Resource Rsrc_GetTileByNum (unsigned char num);
 #define Rsrc_Open(name) ((ADDRESS)name)
-#define Rsrc_ReadByte(rsrc) *(Rsrc_Resource)rsrc++
+#define Rsrc_OpenAt(pos,name) ((ADDRESS)name + pos)
+#define Rsrc_ReadByte(rsrc) (*(BYTE*)rsrc++)
 
 #define Rsrc__init()
+
 
 #endif
