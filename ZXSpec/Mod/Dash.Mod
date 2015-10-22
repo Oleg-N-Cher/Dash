@@ -1,7 +1,13 @@
 MODULE Dash; (*$MAIN*)
 IMPORT
-  Scr := GrApp, IO := Console, Gr := GrTiles,
-  Msg, Rsrc, Ctrl := Control, Timer, Sound, Strings;
+  Scr := GrApp, IO := Console, Gr := GrTiles, Labirint,
+  Msg, Rsrc, Ctrl := Control, Timer, Sound, Strings, Cfg := Config;
+
+  CONST
+    Abort = -1;
+
+  VAR
+    controlMethodN: (* UNSIGNED *) SHORTINT;
 
 (*
 static void game_title (void)             // PROCEDURE ShowTitle;
@@ -84,6 +90,50 @@ BEGIN
   key := Ctrl.ReadKey(); Sound.KeyPressed; RETURN key
 END ReadKeyBeep;
 
+PROCEDURE Center (y: (*UNSIGNED*) SHORTINT; IN str: ARRAY OF CHAR);
+(*
+void center (unsigned line, char * s)
+{{
+ int i = 0, j = strlen (s), k;
+
+ locate (line, 0);
+ k = 16 - (j >> 1);
+ while (i ++ < k)
+  emt16 (' ');
+ print_asciz (s);
+ k += j;
+ while (++ k < 32)
+  emt16 (' ');
+}}
+*)
+VAR
+  i, x, len: (*UNSIGNED*) SHORTINT;
+BEGIN
+  len := SHORT( Strings.Length(str) );
+  x := 16 - (len DIV 2);
+  IO.At(0, y);
+  FOR i := x TO 1 BY -1 DO IO.WriteCh(" ") END;
+  IO.WriteStr(str);
+  (* INC(x, len);
+  WHILE x < 31 DO IO.WriteCh(" "); INC(x) END; *)
+  (* IF (x = 31) & (y # 15) THEN IO.WriteCh(" ") END; *)
+END Center;
+
+PROCEDURE SetJoystickCtrl;
+BEGIN
+  IF Cfg.TargetZX THEN
+    IO.At(Msg.MenuX, Msg.MenuY+1);
+    controlMethodN := (controlMethodN + 1) MOD 4;
+    CASE controlMethodN OF
+    | 0: IO.WriteStr(Msg.MenuKeyboard);
+    | 1: IO.WriteStr(Msg.MenuKempston);
+    | 2: IO.WriteStr(Msg.MenuSinclair);
+    ELSE IO.WriteStr(Msg.MenuCursor);
+    END;
+    Ctrl.Select(controlMethodN);
+  END;
+END SetJoystickCtrl;
+
 (*
 static unsigned menu_select (void)
 {{
@@ -124,9 +174,15 @@ PROCEDURE MenuSelect (): (* UNSIGNED *) SHORTINT;
 VAR
   item: (* UNSIGNED *) SHORTINT; key: Ctrl.Key; keys: Ctrl.Keys;
 BEGIN
-  Scr.Cls; IO.Ink(IO.LWhite);
+  Scr.Cls;
+  IO.Ink(IO.Cyan); Center(15, Msg.VEDAsoft);
+  IO.Ink(IO.LWhite);
   IO.At(Msg.MenuX, Msg.MenuY  ); IO.WriteStr(Msg.MenuPlay);
-  IO.At(Msg.MenuX, Msg.MenuY+1); IO.WriteStr(Msg.MenuKeyb);
+  IF Cfg.TargetZX THEN
+    DEC(controlMethodN); SetJoystickCtrl;
+  ELSE
+    IO.At(Msg.MenuX, Msg.MenuY+2); IO.WriteStr(Msg.MenuKeyboard);
+  END;
   IO.At(Msg.MenuX, Msg.MenuY+2); IO.WriteStr(Msg.MenuHelp);
   IO.At(Msg.MenuX, Msg.MenuY+3); IO.WriteStr(Msg.MenuExit);
   item := 0;
@@ -147,39 +203,12 @@ BEGIN
       END;
     END;
     IF (keys = {Ctrl.Fire}) OR (key = " ") OR (key = 0DX) THEN
-      RETURN item
+      IF (~ Cfg.TargetZX) OR (item # 1) THEN RETURN item END;
+      IF Cfg.TargetZX THEN SetJoystickCtrl END;
     END;
+    IF keys = {Ctrl.Esc} THEN RETURN Abort END;
   END
 END MenuSelect;
-
-PROCEDURE Center (y: (*UNSIGNED*) SHORTINT; IN str: ARRAY OF CHAR);
-(*
-void center (unsigned line, char * s)
-{{
- int i = 0, j = strlen (s), k;
-
- locate (line, 0);
- k = 16 - (j >> 1);
- while (i ++ < k)
-  emt16 (' ');
- print_asciz (s);
- k += j;
- while (++ k < 32)
-  emt16 (' ');
-}}
-*)
-VAR
-  i, x, len: (*UNSIGNED*) SHORTINT;
-BEGIN
-  len := SHORT( Strings.Length(str) );
-  x := 16 - (len DIV 2);
-  IO.At(0, y);
-  FOR i := x TO 1 BY -1 DO IO.WriteCh(" ") END;
-  IO.WriteStr(str);
-  INC(x, len);
-  WHILE x < 31 DO IO.WriteCh(" "); INC(x) END;
-  (* IF (x = 31) & (y # 15) THEN IO.WriteCh(" ") END; *)
-END Center;
 
 PROCEDURE PressAnyKey;
 (*
@@ -193,7 +222,7 @@ BEGIN
   Center(15, Msg.PressAnyKey); IF ReadKeyBeep() = 0X THEN END;
 END PressAnyKey;
 
-PROCEDURE Instruction (IN text: ARRAY OF CHAR);
+PROCEDURE Instruction (IN text: ARRAY OF CHAR): BOOLEAN;
 (*
 static void instruction (void)
 {{
@@ -226,37 +255,42 @@ BEGIN
     CASE ch OF
     | "#": Scr.Cls; IO.At(1, 0);
     | "^": IO.WriteLn; IO.WriteCh(" ");
-    | "@": IO.WriteLn; PressAnyKey; IO.At(1, 15);
+    | "@": IO.WriteLn; PressAnyKey;
+           IF Ctrl.Get() = {Ctrl.Esc} THEN RETURN FALSE END;
+           IO.At(1, 15);
     ELSE IO.WriteCh(ch);
     END;
     INC(i); ch := text[i];
   END;
+  RETURN TRUE
 END Instruction;
 
 PROCEDURE PlayGame;
 BEGIN
-  LOOP
-    CASE MenuSelect() OF
-    | 0: (*PLAY*) ;
-    | 1: (*KEYB*) ;
-    | 2: (*HELP*)
-      Instruction(Msg.Instruction1);
-      Instruction(Msg.Instruction2);
-      Instruction(Msg.Instruction3);
-      Instruction(Msg.Instruction4);
-      Instruction(Msg.Instruction5);
-      Instruction(Msg.Instruction6);
-      Instruction(Msg.Instruction7);
-    ELSE (*EXIT*)
-      Scr.Cls; Center(7, Msg.IfSureY);
-      CASE ReadKeyBeep() OF "Y", "y": RETURN ELSE END;
+  ShowTitle;
+  IF Ctrl.Get() # {Ctrl.Esc} THEN
+    LOOP
+      CASE MenuSelect() OF
+      | 0: Labirint.Play(0);LOOP END;
+      | 2: (*HELP*)
+        IF ~ Instruction(Msg.Instruction1) THEN RETURN END;
+        IF ~ Instruction(Msg.Instruction2) THEN RETURN END;
+        IF ~ Instruction(Msg.Instruction3) THEN RETURN END;
+        IF ~ Instruction(Msg.Instruction4) THEN RETURN END;
+        IF ~ Instruction(Msg.Instruction5) THEN RETURN END;
+        IF ~ Instruction(Msg.Instruction6) THEN RETURN END;
+        IF ~ Instruction(Msg.Instruction7) THEN RETURN END;
+      | Abort: RETURN
+      ELSE (*EXIT*)
+        Scr.Cls; Center(7, Msg.IfSureY);
+        CASE ReadKeyBeep() OF "Y", "y": RETURN ELSE END;
+      END;
     END;
   END;
 END PlayGame;
 
 BEGIN
-  ShowTitle;
+  IF Cfg.TargetZX THEN controlMethodN := 0 END;
   PlayGame;
-  Ctrl.Close;
-  Scr.Close
+  Ctrl.Close; Scr.Close
 END Dash.
