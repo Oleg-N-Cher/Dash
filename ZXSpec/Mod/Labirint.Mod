@@ -216,13 +216,13 @@ BEGIN
  unsigned ctr = y << 2, lim = ctr + 16;
 
  for (;ctr < lim; ctr ++)
-  snd (((ctr >> 3) | (ctr << 5)) & 0xFF, 8);	(*Terrible Sound Of Death*)
+  snd (((ctr >> 3) | (ctr << 5)) & 0xFF, 8); (*Terrible Sound Of Death*)
 *)
 (*
   ctr := y * 4; lim := ctr + 16;
   WHILE ctr < lim DO
     Sound.Beep(24858 DIV (((ctr DIV 8) + (ctr * 32)) MOD 256) * 8, 3); (*Terrible Sound Of Death*)
-    (*Sound.Beep(((ctr >> 3) | (ctr << 5)) & 0xFF, 8);	(*Terrible Sound Of Death*)*)
+    (*Sound.Beep(((ctr >> 3) | (ctr << 5)) & 0xFF, 8); (*Terrible Sound Of Death*)*)
     INC(ctr)
   END
 *)
@@ -257,7 +257,7 @@ BEGIN
   END;
   CASE (*GetCell(objX, objY + 2)*)Field[objIdx + FieldWidth] OF
     Wall, Grass, Stone, Almas, ActiveStone1, ActiveAlmas1, ActiveStone2, ActiveAlmas2 :
-      RETURN FALSE	(*Нельзя - упали на траву, стену, камень или алмаз*)
+      RETURN FALSE (*Нельзя - упали на траву, стену, камень или алмаз*)
   ELSE END;
   RETURN TRUE (*Можно - впереди пусто или убиваемый объект*)
 END CanFlyThru;
@@ -387,7 +387,7 @@ BEGIN
       Wall, ActiveStone1, ActiveAlmas1 :
         RETURN FALSE (*Пройти нельзя*)
     | Stone, ActiveStone2 :
-        (*unsigned tx, ty, z;*)	(*Попробуем протолкнуть камни*)
+        (*unsigned tx, ty, z;*) (*Попробуем протолкнуть камни*)
         tX := x; tY := y;
         LOOP
           IF (tX >= 0) & (tX < FieldWidth * 2) & (tY >= 0) & (tY < FieldHeight * 2) THEN
@@ -535,7 +535,7 @@ BEGIN
     INC(tX, Monsters[i].dirX); INC(tY, Monsters[i].dirY);
     SetCell(tX, tY, None); Gr.DrawTile(tX, tY, Rsrc.None)
   END;
- 	(*Удаление из промежуточной позиции*)
+  (*Удаление из промежуточной позиции*)
   DEC(monstrsNum); (*уменьшение числа объектов*)
   WHILE i < (*=*) monstrsNum DO
     Monsters[i].coordX := Monsters[i+1].coordX;
@@ -568,13 +568,13 @@ BEGIN
   (*signed delta, vh;*)
   (*union direction * p = cross, * solution;*)
   sprite := GetMonsterSprite(GetCell(x, y));
-	(*Просмотр по 4 сторонам света c севера против часовой стрелки*)
-	delta := -1;
-	REPEAT (* delta := [-1, 1] *)
-  (*for (delta = -1; delta <= 1; delta += 2)	( *Проследить, куда может*)
+  (*Просмотр по 4 сторонам света c севера против часовой стрелки*)
+  delta := -1;
+  REPEAT (* delta := [-1, 1] *)
+  (*for (delta = -1; delta <= 1; delta += 2) ( *Проследить, куда может*)
     vh := 0;
     REPEAT
-    (*for (vh = 0; vh <= 1; vh ++) {	( *двинуться объект с этого места*)
+    (*for (vh = 0; vh <= 1; vh ++) { ( *двинуться объект с этого места*)
       tX := x; tY := y;
       IF vh # 0 THEN
         INC(tX, delta + delta); (* tx += delta << 1; *)
@@ -605,7 +605,7 @@ BEGIN
       (*union direction * i, neg;*)
       negDirX := -monstr.dirX; negDirY := -monstr.dirY;
       i := 0;
-      LOOP (*for (i = cross; i < p; i ++)		( *Поискать худший*)
+      LOOP (*for (i = cross; i < p; i ++)  ( *Поискать худший*)
         IF (DirX[i] = negDirX) & (DirY[i] = negDirY) THEN (*(обратное движение)*)
           DEC(movesNum); (*Уменьшить количество вариантов*)
           WHILE i < movesNum DO
@@ -627,7 +627,7 @@ BEGIN
         i := 0;
         REPEAT (* for (i = cross; i < p; i ++) *)
           mark := ABS(DirX[i] + ddX) + ABS(DirY[i] + ddY);
-          IF mark > max	THEN (*!*)
+          IF mark > max THEN (*!*)
             max := mark;
             solutionDirX := DirX[i];
             solutionDirY := DirY[i]
@@ -681,7 +681,7 @@ BEGIN
         END;
         IF ~manPresent THEN EXIT END
       END; (*ход из целой позиции*)
-(*#endif	/*MAN_*/*)
+(*#endif /*MAN_*/*)
 
 (*#ifdef STONES*)
 
@@ -703,23 +703,23 @@ BEGIN
            IF CanStartFall() THEN
              Activate (*Начать падение*)
            ELSE
-	           side := -side;
+             side := -side;
              IF CanRollFrom(side) THEN (*Попытаться скатиться*)
-	             RollFrom(side)
-	           ELSIF CanRollFrom(-side) THEN (*В другую сторону*)
-	             RollFrom(-side)
+               RollFrom(side)
+             ELSIF CanRollFrom(-side) THEN (*В другую сторону*)
+               RollFrom(-side)
              END
            END
            (*continue;*) (*Иначе остаться лежать*)
        | ActiveAlmas2, ActiveStone2 :
-	         (*Камень или алмаз, пролетающий через клетку*)
+           (*Камень или алмаз, пролетающий через клетку*)
            IF CanFlyThru() THEN
              NextFall (*либо летит дальше*)
-	           (*continue;*)
+             (*continue;*)
            ELSE
              Deactivate (*либо падает на опору*)
            END
-	         (*Далее он сразу обрабатывается как неактивный*)
+           (*Далее он сразу обрабатывается как неактивный*)
        | ActiveStone1 : (* Stone, пролетающий между клетками*)
            Gr.DrawTile(objX, objY - 2, Rsrc.None);
            Gr.DrawTile(objX, objY, Rsrc.Stone);
@@ -747,7 +747,7 @@ BEGIN
      ManContinuesGoing;
      EXIT
    END;
-(*#endif	/*STONES*/*)
+(*#endif  /*STONES*/*)
 (*---------------Д-В-И-Ж-Е-Н-И-Е---Б-А-Б-О-Ч-Е-К---И---М-И-Н---------------*)
       (*monstr*)number := 0;
       WHILE (*monstr*)number < monstrsNum DO (* for (ctr = 0; ctr < num_objects;) { *)
@@ -769,9 +769,9 @@ BEGIN
       END;
       manPresent := CheckMan();
       IF ~manPresent THEN SceneOfDeath(manX, manY) END;
-(*#endif	/*OBJECTS*/*)
+(*#endif  /*OBJECTS*/*)
 
-		  Timer.Until;  (* (2); - 1/9 second per phase*) (*End of phase*)
+      Timer.Until;  (* (2); - 1/9 second per phase*) (*End of phase*)
 
       (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)
       IF ~manPresent (*OR Grax.terminate*) THEN EXIT END (* *)

@@ -77,7 +77,7 @@ scan key_i_beep (void)                    // PROCEDURE ReadKeyBeep (): Ctrl.Key;
 {{                                        // BEGIN
  scan k;                                  // VAR key: Ctrl.Key;
                                           //
- while ((k = pressed (ANY_KEY)) == 0)	;  // key := Ctrl.ReadKey();
+ while ((k = pressed (ANY_KEY)) == 0) ;   // key := Ctrl.ReadKey();
  press_off (k);                           //   (* in Control.ReadKey() *)
  snd (64, 64);                            // Sound.Beep(64, 64);
  return k;                                // RETURN key

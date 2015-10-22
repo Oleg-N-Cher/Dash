@@ -5,22 +5,21 @@ CONST
   TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
   MaxLevelNumber*=  75;
   LevelSize*     =  96; (* bytes *)
-	ResSectionName = "1";
 
 TYPE
-	BYTE = SHORTINT;
-	ADDRESS = INTEGER;
-	Ident* = ADDRESS;
-	Resource* = ADDRESS;
-	Tile = BYTE;
-	
+  BYTE = SHORTINT;
+  ADDRESS = INTEGER;
+  Ident* = ADDRESS;
+  Resource* = ADDRESS;
+  Tile = BYTE;
+
 VAR
   (* Set of game tiles: *)
   None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
   DownMan-, DownMan1-, Mina1-, Babo1-, LastSprite-: ADDRESS;
 
-	Title-, Sprites-, Levels-, Font-: ADDRESS;
+  Title-, Sprites-, Levels-, Font-: ADDRESS;
 
 (*============================================================================*)
 (*                            Work with resources                             *)
