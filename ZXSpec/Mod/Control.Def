@@ -15,8 +15,10 @@ TYPE
   Keys* = SET;
 
 PROCEDURE Get* (): Keys; END Get;
+PROCEDURE GetCustom* (): Keys; END GetCustom;
 PROCEDURE ReadKey* (): Key; BEGIN RETURN 0X END ReadKey;(* With auto-repeat *)
 PROCEDURE PressedAnyKey* (): BOOLEAN; BEGIN RETURN TRUE END PressedAnyKey;
+PROCEDURE Select* (methodN: (* {0..3} *) SHORTINT); END Select;
 PROCEDURE Close* ; END Close;
 
 END Control.

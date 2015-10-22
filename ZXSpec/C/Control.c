@@ -2,8 +2,10 @@
 
 void Control_ChangePalette (void);
 unsigned char Control_Get (void);
+unsigned char Control_GetCustom (void);
 unsigned char Control_PressedAnyKey (void);
 unsigned char Control_ReadKey (void);
+void Control_Select (unsigned char n);
 /*================================== Header ==================================*/
 
 void Control_ChangePalette (void) {
@@ -107,7 +109,10 @@ KEY1C$: INC   HL
 .globl __KEMPSTON
 __KEMPSTON:
         .DB   0xC9  ; RET or IN
+#ifdef __detect_kempston__
         .DB   0x1F
+#endif //__detect_kempston__
+CustKempston$:
         AND   #0x1F
         OR    L
         LD    L,A
@@ -115,24 +120,78 @@ __KEMPSTON:
 KEY1F$: ;Ст.байт порта,бит кнопки,бит результата
         .DB   0xDF,0x01,0x01 ;P
         .DB   0xEF,0x08,0x01 ;7
-        .DB   0xF7,0x02,0x01 ;2
+;       .DB   0xF7,0x02,0x01 ;2
         .DB   0xDF,0x02,0x02 ;O
         .DB   0xEF,0x10,0x02 ;6
-        .DB   0xF7,0x01,0x02 ;1
+;       .DB   0xF7,0x01,0x02 ;1
         .DB   0xFD,0x01,0x04 ;A
         .DB   0xEF,0x04,0x04 ;8
-        .DB   0xF7,0x04,0x04 ;3
+;       .DB   0xF7,0x04,0x04 ;3
         .DB   0xFB,0x01,0x08 ;Q
         .DB   0xEF,0x02,0x08 ;9
-        .DB   0xF7,0x08,0x08 ;4
+;       .DB   0xF7,0x08,0x08 ;4
         .DB   0x7F,0x04,0x10 ;M
         .DB   0xEF,0x01,0x10 ;0
-        .DB   0xF7,0x10,0x10 ;5
+;       .DB   0xF7,0x10,0x10 ;5
         .DB   0xFB,0x04,0x20 ;E
         .DB   0
 __endasm;
-} //Control_Get()
+} //Control_Get
 
+unsigned char Control_GetCustom (void) __naked {
+__asm
+Custom$:   JR    KEYBOARD$
+KEYBOARD$: LD    HL,#KeyboardKeys$
+           JR    KEY1A$+3
+KEMPSTON$: XOR   A
+           IN    A,(#0x1F)
+           JR    CustKempston$
+SINCLAIR$: LD    HL,#SinclairKeys$
+           JR    KEY1A$+3
+CURSOR$:   LD    HL,#CursorKeys$
+           JR    KEY1A$+3
+KeyboardKeys$:
+        .DB   0xDF,0x01,0x01 ;P
+        .DB   0xDF,0x02,0x02 ;O
+        .DB   0xFD,0x01,0x04 ;A
+        .DB   0xFB,0x01,0x08 ;Q
+        .DB   0x7F,0x04,0x10 ;M
+        .DB   0xFB,0x04,0x20 ;E
+        .DB   0
+SinclairKeys$:
+        .DB   0xEF,0x08,0x01 ;7
+        .DB   0xEF,0x10,0x02 ;6
+        .DB   0xEF,0x04,0x04 ;8
+        .DB   0xEF,0x02,0x08 ;9
+        .DB   0xEF,0x01,0x10 ;0
+        .DB   0xFB,0x04,0x20 ;E
+        .DB   0
+CursorKeys$:
+        .DB   0xEF,0x04,0x01 ;8
+        .DB   0xF7,0x10,0x02 ;5
+        .DB   0xEF,0x10,0x04 ;6
+        .DB   0xEF,0x08,0x08 ;7
+        .DB   0xEF,0x01,0x10 ;0
+        .DB   0xFB,0x04,0x20 ;E
+        .DB   0
+__endasm;
+} //Control_GetCustom
+
+void Control_Select (unsigned char n) __naked {
+__asm
+        POP   HL
+        POP   DE
+        PUSH  DE
+        LD    A,E
+        ADD   A
+        ADD   A
+        ADD   E
+        LD    (Custom$+1),A
+        JP    (HL)
+__endasm;
+} //Control_Select
+
+#ifdef __detect_kempston__
 void Control__init (void) {
 __asm
 ; AUTOconfig
@@ -147,3 +206,4 @@ A_config01$:
       LD     (HL),#0xDB   ;IN
 __endasm;
 } //Control__init
+#endif //__detect_kempston__
