@@ -48,14 +48,14 @@ TYPE
   Cell    = (* UNSIGNED *) SHORTINT; (* An object of labirinth   *)
   Level   = SHORTINT;   (* A number of level (room) *)
   Index   = INTEGER;
-  MONSTER = RECORD
+  Monster = RECORD
     coordX, coordY, dirX, dirY: Coords;
     idx: Index
   END;
 
 VAR
-  Field: ARRAY FieldSize OF Cell;
-  Monsters: ARRAY MaxMonsters OF MONSTER;
+  field: ARRAY FieldSize OF Cell;
+  Monsters: ARRAY MaxMonsters OF Monster;
   monstrsNum: INTEGER;
   objX, objY: Coords; objIdx: Index; objCell: Cell;
   manX, manY, manDirX, manDirY: Coords; manIdx: Index;
@@ -66,19 +66,19 @@ VAR
 (* Base procedures for manipulating cell array, unpack levels and display labirinth *)
 (* -------------------------------------------------------------------------------- *)
 PROCEDURE GetIndex (x, y: Coords): Index; (*?*)
-(* Converts coords x, y to Field index *)
+(* Converts coords x, y to field index *)
 BEGIN
   RETURN ((y DIV 2) * FieldWidth) + x DIV 2
 END GetIndex;
 
 PROCEDURE SetCell (x, y: Coords; cell: Cell); (*?*)
 BEGIN
-  Field [((y DIV 2) * FieldWidth) + x DIV 2] := cell
+  field [((y DIV 2) * FieldWidth) + x DIV 2] := cell
 END SetCell;
 
 PROCEDURE GetCell (x, y: Coords): Cell; (*?*)
 BEGIN
-  RETURN Field [((y DIV 2) * FieldWidth) + x DIV 2]
+  RETURN field [((y DIV 2) * FieldWidth) + x DIV 2]
 END GetCell;
 
 PROCEDURE Unpack (room: Level);
@@ -96,7 +96,7 @@ BEGIN
       DEC(bitsCount); (* INC(cell, SHORT(SHORT(ASH(val MOD 2, n)))) *)
       cell := cell DIV 2 + 4*(val MOD 2); val := val DIV 2;
     END;
-    Field[idx] := cell; INC(idx);
+    field[idx] := cell; INC(idx);
   UNTIL idx = FieldSize;
   Rsrc.Close(level);
 END Unpack;
@@ -171,7 +171,7 @@ BEGIN
     DEC(y, 2); x := FieldWidth * 2;
     REPEAT
       DEC(x, 2); DEC(idx);
-      CASE Field[idx] OF
+      CASE field[idx] OF
         Mina, Babo :
           Monsters[monstrsNum].coordX := x;
           Monsters[monstrsNum].coordY := y;
@@ -234,11 +234,11 @@ BEGIN
   IF objCell = ActiveStone2 THEN
     Gr.DrawTile(objX, objY, Rsrc.Stone);
     (*SetCell(objX, objY, Stone)*)
-    Field[objIdx] := Stone
+    field[objIdx] := Stone
   ELSE
     Gr.DrawTile(objX, objY, Rsrc.Almas);
     (*SetCell(objX, objY, Almas)*)
-    Field[objIdx] := Almas
+    field[objIdx] := Almas
   END;
 (*
   Sound.Beep(24858 DIV (objY + 100) * 4, 10) (*, snd (200 + (y << 1), 10),*)
@@ -252,7 +252,7 @@ BEGIN
   IF objY = (FieldHeight-1) * 2 THEN
     RETURN FALSE (*Нельзя - упали на границу лабиринта*)
   END;
-  CASE (*GetCell(objX, objY + 2)*)Field[objIdx + FieldWidth] OF
+  CASE (*GetCell(objX, objY + 2)*)field[objIdx + FieldWidth] OF
     Wall, Grass, Stone, Almas, ActiveStone1, ActiveAlmas1, ActiveStone2, ActiveAlmas2 :
       RETURN FALSE (*Нельзя - упали на траву, стену, камень или алмаз*)
   ELSE END;
@@ -263,21 +263,21 @@ PROCEDURE NextFall;
 (*Для летящих в клетке камней - переход в положение между двумя клетками*)
 (* WARNING: This procedure may change global vars objX, objIdx *)
 BEGIN
-  CASE (*GetCell(objX, objY + 2)*)Field[objIdx + FieldWidth] OF
+  CASE (*GetCell(objX, objY + 2)*)field[objIdx + FieldWidth] OF
     None :
       Gr.DrawTile(objX, objY, Rsrc.None);
       IF objCell = ActiveStone2 THEN
         Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
         (*SetCell(objX, objY, ActiveStone1);*)
-        Field[objIdx] := ActiveStone1;
+        field[objIdx] := ActiveStone1;
         (*SetCell(objX, objY + 2, ActiveStone1)*)
-        Field[objIdx + FieldWidth] := ActiveStone1
+        field[objIdx + FieldWidth] := ActiveStone1
       ELSE
         Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
         (*SetCell(objX, objY, ActiveAlmas1);*)
-        Field[objIdx] := ActiveAlmas1;
+        field[objIdx] := ActiveAlmas1;
         (*SetCell(objX, objY + 2, ActiveAlmas1)*)
-        Field[objIdx + FieldWidth] := ActiveAlmas1
+        field[objIdx + FieldWidth] := ActiveAlmas1
       END
   | Babo, Mina, Babo1, Mina1,
     StopMan,
@@ -292,7 +292,7 @@ PROCEDURE CanStartFall (): BOOLEAN;
 (*Разрешение падения прямо вниз из неподвижного положения*)
 BEGIN
   IF objY < (FieldHeight-1) * 2 THEN
-    IF (*GetCell(objX, objY + 2)*)Field[objIdx + FieldWidth] = None THEN
+    IF (*GetCell(objX, objY + 2)*)field[objIdx + FieldWidth] = None THEN
       RETURN TRUE
     END
   END;
@@ -319,10 +319,10 @@ PROCEDURE RollFrom (side: Coords);
 (* WARNING: This procedure may change global vars objX, objIdx *)
 BEGIN
   (*SetCell(objX, objY, None);*)
-  Field[objIdx] := None;
+  field[objIdx] := None;
   Gr.DrawTile(objX, objY, Rsrc.None);
   (*SetCell(objX + side, objY, objCell);*)
-  Field[objIdx + side DIV 2] := objCell;
+  field[objIdx + side DIV 2] := objCell;
   Gr.DrawTile(objX + side, objY, Rsrc.GetTileByNum( objCell ));
 (*Специфично для скатывания вправо - чтобы этот камень или алмаз мог только
 скатиться и не был повторно обработан в следующей клетке - мы его новую
@@ -337,15 +337,15 @@ BEGIN
   IF objCell = Stone THEN (*Занимает 2 клетки*)
     Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
     (*SetCell(objX, objY, ActiveStone1);*)
-    Field[objIdx] := ActiveStone1;
+    field[objIdx] := ActiveStone1;
     (*SetCell(objX, objY + 2, ActiveStone1)*)
-    Field[objIdx + FieldWidth] := ActiveStone1
+    field[objIdx + FieldWidth] := ActiveStone1
   ELSE
     Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
     (*SetCell(objX, objY, ActiveAlmas1);*)
-    Field[objIdx] := ActiveAlmas1;
+    field[objIdx] := ActiveAlmas1;
     (*SetCell(objX, objY + 2, ActiveAlmas1)*)
-    Field[objIdx + FieldWidth] := ActiveAlmas1
+    field[objIdx + FieldWidth] := ActiveAlmas1
   END
 END Activate;
 
@@ -503,7 +503,7 @@ BEGIN
   RETURN None
 END GetMonsterSprite;
 
-PROCEDURE MonsterContinuesGoing (VAR monstr: MONSTER);
+PROCEDURE MonsterContinuesGoing (VAR monstr: Monster);
 (*Продолжение движения бабочки или мины - аналогично как для камней или
 человечка. Из промежуточного положения - в целую клетку*)
 VAR
@@ -544,7 +544,7 @@ BEGIN
   END
 END ExcludeMonster;
 
-PROCEDURE TryMoveMonster (VAR monstr: MONSTER);
+PROCEDURE TryMoveMonster (VAR monstr: Monster);
   (*Попытка сдвига объекта из клетки*)
 VAR
   solutionDirX, solutionDirY, negDirX, negDirY,
@@ -655,19 +655,19 @@ BEGIN
   (*lives := 10; score := 0;*)
   Scr.Cls;
   (*REPEAT*) (*---В---П-О-С-Л-Е-Д-О-В-А-Т-Е-Л-Ь-Н-Ы-Х---Л-А-Б-И-Р-И-Н-Т-А-Х---*)
-    Unpack(room); Display; RETURN ; LookForObjects;
+    Unpack(room); Display; LookForObjects;
     (*Grax.SetCursorPos(0,0); WriteInt (monstrsNum);*)
     IF (~manPresent) OR (monstrsNum = 0) THEN RETURN (*0*) END;
       (* Если не с кем играть с самого начала - это нечестно *)
     side := SideRight;
     LOOP (*---В---О-Д-Н-О-М---Л-А-Б-И-Р-И-Н-Т-Е---*)
-      Timer.Start(2);
+      (* Timer.Start(2); *)
 (*#ifdef MAN_*)
       (*---Д-Е-Й-С-Т-В-И-Я---Ч-Е-Л-О-В-Е-Ч-К-А---*)
       IF ODD(manX) OR ODD(manY) THEN (*Если нечетные координаты*)
         ManContinuesGoing (*Продолжать начатый ход*)
       ELSE (*Управлять человечком*)
-        keys := Ctrl.Get(); (*Проверить и зафиксировать управление*)
+        keys := Ctrl.GetCustom(); (*Проверить и зафиксировать управление*)
         IF keys = {UserUp} THEN manDirX := 0; manDirY :=-1; TryMoveMan
         ELSIF keys = {UserDown} THEN manDirX := 0; manDirY := 1; TryMoveMan
         ELSIF keys = {UserLeft} THEN manDirX :=-1; manDirY := 0; TryMoveMan
@@ -690,7 +690,7 @@ BEGIN
      DEC(objY, 2);
      objX := 0;
      WHILE objX < FieldWidth * 2 DO (*Просмотр строки слева направо*)
-       objCell := Field[objIdx];
+       objCell := field[objIdx];
        CASE objCell OF (*Отдельно - подсчет алмазов*)
          Almas, ActiveAlmas1, ActiveAlmas2 :
            INC((*almas*)number)
@@ -721,16 +721,16 @@ BEGIN
            Gr.DrawTile(objX, objY - 2, Rsrc.None);
            Gr.DrawTile(objX, objY, Rsrc.Stone);
            (*SetCell(objX, objY, ActiveStone2);*)
-           Field[objIdx] := ActiveStone2;
+           field[objIdx] := ActiveStone2;
            (*SetCell(objX, objY - 2, None)*)
-           Field[objIdx - FieldWidth] := None
+           field[objIdx - FieldWidth] := None
        | ActiveAlmas1 : (* Almas, пролетающий между клетками*)
            Gr.DrawTile(objX, objY - 2, Rsrc.None);
            Gr.DrawTile(objX, objY, Rsrc.Almas);
            (*SetCell(objX, objY, ActiveAlmas2)*)
-           Field[objIdx] := ActiveAlmas2;
+           field[objIdx] := ActiveAlmas2;
            (*SetCell(objX, objY - 2, None);*)
-           Field[objIdx - FieldWidth] := None
+           field[objIdx - FieldWidth] := None
            (*continue;*) (*Он пролетел в следующую клетку*)
        ELSE END;
        INC(objX, 2); INC(objIdx)
@@ -740,7 +740,7 @@ BEGIN
    manPresent := CheckMan();
    IF (~manPresent) THEN EXIT END; (*Check for game end*)
    IF ((*almas*)number = 0) THEN
-     Timer.Until;
+     (* Timer.Until; *)
      ManContinuesGoing;
      EXIT
    END;
@@ -768,7 +768,7 @@ BEGIN
       IF ~manPresent THEN SceneOfDeath(manX, manY) END;
 (*#endif  /*OBJECTS*/*)
 
-      Timer.Until;  (* (2); - 1/9 second per phase*) (*End of phase*)
+      (* Timer.Until; *) (* (2); - 1/9 second per phase*) (*End of phase*)
 
       (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)
       IF ~manPresent (*OR Grax.terminate*) THEN EXIT END (* *)

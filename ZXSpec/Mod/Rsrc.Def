@@ -7,11 +7,10 @@ CONST
   LevelSize*     =  96; (* bytes *)
 
 TYPE
-  BYTE = SHORTINT;
-  ADDRESS = INTEGER;
+  ADDRESS = (* UNSIGNED *) INTEGER;
   Ident* = ADDRESS;
   Resource* = ADDRESS;
-  Tile = BYTE;
+  Tile* = Resource;
 
 VAR
   (* Set of game tiles: *)
@@ -25,11 +24,10 @@ VAR
 (*                            Work with resources                             *)
 (*============================================================================*)
 
-PROCEDURE Open* (name: Ident): Resource; BEGIN RETURN 0 END Open;
-PROCEDURE OpenAt* (name: Ident; pos: INTEGER): Resource;
-  BEGIN RETURN 0 END OpenAt;
-PROCEDURE ReadByte* (rsrc: Resource): BYTE; BEGIN RETURN 0 END ReadByte;
-PROCEDURE Close* (rsrc: Resource); END Close;
-PROCEDURE GetTileByNum* (num: BYTE): Tile; BEGIN RETURN 0 END GetTileByNum;
+PROCEDURE Open* (name: Ident): Resource;                     END Open;
+PROCEDURE OpenAt* (pos: INTEGER; name: Ident): Resource;     END OpenAt;
+PROCEDURE ReadByte* (rsrc: Resource): SHORTINT;              END ReadByte;
+PROCEDURE Close* (rsrc: Resource);                           END Close;
+PROCEDURE GetTileByNum* (num: (* {0..17} *) SHORTINT): Tile; END GetTileByNum;
 
 END Rsrc.

@@ -19,10 +19,10 @@ CONST
   Yellow   * = Bright + Olive;
   LWhite   * = Bright + White;
 
-PROCEDURE At* (x, y: (* UNSIGNED *) INTEGER);    END At;
-PROCEDURE Ink* (color: (* UNSIGNED *) SHORTINT); END Ink;
-PROCEDURE WriteCh* (ch: CHAR);                   END WriteCh;
-PROCEDURE WriteLn* ;                             END WriteLn;
-PROCEDURE WriteStr* (IN str: ARRAY OF CHAR);    END WriteStr;
+PROCEDURE At* (x (* {0..31} *), y: (* {0..15} *) SHORTINT); END At;
+PROCEDURE Ink* (color: (* {0..7; 40H..47H} *) SHORTINT);    END Ink;
+PROCEDURE WriteCh* (ch: CHAR);                              END WriteCh;
+PROCEDURE WriteLn* ;                                        END WriteLn;
+PROCEDURE WriteStr* (IN str: ARRAY OF CHAR);               END WriteStr;
 
 END Console.

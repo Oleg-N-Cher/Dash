@@ -8,7 +8,7 @@ TYPE
 PROCEDURE Close*  ;                                    END Close;
 PROCEDURE Cls*    ;                                    END Cls;
 PROCEDURE Redraw* ;                                    END Redraw;
-PROCEDURE ScrollDown* (lines: (* UNSIGNED *) INTEGER); END ScrollDown;
-PROCEDURE ScrollUp* (lines: (* UNSIGNED *) INTEGER);   END ScrollUp;
+PROCEDURE ScrollDown* (lines: (* {1..191} *) INTEGER); END ScrollDown;
+PROCEDURE ScrollUp* (lines: (* {1..191} *) INTEGER);   END ScrollUp;
 
 END GrApp.
