@@ -1,5 +1,10 @@
 <project name="Dash" default="dist" basedir=".">
 
+	<!-- Set global properties for this build -->
+	<property name="jarsizetask/lib" location="Bin\jarsizetask.jar" />
+
+	<taskdef name="jarsize" classname="JarSizeTask" classpath="${jarsizetask/lib}" />
+
 	<!--  Target: dist  -->
 	<target name="dist" description="Generate the distribution">
 		<mkdir dir="${dist}/bin" />
@@ -11,7 +16,7 @@
 				<exclude name="Rsrc/AlmasAlter.png" />
 			</fileset>
 		</jar>
-		<!-- <jarsize file="${dist}/${ant.project.name}.jar" /> -->
+		<jarsize file="${dist}/${ant.project.name}.jar" />
 		<unjar src="${dist}/${ant.project.name}.jar" dest="${dist}/bin">
 			<patternset includes="META-INF/MANIFEST.MF" />
 		</unjar>
