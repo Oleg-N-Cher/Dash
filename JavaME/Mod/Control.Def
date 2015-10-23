@@ -14,11 +14,11 @@ TYPE
   Key* = CHAR;
   Keys* = SET;
 
-PROCEDURE Get* (): Keys; BEGIN RETURN {}                END Get;
-PROCEDURE GetCustom* (): Keys; BEGIN RETURN {}          END GetCustom;
-PROCEDURE ReadKey* (): Key; BEGIN RETURN 0X             END ReadKey;
-PROCEDURE PressedAnyKey* (): BOOLEAN; BEGIN RETURN TRUE END PressedAnyKey;
-PROCEDURE Select* (methodN: (* {0..3} *) SHORTINT);      END Select;
-PROCEDURE Close* ;                                       END Close;
+PROCEDURE Get* (): Keys;                            END Get;
+PROCEDURE GetCustom* (): Keys;                      END GetCustom;
+PROCEDURE ReadKey* (): Key; (* With auto-repeat *)  END ReadKey;
+PROCEDURE PressedAnyKey* (): BOOLEAN;               END PressedAnyKey;
+PROCEDURE Select* (methodN: (* {0..3} *) SHORTINT); END Select;
+PROCEDURE Close* ;                                  END Close;
 
 END Control.

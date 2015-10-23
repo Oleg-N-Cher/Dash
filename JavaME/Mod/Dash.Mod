@@ -1,19 +1,34 @@
 MODULE Dash;
 IMPORT
-  GrApp, Rsrc, Til := GrTiles;
+  Scr := GrApp, Rsrc, Gr := GrTiles, Timer, Sound, Ctrl := Control;
 
+PROCEDURE ShowTitle;
 VAR
   title: Rsrc.Resource;
-  titleSize: INTEGER;
-
+  titleSize: SHORTINT; (* 0..127 is enough here. *)
+  x, y: Gr.Coords;
 BEGIN
   title := Rsrc.Open(Rsrc.Title);
-  titleSize := Rsrc.TitleSize; (* Must be > 0 *)
-  REPEAT
-    Til.DrawTile(Rsrc.ReadByte(title), Rsrc.ReadByte(title),
-      Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
-    DEC(titleSize);
-  UNTIL titleSize = 0;
-  Rsrc.Close(title);
-  GrApp.Redraw;
+  titleSize := Rsrc.TitleSize; (* Must be > 0. *)
+  LOOP
+    Timer.Start(3);
+      IF titleSize # 0 THEN
+        DEC(titleSize);
+        x := Rsrc.ReadByte(title);
+        y := Rsrc.ReadByte(title); (* x, y used for correct order. *)
+        Gr.DrawTile(x, y, Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
+        Scr.Redraw;
+      ELSE
+        Rsrc.Close(title);RETURN
+      END;
+      Sound.TitleNext;
+      IF Ctrl.PressedAnyKey() THEN RETURN END;
+    Timer.Until;
+  END;
+END ShowTitle;
+
+BEGIN
+  ShowTitle;
+  Scr.Redraw;
+  (* Scr.Close *)
 END Dash.

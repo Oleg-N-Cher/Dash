@@ -1,4 +1,5 @@
 MODULE Config;
+
 CONST
   AppTitle* = "Dash";
   MainClass* = "CP.Dash.Dash";
