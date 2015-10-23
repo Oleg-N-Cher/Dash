@@ -6,7 +6,6 @@
 @SET JavaLib=d:\Program Files\Java\jre6\lib
 @SET MidpLib="%JavaLib%\rt.jar";%WtkLib%\cldcapi10.jar;%WtkLib%\midpapi10.jar;%WtkLib%\mmapi.jar;%WtkLib%\jsr75.jar
 
-@IF %1==%Name% GOTO build
 @CALL ..\Bin\compile %1
 
 :build

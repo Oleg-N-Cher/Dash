@@ -1,7 +1,7 @@
 <project name="Dash" default="dist" basedir=".">
 
 	<!-- Set global properties for this build -->
-	<property name="jarsizetask/lib" location="Bin\jarsizetask.jar" />
+	<property name="jarsizetask/lib" location="../Bin/jarsizetask.jar" />
 
 	<taskdef name="jarsize" classname="JarSizeTask" classpath="${jarsizetask/lib}" />
 

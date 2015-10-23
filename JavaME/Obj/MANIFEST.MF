@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-MIDlet-1: Dash, /icon.png, CP.GrScr.GrScr_Midlet
+MIDlet-1: Dash, /icon.png, CP.GrApp.GrApp_Midlet
 MIDlet-Name: Dash
 MIDlet-Vendor: VEDAsoft
 MIDlet-Version: 1.0
