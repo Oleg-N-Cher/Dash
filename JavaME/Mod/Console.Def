@@ -1,0 +1,28 @@
+MODULE Console;
+IMPORT SYSTEM, GrApp, Rsrc;
+
+CONST
+  Black    * = 0;
+  Blue     * = 1;
+  Red      * = 2;
+  Magenta  * = Red + Blue;
+  Green    * = 4;
+  Cyan     * = Green + Blue;
+  Olive    * = Red + Green;
+  White    * = Red + Green + Blue;
+  Bright     = 40H;
+  LBlue    * = Bright + Blue;
+  LRed     * = Bright + Red;
+  LMagenta * = Bright + Magenta;
+  LGreen   * = Bright + Green;
+  LCyan    * = Bright + Cyan;
+  Yellow   * = Bright + Olive;
+  LWhite   * = Bright + White;
+
+PROCEDURE At* (x, y: (* UNSIGNED *) INTEGER);    END At;
+PROCEDURE Ink* (color: (* UNSIGNED *) SHORTINT); END Ink;
+PROCEDURE WriteCh* (ch: CHAR);                   END WriteCh;
+PROCEDURE WriteLn* ;                             END WriteLn;
+PROCEDURE WriteStr* (IN str: ARRAY OF CHAR);    END WriteStr;
+
+END Console.

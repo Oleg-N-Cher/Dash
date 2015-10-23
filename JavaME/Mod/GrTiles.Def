@@ -1,0 +1,10 @@
+MODULE GrTiles;
+IMPORT SYSTEM, GrApp;
+
+TYPE
+  Coords* = SHORTINT;
+  Tile* = INTEGER; (* 0..0FFFFH *)
+
+PROCEDURE DrawTile* (x, y: Coords; tile: Tile); END DrawTile;
+
+END GrTiles.

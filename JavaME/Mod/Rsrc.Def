@@ -1,0 +1,35 @@
+MODULE Rsrc; (* non-portable (z80) *)
+IMPORT SYSTEM;
+
+CONST
+  TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
+  MaxLevelNumber*=  75;
+  LevelSize*     =  96; (* bytes *)
+
+TYPE
+  BYTE = SHORTINT;
+  ADDRESS = INTEGER;
+  Ident* = ADDRESS;
+  Resource* = ADDRESS;
+  Tile = BYTE;
+
+VAR
+  (* Set of game tiles: *)
+  None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
+  LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
+  DownMan-, DownMan1-, Mina1-, Babo1-, LastSprite-: ADDRESS;
+
+  Title-, Sprites-, Levels-, Font-: ADDRESS;
+
+(*============================================================================*)
+(*                            Work with resources                             *)
+(*============================================================================*)
+
+PROCEDURE Open* (name: Ident): Resource; BEGIN RETURN 0 END Open;
+PROCEDURE OpenAt* (name: Ident; pos: INTEGER): Resource;
+  BEGIN RETURN 0 END OpenAt;
+PROCEDURE ReadByte* (rsrc: Resource): BYTE; BEGIN RETURN 0 END ReadByte;
+PROCEDURE Close* (rsrc: Resource); END Close;
+PROCEDURE GetTileByNum* (num: BYTE): Tile; BEGIN RETURN 0 END GetTileByNum;
+
+END Rsrc.
