@@ -1,9 +1,9 @@
 MODULE GrApp;
+
 IMPORT SYSTEM, Timer;
 
 TYPE
-  Coords* = SHORTINT;
-  Color* = INTEGER;
+  Coords* = SHORTINT; Color* = INTEGER;
 
 PROCEDURE Close*  ;                                    END Close;
 PROCEDURE Cls*    ;                                    END Cls;

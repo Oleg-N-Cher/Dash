@@ -7,6 +7,7 @@ MODULE Config;
 =======================================================================*)
 
 CONST
-  TargetZX* = TRUE;
+  TargetZX  * = TRUE;
+  TargetJme * = FALSE;
 
 END Config.

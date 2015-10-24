@@ -139,6 +139,7 @@ __endasm;
 } //Control_Get
 
 unsigned char Control_GetCustom (void) __naked {
+           Control_ChangePalette();
 __asm
 Custom$:   JR    KEYBOARD$
 KEYBOARD$: LD    HL,#KeyboardKeys$

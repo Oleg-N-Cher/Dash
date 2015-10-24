@@ -7,7 +7,7 @@
 #define Config_ScreenTable  0xFC  /* This memory #FC00; #FD00 used for screen table. */
 
 //#define Config_CheckTileCoords
-//#define Config_FastTiles
+#define Config_FastTiles
 #define Config_UseSound
 
 

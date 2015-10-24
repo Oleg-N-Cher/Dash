@@ -1,4 +1,5 @@
 MODULE Strings;
+
 IMPORT SYSTEM;
 
 PROCEDURE Length* (IN str: ARRAY OF CHAR): INTEGER;

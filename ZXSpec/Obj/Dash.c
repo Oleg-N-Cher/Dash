@@ -195,8 +195,6 @@ static void Dash_PlayGame (void)
 			switch (Dash_MenuSelect()) {
 				case 0: 
 					Labirint_Play(0);
-					for (;;) {
-					}
 					break;
 				case 2: 
 					if (!Dash_Instruction((void*)&"#  Bolder (boulder) Dash  is  a^chain of  puzzle-caverns.  The^cavern   consists   of   16x16^cells.  Each cell may be  of 8^cases:^  1.  Empty cell.  The man and^other  moving objects  can  go^thru this cells.", (LONGINT)211)) {

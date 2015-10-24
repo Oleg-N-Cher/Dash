@@ -457,7 +457,7 @@ BEGIN
   IF GetCell(minusX, minusY) = StopMan THEN (*Откат на полшага назад*)
     SetCell(minusX, minusY, None) (*Затирка человечка*)
   END;
-  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) ) + 1); (*Бегущая фаза (следующая)*)
+  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) + 1) ); (*Бегущая фаза (следующая)*)
   SetCell(plusX, plusY, StopMan);
   manX := plusX; manY := plusY (*Следующие координаты*)
 END ManContinuesGoing;

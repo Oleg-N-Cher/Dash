@@ -1,9 +1,9 @@
 MODULE GrTiles;
+
 IMPORT SYSTEM, GrApp, Rsrc;
 
 TYPE
-  Coords* = SHORTINT;
-  Tile* = Rsrc.Tile;
+  Coords* = SHORTINT; Tile* = Rsrc.Tile;
 
 PROCEDURE DrawTile* (x, y: Coords; tile: Tile); END DrawTile;
 
