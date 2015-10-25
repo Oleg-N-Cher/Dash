@@ -12,6 +12,7 @@ TYPE
   Ident* = ADDRESS;
   Resource* = ADDRESS;
   Tile* = Resource;
+  NATINT* = SHORTINT; (* Native integer *)
 
 VAR
   (* Set of game tiles: *)
