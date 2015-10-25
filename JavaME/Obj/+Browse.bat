@@ -1,7 +1,3 @@
-@CALL cprun Browse -html -sort Platform.cps
-@CALL cprun Browse -html -sort GrCfg.cps
-@CALL cprun Browse -html -sort GrScr.cps
-@CALL cprun Browse -html -sort GrTiles.cps
-@CALL cprun Browse -html -sort Rsrc.cps
-@CALL cprun Browse -html -sort Dash
+@FOR %%i IN (*.cps) DO CALL cprun Browse -html -sort %%i
 @PAUSE
+@DEL *.html

@@ -5,16 +5,19 @@ IMPORT
   io := java_io,
   GrApp;
 
+CONST
+  Title*  = "/Rsrc/Title.bin";
+  TitleSize* = 114; (** Number of cells, a cell occupies 3 bytes. Must be > 0 *)
+  Levels* = "/Rsrc/Levels.bin";
+  LevelSize* =  96; (* bytes *)
+  MaxTileNum =  17;
+
 TYPE
+  NATINT* = INTEGER; (* Native integer *)
   Resource* = io.InputStream;
   Ident* = lang.String;
   Tile = lcdui.Image;
 
-CONST
-  Title* = "/Rsrc/Title.bin";
-  TitleSize* = 114; (** Number of cells, a cell occupies 3 bytes. Must be > 0 *)
-  MaxTileNum = 17;
-  
 VAR
   None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
@@ -28,9 +31,20 @@ VAR
 PROCEDURE Open* (IN name: Ident): Resource;
 BEGIN
   RETURN GrApp.Main.getClass().getResourceAsStream(name);
-  RESCUE (exception);
+RESCUE (exception);
   RETURN NIL
 END Open;
+
+PROCEDURE OpenAt* (pos: INTEGER; IN name: Ident): Resource;
+VAR
+  rsrc: Resource;
+BEGIN
+  rsrc := GrApp.Main.getClass().getResourceAsStream(name);
+  IF rsrc.skip(pos) = pos THEN RETURN rsrc END;
+  RETURN NIL
+RESCUE (exception);
+  RETURN NIL
+END OpenAt;
 
 PROCEDURE ReadByte* (rsrc: Resource): BYTE;
 VAR
@@ -38,14 +52,14 @@ VAR
 BEGIN
   IF rsrc.read(abyte, 0, 1) = -1 THEN RETURN 0 END;
   RETURN abyte[0];
-  RESCUE (exception);
+RESCUE (exception);
   RETURN 0
 END ReadByte;
 
 PROCEDURE Close* (rsrc: Resource);
 BEGIN
   rsrc.close;
-  RESCUE (exception);
+RESCUE (exception);
 END Close;
 
 PROCEDURE GetTileByNum* (num: INTEGER): Tile;

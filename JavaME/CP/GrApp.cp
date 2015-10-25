@@ -16,6 +16,7 @@ IMPORT
 
 CONST
   KeyBufSize = 32; NoKey = 0X;
+  Black = 000000H;
 
 TYPE
   Screen* = POINTER TO RECORD (lcdui.Canvas + lang.Runnable)
@@ -29,9 +30,8 @@ TYPE
     threadStarted: BOOLEAN;
   END;
 
-  Color* = INTEGER;
-  Colors* = LONGINT;
-
+  Coords* = SHORTINT;
+  Color*  = INTEGER;
   Key = CHAR;
 
 VAR
@@ -73,7 +73,7 @@ BEGIN
   keyIn := (keyIn+1) MOD KeyBufSize;
   INC(keysAvailable);
 END keyPressed;
-    
+
 (*============================================================================*)
 (*                         CP.GrApp.GrApp_Midlet.class                        *)
 (*============================================================================*)
@@ -102,6 +102,8 @@ BEGIN
     Height := midlet.screen.getHeight();
     midlet.screen.i := lcdui.Image.createImage(Width, Height); (* Теневой экран. *)
     midlet.screen.g := midlet.screen.i.getGraphics();
+    midlet.screen.g.setColor(Black);
+    midlet.screen.g.fillRect(0, 0, Width, Height);
     display.setCurrent(midlet.screen);
     keysAvailable := 0; keyIn := 0; keyOut := 0;
   ELSE (* Экран существует в памяти; просто перерисуем его. *)
@@ -163,8 +165,8 @@ BEGIN
   form := NIL;
   command := NIL;
   canvas := NIL;
-  Main.screen.i := NIL;
   Main.screen.g := NIL;
+  Main.screen.i := NIL;
   Main.screen := NIL;
   Main.thread := NIL;
   Main := NIL;
@@ -178,22 +180,6 @@ BEGIN
 END commandAction;
 (*----------------------------------------------------------------------------*)
 
-PROCEDURE Clear* (color: INTEGER); (* Заливаем весь экран цветом color. *)
-VAR
-  oldcolor: INTEGER;
-BEGIN
-  oldcolor := Main.screen.g.getColor();
-  Main.screen.g.setColor(color);
-  Main.screen.g.fillRect(0, 0, Width, Height);
-  Main.screen.g.setColor(oldcolor);
-END Clear;
-
-PROCEDURE Redraw* ; (** Перерисовать экран из буфера. *)
-BEGIN
-  Main.screen.repaint;
-  Main.screen.serviceRepaints;
-END Redraw;
-
 PROCEDURE ReadKey* (): Key; (** Читать код клавиши из буфера. *)
 VAR
   key: Key;
@@ -204,7 +190,45 @@ BEGIN
   keyOut := (keyOut+1) MOD KeyBufSize;
   RETURN key
 END ReadKey;
-  
+
+PROCEDURE Cls* ;
+VAR
+  oldcolor: INTEGER;
+BEGIN
+  oldcolor := Main.screen.g.getColor();
+  Main.screen.g.setColor(Black);
+  Main.screen.g.fillRect(0, 0, Width, Height);
+  Main.screen.g.setColor(oldcolor);
+END Cls;
+
+PROCEDURE Redraw* ; (** Перерисовать экран из буфера. *)
+BEGIN
+  Main.screen.repaint;
+  Main.screen.serviceRepaints;
+END Redraw;
+
+PROCEDURE ScrollDown* (lines: (* UNSIGNED *) INTEGER);
+VAR
+  newscr: lcdui.Image; g: lcdui.Graphics;
+BEGIN
+  newscr := lcdui.Image.createImage(Width, Height);
+  g := newscr.getGraphics();
+  g.setColor(Black); g.fillRect(0, 0, Width, lines);
+  g.drawImage(Main.screen.i, 0, lines, 20);
+  Main.screen.i := newscr; Main.screen.g := g;
+END ScrollDown;
+
+PROCEDURE ScrollUp* (lines: (* UNSIGNED *) INTEGER);
+VAR
+  newscr: lcdui.Image; g: lcdui.Graphics;
+BEGIN
+  newscr := lcdui.Image.createImage(Width, Height);
+  g := newscr.getGraphics();
+  g.setColor(Black); g.fillRect(0, Height-lines, Width, lines);
+  g.drawImage(Main.screen.i, 0, -lines, 20);
+  Main.screen.i := newscr; Main.screen.g := g;
+END ScrollUp;
+
 PROCEDURE Close* ; (** Закрыть приложение. *)
 BEGIN
   Main.destroyApp(TRUE)

@@ -17,7 +17,7 @@ TYPE
 PROCEDURE Get* (): Keys; BEGIN RETURN {}                END Get;
 PROCEDURE GetCustom* (): Keys; BEGIN RETURN {}          END GetCustom;
 PROCEDURE ReadKey* (): Key; BEGIN RETURN 0X             END ReadKey;
-PROCEDURE PressedAnyKey* (): BOOLEAN; BEGIN RETURN TRUE END PressedAnyKey;
+PROCEDURE PressedAnyKey* (): BOOLEAN; BEGIN RETURN FALSE END PressedAnyKey;
 PROCEDURE Select* (methodN: (* {0..3} *) SHORTINT);      END Select;
 PROCEDURE Close* ;                                       END Close;
 

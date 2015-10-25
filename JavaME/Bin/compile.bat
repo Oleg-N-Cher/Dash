@@ -17,6 +17,8 @@
 
 @IF EXIST CP\Config\Config.class DEL CP\Config\Config.class
 @IF EXIST CP\Config RMDIR CP\Config
+@IF EXIST CP\Msg\Msg.class DEL CP\Msg\Msg.class
+@IF EXIST CP\Msg RMDIR CP\Msg
 
 @GOTO exit
 

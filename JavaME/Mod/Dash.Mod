@@ -1,6 +1,6 @@
 MODULE Dash;
 IMPORT
-  Scr := GrApp, Rsrc, Gr := GrTiles, Timer, Sound, Ctrl := Control;
+  Scr := GrApp, Rsrc, Gr := GrTiles, Timer, Sound, Ctrl := Control, Labirint;
 
 PROCEDURE ShowTitle;
 VAR
@@ -29,6 +29,7 @@ END ShowTitle;
 
 BEGIN
   ShowTitle;
+  Labirint.Play(0);
   Scr.Redraw;
   (* Scr.Close *)
 END Dash.

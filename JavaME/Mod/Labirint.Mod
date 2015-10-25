@@ -1,7 +1,6 @@
 MODULE Labirint; (* portable *)
 IMPORT
-  Scr := GrApp, Gr := GrTiles, Rsrc,
-  Ctrl := Control, Timer, Sound;
+  Scr := GrApp, Gr := GrTiles, Rsrc, Ctrl := Control, Timer, Sound;
 
 CONST
   MaxMonsters  = 128;
@@ -44,13 +43,14 @@ CONST
   SideRight  =  2;
 
 TYPE
-  Coords  = (* UNSIGNED *) SHORTINT; (* Coordinates in labirinth *)
-  Cell    = (* UNSIGNED *) SHORTINT; (* An object of labirinth   *)
-  Level   = SHORTINT;   (* A number of level (room) *)
+  NatInt  = Rsrc.NATINT; (* Native integer *)
+  Coords  = NatInt;      (* Coordinates in labirinth *)
+  Cell    = NatInt;      (* An object of labirinth   *)
+  Level   = SHORTINT;    (* A number of level (room) *)
   Index   = INTEGER;
   Monster = RECORD
     coordX, coordY, dirX, dirY: Coords;
-    idx: Index
+    idx: Index;
   END;
 
 VAR
@@ -84,10 +84,10 @@ END GetCell;
 PROCEDURE Unpack (room: Level);
 VAR
   level: Rsrc.Resource; idx: Index; cell: Cell;
-  bitsCount, n, val: (* UNSIGNED *) SHORTINT;
+  bitsCount, n: (* UNSIGNED *) SHORTINT; val: NatInt;
 BEGIN
   level := Rsrc.OpenAt(room * Rsrc.LevelSize, Rsrc.Levels);
-  idx := 0; bitsCount := 0;
+  idx := 0; val := Rsrc.ReadByte(level); bitsCount := 8;
   REPEAT
     (* Unpacking and normalizing 3 bits from package: *)
     cell := 0;
@@ -101,7 +101,7 @@ BEGIN
   Rsrc.Close(level);
 END Unpack;
 
-PROCEDURE TwoStep (dy: INTEGER);
+PROCEDURE TwoStep (dy: Coords);
 BEGIN
   Timer.Start(1);
   dy := dy * 6;
@@ -131,6 +131,7 @@ BEGIN
       Gr.DrawTile(x, (FieldHeight-1) * 2, Rsrc.GetTileByNum( GetCell(x, y)) );
       INC(x, 2);
     END;
+    Scr.Redraw;
     INC(y, 2);
     Timer.Until;
   END;
@@ -457,7 +458,7 @@ BEGIN
   IF GetCell(minusX, minusY) = StopMan THEN (*Откат на полшага назад*)
     SetCell(minusX, minusY, None) (*Затирка человечка*)
   END;
-  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) ) + 1); (*Бегущая фаза (следующая)*)
+  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) + 1) ); (*Бегущая фаза (следующая)*)
   SetCell(plusX, plusY, StopMan);
   manX := plusX; manY := plusY (*Следующие координаты*)
 END ManContinuesGoing;
@@ -507,8 +508,7 @@ PROCEDURE MonsterContinuesGoing (VAR monstr: Monster);
 (*Продолжение движения бабочки или мины - аналогично как для камней или
 человечка. Из промежуточного положения - в целую клетку*)
 VAR
-  newX, newY, oldX, oldY: Coords;
-  sprite: SHORTINT; (*Grax.SPRITE*)
+  newX, newY, oldX, oldY: Coords; sprite: Cell;
 BEGIN
   newX := monstr.coordX + monstr.dirX; oldX := monstr.coordX - monstr.dirX;
   newY := monstr.coordY + monstr.dirY; oldY := monstr.coordY - monstr.dirY;
@@ -549,7 +549,7 @@ PROCEDURE TryMoveMonster (VAR monstr: Monster);
 VAR
   solutionDirX, solutionDirY, negDirX, negDirY,
   delta, ddX, ddY, max, mark, x, y, tX, tY, vh: Coords;
-  sprite: SHORTINT; (*Grax.SPRITE*)
+  sprite: Cell;
   DirX, DirY: ARRAY 4 OF Coords;
   movesNum, i: INTEGER;
 PROCEDURE Sign (x: Coords): Coords;
@@ -768,6 +768,7 @@ BEGIN
       IF ~manPresent THEN SceneOfDeath(manX, manY) END;
 (*#endif  /*OBJECTS*/*)
 
+      Scr.Redraw;
       (* Timer.Until; *) (* (2); - 1/9 second per phase*) (*End of phase*)
 
       (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)
