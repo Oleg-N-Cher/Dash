@@ -1,17 +1,17 @@
-(* Universal graphic library for Oberon (GPCP) for J2ME.  *)
-(* Copyright (c) 2012, Oleg N. Cher . *)
+(*  Graphic library in Oberon (GPCP) for J2ME  *)
+(*    Copyright (c) 2012-2015, Oleg N. Cher    *)
 (* VEDAsoft Oberon Club - http://zx.oberon2.ru *)
+(*     Thanks to Igor A. Maznitsa (Raydac)     *)
 
 (*============================================================================*)
 (*                            CP.GrApp.GrApp.class                            *)
 (*============================================================================*)
 MODULE GrApp; (** non-portable *)
-(* Thanks to Raydac (Igor A. Maznitsa) for consultations. *)
 
 IMPORT
-  lcdui := javax_microedition_lcdui,  (* J2ME display. *)
-  midlet := javax_microedition_midlet, (* J2ME midlet. *)
-  lang := java_lang,    (* Base Java language library. *)
+  lcdui := javax_microedition_lcdui,   (* J2ME display. *)
+  midlet := javax_microedition_midlet,  (* J2ME midlet. *)
+  lang := java_lang,     (* Base Java language library. *)
   Config; (* Configuration module. Don't add it to JAR. *)
 
 CONST
@@ -30,9 +30,7 @@ TYPE
     threadStarted: BOOLEAN;
   END;
 
-  Coords* = SHORTINT;
-  Color*  = INTEGER;
-  Key = CHAR;
+  Coords* = SHORTINT; Color* = INTEGER; Key = CHAR;
 
 VAR
   Main-: Midlet;

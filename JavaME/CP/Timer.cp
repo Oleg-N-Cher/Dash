@@ -1,25 +1,27 @@
-MODULE Timer;
+MODULE Timer; (** Java ME *)
 
 IMPORT
   lang := java_lang;
 
-(*
-private void sleep(){
-      repaint();
-      long startTime=System.currentTimeMillis();
-      long timeTaken=System.currentTimeMillis()-startTime;
-      while (timeTaken<50) {
-         timeTaken=System.currentTimeMillis()-startTime;
-      }
-   }
-*)
+CONST
+  TickMs = 10000 DIV 182;
+  
+VAR
+  wantedTime: LONGINT;
 
-PROCEDURE Delay* (msec: INTEGER);
+PROCEDURE Start* (ticks: INTEGER);
 BEGIN
-  lang.Thread.sleep(msec);
-END Delay;
+  wantedTime := lang.System.currentTimeMillis() + ticks*TickMs;
+END Start;
 
-PROCEDURE Start* (ticks: INTEGER); END Start;
-PROCEDURE Until* ; END Until;
+PROCEDURE Until* ;
+VAR
+  sleepTime: LONGINT;
+BEGIN
+  sleepTime := wantedTime - lang.System.currentTimeMillis();
+  IF sleepTime > 0 THEN lang.Thread.sleep(sleepTime) END;
+RESCUE(
+  interruptedException)
+END Until;
 
 END Timer.
