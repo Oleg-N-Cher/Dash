@@ -28,6 +28,13 @@ Ver.control - https://github.com/Oleg-N-Cher/Dash/
 Support     - http://zx.oberon2.ru/forum/viewforum.php?f=27
 
 
+http://boulder-dash.narod.ru
+http://asdasd.rpg.fi/~svo/scalar/ware/186/
+http://asdasd.rpg.fi/~svo/scalar/ware/187/
+http://instead-games.ru/game.php?ID=197
+http://goldies.ru/games/1329
+
+
 2012-2013, Dnepropetrovsk, Ukraine.
 
 --
