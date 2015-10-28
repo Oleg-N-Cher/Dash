@@ -9,7 +9,7 @@
 	<target name="dist" description="Generate the distribution">
 		<mkdir dir="${dist}/bin" />
 		<jar destfile="${dist}/${ant.project.name}.jar" manifest="MANIFEST.MF">
-			<fileset dir="${build}/preverified" />
+			<fileset dir="${build}/preverify" />
 			<fileset dir=".">
 				<include name="icon.png" />
 				<include name="Rsrc/*.*" />

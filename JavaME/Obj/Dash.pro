@@ -1,0 +1,11 @@
+-injars      ${build}\classes
+-outjars     ${build}\obfuscate
+-libraryjars d:\WIN32APP\Dev\WTK2.5.2_01\lib\midpapi20.jar
+-libraryjars d:\WIN32APP\Dev\WTK2.5.2_01\lib\cldcapi11.jar
+-libraryjars "c:\Program Files\Java\jre7\lib\rt.jar"
+-overloadaggressively
+-repackageclasses ''
+-allowaccessmodification
+-microedition
+
+-keep public class CP.GrApp.GrApp_Midlet

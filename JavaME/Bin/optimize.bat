@@ -6,18 +6,19 @@
 @SET JavaLib=c:\Program Files\Java\jre7\lib
 @SET MidpLib="%JavaLib%\rt.jar";%WtkLib%\cldcapi10.jar;%WtkLib%\midpapi10.jar;%WtkLib%\mmapi.jar;%WtkLib%\jsr75.jar
 
-@CALL ..\Bin\compile %1
+@CD ..\Obj
+@IF NOT EXIST ${build}\classes MKDIR ${build}\classes
+@XCOPY /I /S /Y CP ${build}\classes\CP > NUL
 
-:build
-
-@IF NOT EXIST ${build}\obfuscate MKDIR ${build}\obfuscate
-@XCOPY /I /S /Y CP ${build}\obfuscate\CP > NUL
+::@SET PROGUARD_HOME=%CD%\..\Bin\proguard.jar
+@SET CLASSPATH=%CD%\..\Bin
+java -jar ..\Bin\proguard.jar @Dash.pro
+@IF errorlevel 1 PAUSE
 
 @%WtkBin%\preverify -classpath '%MidpLib%' -d "${build}\preverify" "%CD%\${build}\obfuscate" -cldc
 @CALL ant
 @IF errorlevel 1 PAUSE
-
-goto exit
+@goto exit
 
 :noGPCP
 @ECHO Please set system variable JROOT (for GPCP)
