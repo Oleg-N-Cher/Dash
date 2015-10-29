@@ -255,7 +255,7 @@ export main(int argc, char **argv)
 	__IMPORT(Timer__init);
 	__REGMAIN("Dash", 0);
 /* BEGIN */
-	Dash_controlMethodN = 0;
+	Dash_controlMethodN = 3;
 	Dash_PlayGame();
 	Control_Close();
 	GrApp_Close();

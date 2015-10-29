@@ -56,7 +56,7 @@ BEGIN
   title := Rsrc.Open(Rsrc.Title);
   titleSize := Rsrc.TitleSize; (* Must be > 0. *)
   LOOP
-    Timer.Start(3);
+    Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
       IF titleSize # 0 THEN
         DEC(titleSize);
         x := Rsrc.ReadByte(title);
@@ -290,7 +290,7 @@ BEGIN
 END PlayGame;
 
 BEGIN
-  IF Cfg.TargetZX THEN controlMethodN := 0 END;
+  IF Cfg.TargetZX THEN controlMethodN := 3 END;
   PlayGame;
   Ctrl.Close; Scr.Close
 END Dash.

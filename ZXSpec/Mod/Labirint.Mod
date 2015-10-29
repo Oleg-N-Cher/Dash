@@ -661,7 +661,7 @@ BEGIN
       (* Если не с кем играть с самого начала - это нечестно *)
     side := SideRight;
     LOOP (*---В---О-Д-Н-О-М---Л-А-Б-И-Р-И-Н-Т-Е---*)
-      (* Timer.Start(2); *)
+      Timer.Start(SHORT(ENTIER(2*Timer.Mul/Timer.Div + 0.5))); (* 1/9 second per phase *)
 (*#ifdef MAN_*)
       (*---Д-Е-Й-С-Т-В-И-Я---Ч-Е-Л-О-В-Е-Ч-К-А---*)
       IF ODD(manX) OR ODD(manY) THEN (*Если нечетные координаты*)
@@ -740,7 +740,7 @@ BEGIN
    manPresent := CheckMan();
    IF (~manPresent) THEN EXIT END; (*Check for game end*)
    IF ((*almas*)number = 0) THEN
-     (* Timer.Until; *)
+     Timer.Until;
      ManContinuesGoing;
      EXIT
    END;
@@ -769,7 +769,7 @@ BEGIN
 (*#endif  /*OBJECTS*/*)
 
       Scr.Redraw;
-      (* Timer.Until; *) (* (2); - 1/9 second per phase*) (*End of phase*)
+      Timer.Until; (*End of phase*)
 
       (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)
       IF ~manPresent (*OR Grax.terminate*) THEN EXIT END (* *)

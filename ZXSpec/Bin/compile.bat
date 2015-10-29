@@ -1,8 +1,8 @@
 @IF /%XDev%==/ GOTO noxdev
 
+@SET Main=Dash
 @SET Bin=%XDev%\ZXDev\Bin
 @SET Lib=%XDev%\ZXDev\Lib
-@SET Main=Dash
 @SET sdcc=%Bin%\sdcc --disable-warning 59 --disable-warning 85
 
 @IF EXIST ..\C\%1.h GOTO modC
