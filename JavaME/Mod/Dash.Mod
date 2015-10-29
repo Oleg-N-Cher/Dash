@@ -11,7 +11,7 @@ BEGIN
   title := Rsrc.Open(Rsrc.Title);
   titleSize := Rsrc.TitleSize; (* Must be > 0. *)
   LOOP
-    Timer.Start(3);
+    Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
       IF titleSize # 0 THEN
         DEC(titleSize);
         x := Rsrc.ReadByte(title);

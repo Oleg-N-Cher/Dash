@@ -4,14 +4,14 @@ IMPORT
   lang := java_lang;
 
 CONST
-  TickMs = 10000 DIV 182;
+  Mul* = 10000; Div* = 182;
   
 VAR
   wantedTime: LONGINT;
 
-PROCEDURE Start* (ticks: INTEGER);
+PROCEDURE Start* (ms: INTEGER);
 BEGIN
-  wantedTime := lang.System.currentTimeMillis() + ticks*TickMs;
+  wantedTime := lang.System.currentTimeMillis() + ms;
 END Start;
 
 PROCEDURE Until* ;
