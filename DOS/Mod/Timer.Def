@@ -2,7 +2,9 @@ MODULE Timer;
 
 IMPORT SYSTEM;
 
-(** Max. delay time = 32767/50/60 ~= 10.922 min *)
+CONST
+  Mul* = 1; Div* = 1;
+
 PROCEDURE Start* (ticks: INTEGER); END Start;
 PROCEDURE Until* ;                 END Until;
 PROCEDURE Close* ;                 END Close;

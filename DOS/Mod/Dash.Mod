@@ -1,30 +1,35 @@
 MODULE Dash; (* portable *)
 
-IMPORT GrApp, Timer, g:=GrTiles, p:=Rsrc;
+IMPORT Scr := GrApp, Timer, Gr := GrTiles, Rsrc;
+
+PROCEDURE ShowTitle;
+VAR
+  title: Rsrc.Resource;
+  titleSize: SHORTINT; (* 0..127 is enough here. *)
+  x, y: Gr.Coords;
+BEGIN
+  title := Rsrc.Open(Rsrc.Title);
+  titleSize := Rsrc.TitleSize; (* Must be > 0. *)
+  LOOP
+    Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+      IF titleSize # 0 THEN
+        DEC(titleSize);
+        x := Rsrc.ReadByte(title);
+        y := Rsrc.ReadByte(title); (* x, y used for correct order. *)
+        Gr.DrawTile(x, y, Rsrc.GetTileByNum(Rsrc.ReadByte(title)));
+        Scr.Redraw;
+      ELSE
+        Rsrc.Close(title);RETURN
+      END;
+      (*Sound.TitleNext;
+      IF Ctrl.PressedAnyKey() THEN RETURN END;*)
+    Timer.Until;
+  END;
+END ShowTitle;
 
 BEGIN (*$MAIN*)
-  g.DrawTile(1,6,p.Grass);
- g.DrawTile(3,6,p.Wall);
-  g.DrawTile(5,6,p.UpMan);
-  g.DrawTile(7,6,p.Wall);
-  g.DrawTile(9,6,p.UpMan1);
-  g.DrawTile(11,6,p.Wall);
-
-  g.DrawTile(1,9,p.Wall);
-  g.DrawTile(3,9,p.DownMan);
-  g.DrawTile(5,9,p.Wall);
-  g.DrawTile(7,9,p.DownMan1);
-  g.DrawTile(9,9,p.Wall);
-  g.DrawTile(11,9,p.None);
-
-  g.DrawTile(1,12,p.Wall);
-  g.DrawTile(3,12,p.Mina1);
-  g.DrawTile(5,12,p.Wall);
-  g.DrawTile(7,12,p.Babo1);
-  g.DrawTile(9,12,p.Wall);
-  g.DrawTile(11,12,p.None);
-
+  ShowTitle;
   Timer.Start(100);
   Timer.Until;
-  GrApp.Close
+  Scr.Close
 END Dash.

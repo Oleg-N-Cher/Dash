@@ -1,45 +1,51 @@
 /*  Ofront 1.2 -xtspkaem */
 #include "SYSTEM.h"
-#include "GrApp.h"
-#include "Timer.h"
 #include "GrTiles.h"
 #include "Rsrc.h"
+#include "GrApp.h"
+#include "Timer.h"
 
 
 
 
+static void Dash_ShowTitle (void);
 
 
 /*============================================================================*/
+
+static void Dash_ShowTitle (void)
+{
+	LONGINT title;
+	SHORTINT titleSize, x, y;
+	title = Rsrc_Open(Rsrc_Title);
+	titleSize = 114;
+	for (;;) {
+		Timer_Start(1);
+		if (titleSize != 0) {
+			titleSize -= 1;
+			x = Rsrc_ReadByte(title);
+			y = Rsrc_ReadByte(title);
+			GrTiles_DrawTile(x, y, Rsrc_GetTileByNum(Rsrc_ReadByte(title)));
+			GrApp_Redraw();
+		} else {
+			Rsrc_Close(title);
+			return;
+		}
+		Timer_Until();
+	}
+}
 
 
 export main(int argc, char **argv)
 {
 	__INIT(argc, argv);
-	__IMPORT(GrApp__init);
-	__IMPORT(Timer__init);
 	__IMPORT(GrTiles__init);
 	__IMPORT(Rsrc__init);
+	__IMPORT(GrApp__init);
+	__IMPORT(Timer__init);
 	__REGMAIN("Dash", 0);
 /* BEGIN */
-	GrTiles_DrawTile(1, 6, Rsrc_Grass);
-	GrTiles_DrawTile(3, 6, Rsrc_Wall);
-	GrTiles_DrawTile(5, 6, Rsrc_UpMan);
-	GrTiles_DrawTile(7, 6, Rsrc_Wall);
-	GrTiles_DrawTile(9, 6, Rsrc_UpMan1);
-	GrTiles_DrawTile(11, 6, Rsrc_Wall);
-	GrTiles_DrawTile(1, 9, Rsrc_Wall);
-	GrTiles_DrawTile(3, 9, Rsrc_DownMan);
-	GrTiles_DrawTile(5, 9, Rsrc_Wall);
-	GrTiles_DrawTile(7, 9, Rsrc_DownMan1);
-	GrTiles_DrawTile(9, 9, Rsrc_Wall);
-	GrTiles_DrawTile(11, 9, Rsrc_None);
-	GrTiles_DrawTile(1, 12, Rsrc_Wall);
-	GrTiles_DrawTile(3, 12, Rsrc_Mina1);
-	GrTiles_DrawTile(5, 12, Rsrc_Wall);
-	GrTiles_DrawTile(7, 12, Rsrc_Babo1);
-	GrTiles_DrawTile(9, 12, Rsrc_Wall);
-	GrTiles_DrawTile(11, 12, Rsrc_None);
+	Dash_ShowTitle();
 	Timer_Start(100);
 	Timer_Until();
 	GrApp_Close();

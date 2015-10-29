@@ -992,5 +992,5 @@ const unsigned char _Rsrc_Font [Rsrc_FontSize] = {
 
 /*--------------------------------- Cut here ---------------------------------*/
 Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) {
-  return 0;
+  return ((Rsrc_Resource)(num * Rsrc_TileSize + &_Rsrc_Tiles[0]));
 } /*Rsrc_GetTileByNum*/

@@ -13,7 +13,7 @@
 :: -S
 tcc -mt %Name%.c DOSDEV.LIB %Modules%
 @IF errorlevel 1 PAUSE
-@IF EXIST %Name%.exe MOVE %Name%.exe ..
+@IF EXIST %Name%.exe MOVE %Name%.exe ..\%Name%.exe
 @GOTO exit
 
 :noXDev
