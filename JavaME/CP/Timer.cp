@@ -4,7 +4,7 @@ IMPORT
   lang := java_lang;
 
 CONST
-  Mul* = 10000; Div* = 182;
+  Mul* = 1000; Div* = 18.2;
   
 VAR
   wantedTime: LONGINT;

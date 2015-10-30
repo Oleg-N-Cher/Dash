@@ -103,20 +103,12 @@ END Unpack;
 
 PROCEDURE TwoStep (dy: Coords);
 BEGIN
-  Timer.Start(1);
-  dy := dy * 5;
-  IF dy >= 0 THEN
-    Scr.ScrollUp(dy)
-  ELSE
-    Scr.ScrollDown(-dy)
-  END;
+  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+  dy := dy * Rsrc.TileStepY;
+  IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
   Timer.Until;
-  Timer.Start(1);
-  IF dy >= 0 THEN
-    Scr.ScrollUp(dy)
-  ELSE
-    Scr.ScrollDown(-dy)
-  END
+  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+  IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
 END TwoStep;
 
 PROCEDURE Display;
@@ -155,7 +147,7 @@ BEGIN
     Timer.Until;
     INC(i)
   END;
-  Timer.Start(18);
+  Timer.Start(SHORT(ENTIER(18*Timer.Mul/Timer.Div + 0.5)));
   Timer.Until;
 END DisplayInf;
 

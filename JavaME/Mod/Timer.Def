@@ -2,7 +2,7 @@ MODULE Timer;
 IMPORT SYSTEM;
 
 CONST
-  Mul* = 10000; Div* = 182;
+  Mul* = 1000; Div* = 18.2;
 
 PROCEDURE Start* (ms: INTEGER); END Start;
 PROCEDURE Until* ;              END Until;

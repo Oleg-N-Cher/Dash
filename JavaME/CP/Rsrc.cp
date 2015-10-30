@@ -6,11 +6,13 @@ IMPORT
   GrApp;
 
 CONST
-  Title*  = "/Rsrc/Title.bin";
-  TitleSize* = 114; (** Number of cells, a cell occupies 3 bytes. Must be > 0 *)
-  Levels* = "/Rsrc/Levels.bin";
-  LevelSize* =  96; (* bytes *)
-  MaxTileNum =  17;
+  Title     * = "/Rsrc/Title.bin";
+  TitleSize * = 114; (** Number of cells, a cell occupies 3 bytes. Must be > 0 *)
+  Levels    * = "/Rsrc/Levels.bin";
+  LevelSize * =  96; (* bytes *)
+  MapWidth    =  16;
+  MapHeight   =  16;
+  MaxTileNum  =  17;
 
 TYPE
   NATINT* = INTEGER; (* Native integer *)
@@ -19,11 +21,14 @@ TYPE
   Tile = lcdui.Image;
 
 VAR
+  TileWidth-, TileHeight-, TileStepX-, TileStepY-: INTEGER;
+  
   None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
-  DownMan-, DownMan1-, Mina1-, Babo1-, LastTile-: Tile;
+  DownMan-, DownMan1-, Mina1-, Babo1-: Tile;
 
-  tileByNum: ARRAY MaxTileNum + 1 OF Tile; (* For returning the tiles by a number. *)
+  tilePack: lcdui.Image; x: INTEGER;
+  tileByNum: ARRAY MaxTileNum + 1 OF Tile; (* For returning a tile by number. *)
 
 (*============================================================================*)
 (*                            Work with resources                             *)
@@ -62,32 +67,37 @@ BEGIN
 RESCUE (exception);
 END Close;
 
+(*----------------------------------------------------------------------------*)
+
 PROCEDURE GetTileByNum* (num: INTEGER): Tile;
 BEGIN
   RETURN tileByNum[num]
 END GetTileByNum;
 
+PROCEDURE LoadTile (VAR tile: Tile);
+VAR
+  g: lcdui.Graphics;
 BEGIN
-  None      := lcdui.Image.createImage("/Rsrc/None.png");
-  Grass     := lcdui.Image.createImage("/Rsrc/Grass.png");
-  Stone     := lcdui.Image.createImage("/Rsrc/Stone.png");
-  Almas     := lcdui.Image.createImage("/Rsrc/Almas.png");
-  StopMan   := lcdui.Image.createImage("/Rsrc/StopMan.png");
-  Wall      := lcdui.Image.createImage("/Rsrc/Wall.png");
-  Mina      := lcdui.Image.createImage("/Rsrc/Mina.png");
-  Babo      := lcdui.Image.createImage("/Rsrc/Babo.png");
-  LeftMan   := lcdui.Image.createImage("/Rsrc/LeftMan.png");
-  LeftMan1  := lcdui.Image.createImage("/Rsrc/LeftMan1.png");
-  RightMan  := lcdui.Image.createImage("/Rsrc/RightMan.png");
-  RightMan1 := lcdui.Image.createImage("/Rsrc/RightMan1.png");
-  UpMan     := lcdui.Image.createImage("/Rsrc/UpMan.png");
-  UpMan1    := lcdui.Image.createImage("/Rsrc/UpMan1.png");
-  DownMan   := lcdui.Image.createImage("/Rsrc/DownMan.png");
-  DownMan1  := lcdui.Image.createImage("/Rsrc/DownMan1.png");
-  Mina1     := lcdui.Image.createImage("/Rsrc/Mina1.png");
-  Babo1     := lcdui.Image.createImage("/Rsrc/Babo1.png");
-  LastTile  := Babo1;
-  (* For returning the tiles by a number. *)
+  tile := lcdui.Image.createImage(TileWidth, TileHeight);
+  g := tile.getGraphics();
+  g.drawImage(tilePack, x, 0, 20);
+  DEC(x, TileWidth);
+END LoadTile;
+
+BEGIN
+  TileWidth  := GrApp.Width  DIV MapWidth;  TileStepX := TileWidth  DIV 2;
+  TileHeight := GrApp.Height DIV MapHeight; TileStepY := TileHeight DIV 2;
+  x := 0;
+  tilePack := lcdui.Image.createImage("/Rsrc/Tiles8.png");
+
+  (* Load tiles from a tile pack: *)
+  LoadTile(None); LoadTile(Grass); LoadTile(Stone); LoadTile(Almas);
+  LoadTile(StopMan); LoadTile(Wall); LoadTile(Mina); LoadTile(Babo);
+  LoadTile(LeftMan); LoadTile(LeftMan1); LoadTile(RightMan);
+  LoadTile(RightMan1); LoadTile(UpMan); LoadTile(UpMan1);
+  LoadTile(DownMan); LoadTile(DownMan1); LoadTile(Mina1); LoadTile(Babo1);
+
+  (* For returning the tiles by a number: *)
   tileByNum[ 0] := None;     tileByNum[ 1] := Grass;    tileByNum[ 2] := Stone;
   tileByNum[ 3] := Almas;    tileByNum[ 4] := StopMan;  tileByNum[ 5] := Wall;
   tileByNum[ 6] := Mina;     tileByNum[ 7] := Babo;     tileByNum[ 8] := LeftMan;

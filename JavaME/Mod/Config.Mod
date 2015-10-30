@@ -1,6 +1,10 @@
 MODULE Config;
 
 CONST
+  TargetJme * = TRUE;
+  TargetDOS * = FALSE;
+  TargetZX  * = FALSE;
+
   AppTitle* = "Dash";
   MainClass* = "CP.Dash.Dash";
 

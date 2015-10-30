@@ -98,6 +98,7 @@ BEGIN
     NEW(midlet.screen);
     Width := midlet.screen.getWidth();
     Height := midlet.screen.getHeight();
+    WHILE Height MOD 16 # 0 DO INC(Height) END; (* Fix for models ~ 128x127 *)
     midlet.screen.i := lcdui.Image.createImage(Width, Height); (* Теневой экран. *)
     midlet.screen.g := midlet.screen.i.getGraphics();
     midlet.screen.g.setColor(Black);

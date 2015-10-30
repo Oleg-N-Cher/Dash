@@ -2,9 +2,9 @@ MODULE Rsrc; (* non-portable (z80) *)
 IMPORT SYSTEM;
 
 CONST
-  TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
-  MaxLevelNumber*=  75;
-  LevelSize*     =  96; (* bytes *)
+  TitleSize      * = 114; (* cells, a cell occupies 3 bytes *)
+  MaxLevelNumber * =  75;
+  LevelSize      * =  96; (* bytes *)
 
 TYPE
   ADDRESS = (* UNSIGNED *) INTEGER;
@@ -14,6 +14,8 @@ TYPE
   NATINT* = SHORTINT; (* Native integer *)
 
 VAR
+  TileWidth-, TileHeight-, TileStepX-, TileStepY-: NATINT;
+
   (* Set of game tiles: *)
   None-, Grass-, Stone-, Almas-, StopMan-, Wall-, Mina-, Babo-,
   LeftMan-, LeftMan1-, RightMan-, RightMan1-, UpMan-, UpMan1-,
