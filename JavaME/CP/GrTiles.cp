@@ -8,7 +8,7 @@ TYPE
 
 PROCEDURE DrawTile* (x, y: Coords; tile: Tile);
 BEGIN
-  GrApp.Main.screen.g.drawImage(
+  GrApp.screen.gfx.drawImage(
     tile,
     x*Rsrc.TileWidth DIV0 2,
     y*Rsrc.TileHeight DIV0 2,

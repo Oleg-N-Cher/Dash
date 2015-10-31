@@ -35,7 +35,7 @@ VAR
 (*============================================================================*)
 PROCEDURE Open* (IN name: Ident): Resource;
 BEGIN
-  RETURN GrApp.Main.getClass().getResourceAsStream(name);
+  RETURN GrApp.screen.midlet.getClass().getResourceAsStream(name);
 RESCUE (exception);
   RETURN NIL
 END Open;
@@ -44,7 +44,7 @@ PROCEDURE OpenAt* (pos: INTEGER; IN name: Ident): Resource;
 VAR
   rsrc: Resource;
 BEGIN
-  rsrc := GrApp.Main.getClass().getResourceAsStream(name);
+  rsrc := GrApp.screen.midlet.getClass().getResourceAsStream(name);
   IF rsrc.skip(pos) = pos THEN RETURN rsrc END;
   RETURN NIL
 RESCUE (exception);
@@ -85,8 +85,9 @@ BEGIN
 END LoadTile;
 
 BEGIN
-  TileWidth  := GrApp.Width  DIV0 MapWidth;  TileStepX := TileWidth  DIV0 2;
-  TileHeight := GrApp.Height DIV0 MapHeight; TileStepY := TileHeight DIV0 2;
+  TileWidth  := GrApp.screen.Width  DIV0 MapWidth;
+  TileHeight := GrApp.screen.Height DIV0 MapHeight;
+  TileStepX  := TileWidth DIV0 2; TileStepY := TileHeight DIV0 2;
   x := 0;
   IF TileWidth < 10 THEN
     TileWidth := 8;
