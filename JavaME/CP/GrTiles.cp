@@ -8,7 +8,12 @@ TYPE
 
 PROCEDURE DrawTile* (x, y: Coords; tile: Tile);
 BEGIN
-  GrApp.Main.screen.g.drawImage(tile, x*Rsrc.TileStepX, y*Rsrc.TileStepY, 20);
+  GrApp.Main.screen.g.drawImage(
+    tile,
+    x*Rsrc.TileWidth DIV0 2,
+    y*Rsrc.TileHeight DIV0 2,
+    20
+  );
 END DrawTile;
 
 END GrTiles.

@@ -29,10 +29,10 @@ PROCEDURE PutPixel* (x, y: Coords); (* PutVirtualPixel *)
 VAR
   xActual, yActual, xNext, yNext: Coords;
 BEGIN
-  xActual := x * GrApp.Width DIV Cfg.VirtualWidth;
-  yActual := y * GrApp.Height DIV Cfg.VirtualHeight;
-  xNext := (x + 1) * GrApp.Width DIV Cfg.VirtualWidth;
-  yNext := (y + 1) * GrApp.Height DIV Cfg.VirtualHeight;
+  xActual := x * GrApp.Width DIV0 Cfg.VirtualWidth;
+  yActual := y * GrApp.Height DIV0 Cfg.VirtualHeight;
+  xNext := (x + 1) * GrApp.Width DIV0 Cfg.VirtualWidth;
+  yNext := (y + 1) * GrApp.Height DIV0 Cfg.VirtualHeight;
   GrApp.Main.screen.g.fillRect(xActual, yActual + DisActualY,
     xNext - xActual, yNext - yActual);
 END PutPixel;

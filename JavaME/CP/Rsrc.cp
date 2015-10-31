@@ -85,10 +85,16 @@ BEGIN
 END LoadTile;
 
 BEGIN
-  TileWidth  := GrApp.Width  DIV MapWidth;  TileStepX := TileWidth  DIV 2;
-  TileHeight := GrApp.Height DIV MapHeight; TileStepY := TileHeight DIV 2;
+  TileWidth  := GrApp.Width  DIV0 MapWidth;  TileStepX := TileWidth  DIV0 2;
+  TileHeight := GrApp.Height DIV0 MapHeight; TileStepY := TileHeight DIV0 2;
   x := 0;
-  tilePack := lcdui.Image.createImage("/Rsrc/Tiles8.png");
+  IF TileWidth < 10 THEN
+    TileWidth := 8;
+    tilePack := lcdui.Image.createImage("/Rsrc/Tiles8.png");
+  ELSE
+    TileWidth := 10;
+    tilePack := lcdui.Image.createImage("/Rsrc/Tiles10.png");
+  END;
 
   (* Load tiles from a tile pack: *)
   LoadTile(None); LoadTile(Grass); LoadTile(Stone); LoadTile(Almas);
@@ -96,7 +102,8 @@ BEGIN
   LoadTile(LeftMan); LoadTile(LeftMan1); LoadTile(RightMan);
   LoadTile(RightMan1); LoadTile(UpMan); LoadTile(UpMan1);
   LoadTile(DownMan); LoadTile(DownMan1); LoadTile(Mina1); LoadTile(Babo1);
-
+  tilePack := NIL;
+  
   (* For returning the tiles by a number: *)
   tileByNum[ 0] := None;     tileByNum[ 1] := Grass;    tileByNum[ 2] := Stone;
   tileByNum[ 3] := Almas;    tileByNum[ 4] := StopMan;  tileByNum[ 5] := Wall;
@@ -104,15 +111,6 @@ BEGIN
   tileByNum[ 9] := LeftMan1; tileByNum[10] := RightMan; tileByNum[11] := RightMan1;
   tileByNum[12] := UpMan;    tileByNum[13] := UpMan1;   tileByNum[14] := DownMan;
   tileByNum[15] := DownMan1; tileByNum[16] := Mina1;    tileByNum[17] := Babo1;
-
-(*
-    try {
-      displayIm = Image.createImage("/num/display.PNG");
-      tochki = Image.createImage("/num/tochki.PNG");
-    } catch (IOException ex1) {
-      System.out.println("Image not loading");
-    }
-*)
 
 END Rsrc.
 

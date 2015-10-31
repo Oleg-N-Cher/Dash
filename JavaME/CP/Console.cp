@@ -384,7 +384,7 @@ BEGIN
   END;
   i := 0;
   REPEAT
-    buf[i] := CHR(x MOD 10 + ORD("0")); x := x DIV 10; INC(i);
+    buf[i] := CHR(x MOD 10 + ORD("0")); x := x DIV0 10; INC(i);
   UNTIL x = 0;
   REPEAT DEC(i); WriteCh(buf[i]) UNTIL i = 0;
 END WriteInt;

@@ -104,11 +104,17 @@ END Unpack;
 PROCEDURE TwoStep (dy: Coords);
 BEGIN
   Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
-  dy := dy * Rsrc.TileStepY;
-  IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
-  Timer.Until;
-  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
-  IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
+  IF ODD(Rsrc.TileHeight) THEN
+    dy := dy * Rsrc.TileHeight;
+    IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
+    Timer.Until;
+  ELSE
+    dy := dy * Rsrc.TileStepY;
+    IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
+    Timer.Until;
+    Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+    IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
+  END;
 END TwoStep;
 
 PROCEDURE Display;
