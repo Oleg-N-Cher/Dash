@@ -29,7 +29,7 @@ END ShowTitle;
 
 BEGIN
   ShowTitle;
-  Labirint.Play(8);
+  Labirint.Play(10);
   Scr.Redraw;
   (* Scr.Close *)
 END Dash.

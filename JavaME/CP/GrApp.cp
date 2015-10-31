@@ -36,8 +36,7 @@ VAR
   Main-: Midlet;
   Width-, Height-: INTEGER;
   display: lcdui.Display;
-  form: lcdui.Form;
-  command: lcdui.Command;
+  exit: lcdui.Command;
   canvas: lcdui.Canvas;
   keysAvailable-, keyIn, keyOut: INTEGER;
   keyBuf: ARRAY KeyBufSize OF Key;
@@ -91,9 +90,6 @@ BEGIN
      для работы с экраном, формами (javax.microedition.lcdui.Form) или же
      холстом (javax.microedition.lcdui.Canvas) и переключения между ними. *)
   display := lcdui.Display.getDisplay(midlet);
-  command := NIL;
-  form := lcdui.Form.Init(Config.AppTitle);
-  
   IF midlet.screen = NIL THEN (* Если экран ещё не существует, создать его. *)
     NEW(midlet.screen);
     Width := midlet.screen.getWidth();
@@ -103,6 +99,9 @@ BEGIN
     midlet.screen.g := midlet.screen.i.getGraphics();
     midlet.screen.g.setColor(Black);
     midlet.screen.g.fillRect(0, 0, Width, Height);
+    exit := lcdui.Command.Init("Exit", 7, 0);
+    midlet.screen.addCommand(exit);
+    midlet.screen.setCommandListener(midlet);
     display.setCurrent(midlet.screen);
     keysAvailable := 0; keyIn := 0; keyOut := 0;
   ELSE (* Экран существует в памяти; просто перерисуем его. *)
@@ -161,8 +160,7 @@ BEGIN
     }
 *)
   display := NIL;
-  form := NIL;
-  command := NIL;
+  exit := NIL;
   canvas := NIL;
   Main.screen.g := NIL;
   Main.screen.i := NIL;
@@ -175,10 +173,18 @@ END destroyApp;
 (*----------------------------------------------------------------------------*)
 PROCEDURE (midlet: Midlet) commandAction* (c: lcdui.Command; d: lcdui.Displayable), NEW;
 BEGIN
-  (*self.*)command := c;
+(*  display := NIL;
+  exit := NIL;
+  canvas := NIL;*)(*
+  Main.screen.g := NIL;
+  Main.screen.i := NIL;
+  Main.screen := NIL;*)
+  (*Main.thread := NIL;
+  Main := NIL;*)
+  midlet.notifyDestroyed()
 END commandAction;
-(*----------------------------------------------------------------------------*)
 
+(*----------------------------------------------------------------------------*)
 PROCEDURE ReadKey* (): Key; (** Читать код клавиши из буфера. *)
 VAR
   key: Key;
