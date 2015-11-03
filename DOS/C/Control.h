@@ -4,7 +4,7 @@
 
 extern unsigned char Control_Get (void);
 extern unsigned char Control_GetCustom (void);
-extern unsigned char Control_ReadKey (void); // With auto-repeat
+extern unsigned char Control_ReadKey (void); /* With auto-repeat */
 extern unsigned char Control_PressedAnyKey (void);
 extern void Control_Select (unsigned char n);
 #define Control_Close()

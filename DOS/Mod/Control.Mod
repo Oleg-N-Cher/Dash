@@ -1,0 +1,24 @@
+MODULE Control;
+IMPORT SYSTEM, GrApp;
+
+CONST
+  (* Направление в формате кемпстон джойстика (для скорости) *)
+  Right* = 0;
+  Left*  = 1;
+  Down*  = 2;
+  Up*    = 3;
+  Fire*  = 4;
+  Esc*   = 5;
+
+TYPE
+  Key* = CHAR;
+  Keys* = SET;
+
+PROCEDURE Get* (): Keys;                            END Get;
+PROCEDURE GetCustom* (): Keys;                      END GetCustom;
+PROCEDURE ReadKey* (): Key; (* With auto-repeat *)  END ReadKey;
+PROCEDURE PressedAnyKey* (): BOOLEAN;               END PressedAnyKey;
+PROCEDURE Select* (methodN: (* {0..3} *) SHORTINT); END Select;
+PROCEDURE Close* ;                                  END Close;
+
+END Control.

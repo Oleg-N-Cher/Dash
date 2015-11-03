@@ -1,6 +1,9 @@
 MODULE Dash; (* portable *)
 
-IMPORT Scr := GrApp, Timer, Gr := GrTiles, Rsrc;
+IMPORT Scr := GrApp, Timer, Gr := GrTiles, Rsrc, Labirint;
+
+VAR
+  level: SHORTINT;
 
 PROCEDURE ShowTitle;
 VAR
@@ -28,8 +31,9 @@ BEGIN
 END ShowTitle;
 
 BEGIN (*$MAIN*)
-  ShowTitle;
-  Timer.Start(100);
-  Timer.Until;
-  Scr.Close
+ (* ShowTitle;*)
+  level := 36;
+  LOOP Labirint.Play(level); INC(level) END;
+  Scr.Redraw;
+  (* Scr.Close *)
 END Dash.

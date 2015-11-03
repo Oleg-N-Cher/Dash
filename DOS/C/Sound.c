@@ -6,18 +6,8 @@ void Sound_KeyPressed (void);
 /*================================== Header ==================================*/
 
 static void BEEPER (unsigned int de, unsigned int hl) {
-  __asm
-    POP  BC
-    POP  DE
-    POP  HL
-    PUSH HL
-    PUSH DE
-    PUSH BC
-    PUSH IX
-    CALL 0x3B5
-    POP  IX
-__endasm;
-} //BEEPER
+
+} /*BEEPER*/
 
 /*--------------------------------- Cut here ---------------------------------*/
 void Sound_Death (unsigned char y) {
@@ -26,21 +16,21 @@ void Sound_Death (unsigned char y) {
   for (;ctr < lim; ctr ++)
     snd (((ctr >> 3) | (ctr << 5)) & 0xFF, 8); //Terrible Sound Of Death
 */
-} //Sound_Death
+} /*Sound_Death*/
 
 /*--------------------------------- Cut here ---------------------------------*/
 void Sound_DropStoneOrAlmas (unsigned char y) {
 /*
   snd (200 + (y << 1), 10);
 */
-} //Sound_DropStoneOrAlmas
+} /*Sound_DropStoneOrAlmas*/
 
 /*--------------------------------- Cut here ---------------------------------*/
 void Sound_GetAlmas (unsigned int xn_plus_yn) {
 /*
   snd (60 + ((xn + yn) << 1), 8);
 */
-} //Sound_GetAlmas
+} /*Sound_GetAlmas*/
 
 /*--------------------------------- Cut here ---------------------------------*/
 void Sound_KeyPressed (void) {
@@ -57,7 +47,7 @@ void Sound_KeyPressed (void) {
   HL = 437500 / Hz - 30.125 ~= 110.675
 */
   BEEPER(50, 111);
-} //Sound_KeyPressed
+} /*Sound_KeyPressed*/
 
 /*--------------------------------- Cut here ---------------------------------*/
 static unsigned int p;
@@ -78,7 +68,7 @@ void Sound_TitleNext (void) {
   m = ++ p;
   for (k = 36; m; m >>= 1) if (m & 1) k += 35;
   BEEPER(25, k);
-} //Sound_TitleNext
+} /*Sound_TitleNext*/
 
 /*--------------------------------- Cut here ---------------------------------*/
-void Sound__init (void) { p = 0; } //Sound__init
+void Sound__init (void) { p = 0; } /*Sound__init*/

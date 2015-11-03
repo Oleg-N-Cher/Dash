@@ -1,7 +1,7 @@
 @IF /%XDev%==/ GOTO noXDev
 
 @SET Name=Dash
-@SET Modules=Rsrc.obj GrApp.obj GrTiles.obj Timer.obj
+@SET Modules=Rsrc.obj GrApp.obj GrTiles.obj Control.obj Timer.obj Sound.obj Labirint.obj
 ::Rsrc.rel GrApp.rel GrTiles.rel Control.rel Timer.rel Sound.rel Console.rel Strings.rel Labirint.rel
 
 @SET path=%XDev%\DosDev\BIN\TC201\BIN
@@ -11,7 +11,7 @@
 
 :build
 :: -S
-tcc -mt %Name%.c DOSDEV.LIB %Modules%
+tcc %Name%.c DOSDEV.LIB %Modules%
 @IF errorlevel 1 PAUSE
 @IF EXIST %Name%.exe MOVE %Name%.exe ..\%Name%.exe
 @GOTO exit

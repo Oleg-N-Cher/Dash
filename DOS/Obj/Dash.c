@@ -1,11 +1,13 @@
 /*  Ofront 1.2 -xtspkaem */
 #include "SYSTEM.h"
 #include "GrTiles.h"
+#include "Labirint.h"
 #include "Rsrc.h"
 #include "GrApp.h"
 #include "Timer.h"
 
 
+static SHORTINT Dash_level;
 
 
 static void Dash_ShowTitle (void);
@@ -40,14 +42,17 @@ export main(int argc, char **argv)
 {
 	__INIT(argc, argv);
 	__IMPORT(GrTiles__init);
+	__IMPORT(Labirint__init);
 	__IMPORT(Rsrc__init);
 	__IMPORT(GrApp__init);
 	__IMPORT(Timer__init);
 	__REGMAIN("Dash", 0);
 /* BEGIN */
-	Dash_ShowTitle();
-	Timer_Start(100);
-	Timer_Until();
-	GrApp_Close();
+	Dash_level = 36;
+	for (;;) {
+		Labirint_Play(Dash_level);
+		Dash_level += 1;
+	}
+	GrApp_Redraw();
 	__FINI;
 }

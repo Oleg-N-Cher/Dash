@@ -1,0 +1,10 @@
+MODULE Sound;
+IMPORT SYSTEM;
+
+PROCEDURE TitleNext* ;                                   END TitleNext;
+PROCEDURE Death* (y: (* {0..30} *) SHORTINT);            END Death;
+PROCEDURE DropStoneOrAlmas* (y: (* {0..30} *) SHORTINT); END DropStoneOrAlmas;
+PROCEDURE GetAlmas* (x_plus_y: (* {0..60} *) SHORTINT);  END GetAlmas;
+PROCEDURE KeyPressed* ;                                  END KeyPressed;
+
+END Sound.

@@ -3,9 +3,11 @@ MODULE Rsrc; (* non-portable (z80) *)
 IMPORT SYSTEM;
 
 CONST
-  TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
-  MaxLevelNumber*=  75;
-  LevelSize*     =  96; (* bytes *)
+  TitleSize      * = 114; (* cells, a cell occupies 3 bytes *)
+  MaxLevelNumber * =  75;
+  LevelSize      * =  96; (* bytes *)
+  TileHeight     * =  12;
+  TileStepY      * = TileHeight DIV 2;
 
 TYPE
   ADDRESS = (* UNSIGNED *) LONGINT;
