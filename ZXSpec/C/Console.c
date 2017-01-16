@@ -1,7 +1,8 @@
 #include "Rsrc.h"
 #include "Config.h"
+#include "GrApp.h"
 
-void Console_Clear (unsigned char atr) __z88dk_fastcall;
+void Console_Ink (unsigned char color) __z88dk_fastcall;
 void Console_WriteCh (unsigned char ch) __z88dk_fastcall; // Uses font 8x12 pixels
 void Console_WriteLn (void);
 void Console_WriteStrEx (unsigned char *str) __z88dk_fastcall;
@@ -10,26 +11,19 @@ void Console_WriteStrEx (unsigned char *str) __z88dk_fastcall;
 extern unsigned char Console_x, Console_y, Console_atr;
 /*================================== Header ==================================*/
 
-void Console_Clear (unsigned char atr) __z88dk_fastcall {
-__asm
-  LD   IY,#0x5C3A
-  LD   A,(_Console_attrib)
-  PUSH AF
-#ifdef __SDCC
-  LD   HL,#4
-  ADD  HL,SP
-  LD   A,(HL)
-#else
-  LD   A,4(IX)
-#endif
-  CALL 0x229B
-  LD   (_Console_attrib),A
-  CALL 0xD6B // IX-safe
-  POP  AF
-  LD   (_Console_attrib),A
-  RET
-__endasm;
-} //Console_Clear_ROM
+void Console_Ink (unsigned char color) __z88dk_fastcall {
+  __asm
+    LD   A,(_GrApp_paper) ; 0000PPPP
+    ADD  A
+    JR   Z,PaperBlack$
+    ADD  A
+    ADD  A                ; 0PPPP000
+    RES  6,L
+PaperBlack$:
+    OR   L                ; 0PPPPIII
+    LD   (_Console_atr),A
+  __endasm;
+} //Console_Ink
 
 /*--------------------------------- Cut here ---------------------------------*/
 unsigned char Console_x, Console_y, Console_atr;
