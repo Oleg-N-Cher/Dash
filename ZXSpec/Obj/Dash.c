@@ -1,4 +1,4 @@
-/*  Ofront 1.2 -xtspkaem */
+/* Ofront+ 0.9 -xtspkaem */
 #include "SYSTEM.h"
 #include "Config.h"
 #include "Control.h"
@@ -64,8 +64,8 @@ static CHAR Dash_ReadKeyBeep (void)
 static void Dash_Center (SHORTINT y, CHAR *str, LONGINT str__len)
 {
 	SHORTINT i, x, len;
-	len = (int)Strings_Length((void*)str, str__len);
-	x = 16 - __ASHR(len, 1);
+	len = (SHORTINT)Strings_Length((void*)str, str__len);
+	x = 16 - __ASHR(len, 1, SHORTINT);
 	Console_At(0, y);
 	i = x;
 	while (i >= 1) {
@@ -239,7 +239,7 @@ static void Dash_PlayGame (void)
 }
 
 
-export main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	__INIT(argc, argv);
 	__IMPORT(Config__init);

@@ -4,14 +4,14 @@
 
 extern unsigned char GrApp_ink, GrApp_paper;
 
-extern void GrApp_Cls (void);
-extern void GrApp_SetPalette (void);
-extern void GrApp_ScrollDown (unsigned char lines);
-extern void GrApp_ScrollUp (unsigned char lines);
+extern void GrApp_Cls (void) __preserves_regs(iyl,iyh);
+extern void GrApp_SetPalette (void) __preserves_regs(iyl,iyh);
+extern void GrApp_ScrollDown (unsigned char lines) __z88dk_fastcall __preserves_regs(iyl,iyh);
+extern void GrApp_ScrollUp (unsigned char lines) __z88dk_fastcall __preserves_regs(iyl,iyh);
 #define GrApp_Redraw()
 extern void GrApp_Close (void);
 
-extern void *GrApp__init(void);
+extern void GrApp__init(void) __preserves_regs(iyl,iyh);
 
 
 #endif

@@ -6,8 +6,8 @@
 
 void GrApp_Close (void);
 void GrApp_Cls (void);
-void GrApp_ScrollDown (unsigned char lines);
-void GrApp_ScrollUp (unsigned char lines);
+void GrApp_ScrollDown (unsigned char lines) __z88dk_fastcall;
+void GrApp_ScrollUp (unsigned char lines) __z88dk_fastcall;
 void GrApp_SetPalette (void);
 void GrApp__init (void);
 
@@ -57,7 +57,7 @@ static void MoveLineCtoL (void /* A=from; L=to */) {
     LDI         ; #30
     LDI         ; #31
     LD   A,(HL)
-    LD   (DE),A ; #31
+    LD   (DE),A ; #32
   __endasm;
 } //MoveLineCtoL
 
@@ -70,73 +70,73 @@ static void ClearLineL (void /*register L*/) {
     LD   D,(HL)
     XOR  A
     LD   (DE),A ; #1
-    INC  DE
+    INC  E
     LD   (DE),A ; #2
-    INC  DE
+    INC  E
     LD   (DE),A ; #3
-    INC  DE
+    INC  E
     LD   (DE),A ; #4
-    INC  DE
+    INC  E
     LD   (DE),A ; #5
-    INC  DE
+    INC  E
     LD   (DE),A ; #6
-    INC  DE
+    INC  E
     LD   (DE),A ; #7
-    INC  DE
+    INC  E
     LD   (DE),A ; #8
-    INC  DE
+    INC  E
     LD   (DE),A ; #9
-    INC  DE
+    INC  E
     LD   (DE),A ; #10
-    INC  DE
+    INC  E
     LD   (DE),A ; #11
-    INC  DE
+    INC  E
     LD   (DE),A ; #12
-    INC  DE
+    INC  E
     LD   (DE),A ; #13
-    INC  DE
+    INC  E
     LD   (DE),A ; #14
-    INC  DE
+    INC  E
     LD   (DE),A ; #15
-    INC  DE
+    INC  E
     LD   (DE),A ; #16
-    INC  DE
+    INC  E
     LD   (DE),A ; #17
-    INC  DE
+    INC  E
     LD   (DE),A ; #18
-    INC  DE
+    INC  E
     LD   (DE),A ; #19
-    INC  DE
+    INC  E
     LD   (DE),A ; #20
-    INC  DE
+    INC  E
     LD   (DE),A ; #21
-    INC  DE
+    INC  E
     LD   (DE),A ; #22
-    INC  DE
+    INC  E
     LD   (DE),A ; #23
-    INC  DE
+    INC  E
     LD   (DE),A ; #24
-    INC  DE
+    INC  E
     LD   (DE),A ; #25
-    INC  DE
+    INC  E
     LD   (DE),A ; #26
-    INC  DE
+    INC  E
     LD   (DE),A ; #27
-    INC  DE
+    INC  E
     LD   (DE),A ; #28
-    INC  DE
+    INC  E
     LD   (DE),A ; #29
-    INC  DE
+    INC  E
     LD   (DE),A ; #30
-    INC  DE
+    INC  E
     LD   (DE),A ; #31
-    INC  DE
+    INC  E
     LD   (DE),A ; #32
   __endasm;
 } //ClearLineN
 
 /*--------------------------------- Cut here ---------------------------------*/
-void GrApp_ScrollUp (unsigned char lines) {
+void GrApp_ScrollUp (unsigned char lines) __z88dk_fastcall {
 /*
   unsigned media, line;
   if (lines > 0) {
@@ -148,10 +148,7 @@ void GrApp_ScrollUp (unsigned char lines) {
   }
 */
   __asm
-    POP  HL
-    POP  BC     ; C = lines
-    PUSH BC
-    PUSH HL
+    LD   C,L    ; C = lines
     LD   A,#192
     SUB  C
     LD   B,A    ; B = media
@@ -176,7 +173,7 @@ LCLR_UP$:
 } //GrApp_ScrollUp
 
 /*--------------------------------- Cut here ---------------------------------*/
-void GrApp_ScrollDown (unsigned char lines) {
+void GrApp_ScrollDown (unsigned char lines) __z88dk_fastcall {
 /*
   for (line = 191; line >= lines; line --)
     lmove (line, line - lines);
@@ -184,10 +181,7 @@ void GrApp_ScrollDown (unsigned char lines) {
     lclr (line --);
 */
   __asm
-    POP  HL
-    POP  BC     ; C = lines
-    PUSH BC
-    PUSH HL
+    LD   C,L    ; C = lines
     LD   L,#192 ; L = line
     LD   A,L
     SUB  C
@@ -343,11 +337,11 @@ void GrApp_Close (void) __naked {
 ; *              Set IM1 mode back               *
 ; ************************************************
 IMOFF$:
-    DI
+    LD   IY,#0x5C3A
     LD   HL,#0x2758
     EXX
-    LD   IY,#0x5C3A
     LD   A,#0x3F
+    DI
     LD   I,A
     IM   1
     EI

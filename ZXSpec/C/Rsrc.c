@@ -1,6 +1,6 @@
 #include "Rsrc.h"
 
-Rsrc_Resource Rsrc_GetTileByNum (unsigned char num);
+Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall;
 
 #define _None      0
 #define _Grass     1
@@ -955,21 +955,17 @@ const unsigned char _Rsrc_Font [Rsrc_FontSize] = {
 };
 
 /*--------------------------------- Cut here ---------------------------------*/
-Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) {
+Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall {
   __asm
-    POP  DE
-    POP  HL    ; L = num
-    PUSH HL
-    PUSH DE
     LD   H,#0
-    LD   E,L
-    LD   D,H
+    LD   C,L   ; L = num
+    LD   B,H
     ADD  HL,HL
-    ADD  HL,DE
+    ADD  HL,BC
     ADD  HL,HL
     ADD  HL,HL
     ADD  HL,HL ; tile*24
-    LD   DE,#__Rsrc_Tiles
-    ADD  HL,DE ; + _Rsrc_Tiles
+    LD   BC,#__Rsrc_Tiles
+    ADD  HL,BC ; + _Rsrc_Tiles
 __endasm;
 } //Rsrc_GetTileByNum

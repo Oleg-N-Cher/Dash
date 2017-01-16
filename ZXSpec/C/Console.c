@@ -1,24 +1,43 @@
 #include "Rsrc.h"
 #include "Config.h"
 
-void Console_WriteCh (unsigned char ch); // Uses font 8x12 pixels
+void Console_Clear (unsigned char atr) __z88dk_fastcall;
+void Console_WriteCh (unsigned char ch) __z88dk_fastcall; // Uses font 8x12 pixels
 void Console_WriteLn (void);
-void Console_WriteStrEx (unsigned char *str);
-void Console__init (void);
+void Console_WriteStrEx (unsigned char *str) __z88dk_fastcall;
+//void Console__init (void);
 
 extern unsigned char Console_x, Console_y, Console_atr;
 /*================================== Header ==================================*/
 
+void Console_Clear (unsigned char atr) __z88dk_fastcall {
+__asm
+  LD   IY,#0x5C3A
+  LD   A,(_Console_attrib)
+  PUSH AF
+#ifdef __SDCC
+  LD   HL,#4
+  ADD  HL,SP
+  LD   A,(HL)
+#else
+  LD   A,4(IX)
+#endif
+  CALL 0x229B
+  LD   (_Console_attrib),A
+  CALL 0xD6B // IX-safe
+  POP  AF
+  LD   (_Console_attrib),A
+  RET
+__endasm;
+} //Console_Clear_ROM
+
+/*--------------------------------- Cut here ---------------------------------*/
 unsigned char Console_x, Console_y, Console_atr;
 
-void Console_WriteCh (unsigned char ch) { // Uses font 8x12 pixels
+void Console_WriteCh (unsigned char ch) __z88dk_fastcall { // Uses font 8x12 pixels
   __asm
-    POP  DE
-    POP  HL      ; L = ch
-    PUSH HL
-    PUSH DE
     LD   H,#0
-    LD   E,L     ; ch
+    LD   E,L     ; L = ch
     LD   D,H
     ADD  HL,HL
     ADD  HL,DE
@@ -72,11 +91,8 @@ WriteLn:
     LD   (HL),A  ; Console_y += 12
     RET
 Scroll$:
-    LD   A,#12
-    PUSH AF
-    INC  SP
+    LD   L,#12
     CALL _GrApp_ScrollUp
-    INC  SP
     LD   HL,#0x5800
     LD   DE,#0x5801
     LD   BC,#767
@@ -95,25 +111,19 @@ void Console_WriteLn (void) __naked {
 } //Console_WriteLn
 
 /*--------------------------------- Cut here ---------------------------------*/
-void Console_WriteStrEx (unsigned char *str) __naked {
+void Console_WriteStrEx (unsigned char *str) __naked __z88dk_fastcall {
 /*
   unsigned int i = 0;
   while (str[i] != 0x00) { Console_WriteCh(str[i]); i += 1; }
 */
   __asm
-    POP  DE
-    POP  HL
-    PUSH HL
-    PUSH DE
 NextCh$:
     LD   A,(HL)
     OR   A
     RET  Z
     PUSH HL
-    PUSH AF
-    INC  SP
+    LD   L,A
     CALL _Console_WriteCh
-    INC  SP
     POP  HL
     INC  HL
     JR   NextCh$

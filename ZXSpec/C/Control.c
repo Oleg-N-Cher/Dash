@@ -1,14 +1,14 @@
 #include "GrApp.h"
 
-void Control_ChangePalette (void);
+void Control_ChangePalette (void) __preserves_regs(iyl,iyh);
 unsigned char Control_Get (void);
 unsigned char Control_GetCustom (void);
 unsigned char Control_PressedAnyKey (void);
 unsigned char Control_ReadKey (void);
-void Control_Select (unsigned char n);
+void Control_Select (unsigned char n) __z88dk_fastcall;
 /*================================== Header ==================================*/
 
-void Control_ChangePalette (void) {
+void Control_ChangePalette (void) __preserves_regs(iyl,iyh) {
   __asm
     LD   A,#0xF7
     IN   A,(#0xFE)
@@ -50,8 +50,8 @@ SET_PALETTE$:
 
 /*--------------------------------- Cut here ---------------------------------*/
 unsigned char Control_PressedAnyKey (void) {
-  Control_ChangePalette();
   __asm
+    CALL  _Control_ChangePalette
     JR    C,RET_FALSE$ ; RETURN FALSE if palette was changed
     CALL  0x28E        ; Scan keys
     INC   DE
@@ -178,17 +178,13 @@ CursorKeys$:
 __endasm;
 } //Control_GetCustom
 
-void Control_Select (unsigned char n) __naked {
+void Control_Select (unsigned char n) __z88dk_fastcall {
 __asm
-        POP   HL
-        POP   DE
-        PUSH  DE
-        LD    A,E
+        LD    A,L
         ADD   A
         ADD   A
-        ADD   E
+        ADD   L
         LD    (Custom$+1),A
-        JP    (HL)
 __endasm;
 } //Control_Select
 

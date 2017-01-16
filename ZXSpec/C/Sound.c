@@ -5,13 +5,11 @@ void Sound_GetAlmas (unsigned int xn_plus_yn);
 void Sound_KeyPressed (void);
 /*================================== Header ==================================*/
 
-static void BEEPER (unsigned int de, unsigned int hl) {
+static void BEEPER (unsigned int de, unsigned int hl) __z88dk_callee {
   __asm
     POP  BC
     POP  DE
     POP  HL
-    PUSH HL
-    PUSH DE
     PUSH BC
     PUSH IX
     CALL 0x3B5

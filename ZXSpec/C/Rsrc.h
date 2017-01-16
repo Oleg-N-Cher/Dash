@@ -49,7 +49,7 @@ typedef unsigned int ADDRESS;
 #define Rsrc_Font    __Rsrc_Font
 
 #define Rsrc_Close(rsrc)
-extern Rsrc_Resource Rsrc_GetTileByNum (unsigned char num);
+extern Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall __preserves_regs(a,d,e,iyl,iyh);
 #define Rsrc_Open(name) ((ADDRESS)name)
 #define Rsrc_OpenAt(pos,name) ((ADDRESS)name + pos)
 #define Rsrc_ReadByte(rsrc) (*(BYTE*)rsrc++)

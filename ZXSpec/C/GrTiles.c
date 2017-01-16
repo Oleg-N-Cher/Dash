@@ -1,9 +1,9 @@
 #include "Config.h"
 
-void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile);
+void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __z88dk_callee;
 /*================================== Header ==================================*/
 
-void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) {
+void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __z88dk_callee {
 /*
   unsigned char i; int* spr_addr;
 
@@ -32,8 +32,6 @@ void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) {
     POP  BC
     POP  DE      ; D = y; E = x
     POP  HL      ; HL = tile address
-    PUSH HL
-    PUSH DE
     PUSH BC
 #ifdef Config_CheckTileCoords
     LD   A,#0x1E

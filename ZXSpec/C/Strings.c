@@ -1,12 +1,8 @@
-unsigned int Strings_LengthEx (unsigned char *str);
+unsigned int Strings_LengthEx (unsigned char *str) __z88dk_fastcall;
 /*============================================================================*/
 
-unsigned int Strings_LengthEx (unsigned char *str) {
+unsigned int Strings_LengthEx (unsigned char *str) __z88dk_fastcall {
   __asm
-    POP  BC
-    POP  HL
-    PUSH HL
-    PUSH BC
     XOR  A
     LD   B,A
     LD   C,A

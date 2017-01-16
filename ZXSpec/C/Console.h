@@ -6,9 +6,9 @@ extern unsigned char Console_x, Console_y, Console_atr;
 
 #define Console_At(x,y) Console_x = x; Console_y = ((y)*12)
 #define Console_Ink(color) Console_atr = color
-extern void Console_WriteCh (unsigned char ch);
+extern void Console_WriteCh (unsigned char ch) __z88dk_fastcall __preserves_regs(iyl,iyh);
 extern void Console_WriteLn (void);
-extern void Console_WriteStrEx (unsigned char *str);
+extern void Console_WriteStrEx (unsigned char *str) __z88dk_fastcall __preserves_regs(iyl,iyh);
 #define Console_WriteStr(str,len) Console_WriteStrEx(str)
 
 #define Console__init()
