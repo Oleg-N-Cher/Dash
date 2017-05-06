@@ -1,4 +1,4 @@
-MODULE Labirint; (* portable *)
+MODULE Labirint; (** portable *)
 IMPORT
   Scr := GrApp, Gr := GrTiles, Rsrc, Ctrl := Control, Timer, Sound;
 
@@ -43,22 +43,19 @@ CONST
   SideRight  =  2;
 
 TYPE
-  NatInt  = Rsrc.NATINT; (* Native integer *)
-  Coords  = NatInt;      (* Coordinates in labirinth *)
-  Cell    = NatInt;      (* An object of labirinth   *)
-  Level   = SHORTINT;    (* A number of level (room) *)
-  Index   = INTEGER;
-  Monster = RECORD
-    coordX, coordY, dirX, dirY: Coords;
-    idx: Index;
-  END;
+  NatInt = Rsrc.NATINT; (* Native integer *)
+  Coords = NatInt;      (* Coordinates in labirinth *)
+  Cell   = NatInt;      (* An object of labirinth   *)
+  Level  = SHORTINT;    (* A number of level (room) *)
+  Index  = INTEGER;
+  Monstr = RECORD x, y, dx, dy: Coords END;
 
 VAR
   field: ARRAY FieldSize OF Cell;
-  Monsters: ARRAY MaxMonsters OF Monster;
+  monstr: ARRAY MaxMonsters OF Monstr;
   monstrsNum: INTEGER;
   objX, objY: Coords; objIdx: Index; objCell: Cell;
-  manX, manY, manDirX, manDirY: Coords; manIdx: Index;
+  manX, manY, manDirX, manDirY: Coords;
   manPresent: BOOLEAN;
   lives, score: INTEGER;(*BYTE?*)
 
@@ -103,18 +100,20 @@ END Unpack;
 
 PROCEDURE TwoStep (dy: Coords);
 BEGIN
-  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
-  IF ODD(Rsrc.TileHeight) THEN
-    dy := dy * Rsrc.TileHeight;
-    IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
-    Timer.Until;
+  Timer.Start(1);
+  dy := dy * 6;
+  IF dy >= 0 THEN
+    Scr.ScrollUp(dy)
   ELSE
-    dy := dy * Rsrc.TileStepY;
-    IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
-    Timer.Until;
-    Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
-    IF dy >= 0 THEN Scr.ScrollUp(dy) ELSE Scr.ScrollDown(-dy) END;
+    Scr.ScrollDown(-dy)
   END;
+  Timer.Until;
+  Timer.Start(1);
+  IF dy >= 0 THEN
+    Scr.ScrollUp(dy)
+  ELSE
+    Scr.ScrollDown(-dy)
+  END
 END TwoStep;
 
 PROCEDURE Display;
@@ -129,7 +128,7 @@ BEGIN
       Gr.DrawTile(x, (FieldHeight-1) * 2, Rsrc.GetTileByNum( GetCell(x, y)) );
       INC(x, 2);
     END;
-
+    Scr.Redraw;
     INC(y, 2);
     Timer.Until;
   END;
@@ -153,7 +152,7 @@ BEGIN
     Timer.Until;
     INC(i)
   END;
-  Timer.Start(SHORT(ENTIER(18*Timer.Mul/Timer.Div + 0.5)));
+  Timer.Start(18);
   Timer.Until;
 END DisplayInf;
 
@@ -172,15 +171,14 @@ BEGIN
       DEC(x, 2); DEC(idx);
       CASE field[idx] OF
         Mina, Babo :
-          Monsters[monstrsNum].coordX := x;
-          Monsters[monstrsNum].coordY := y;
-          Monsters[monstrsNum].idx := idx;
-          Monsters[monstrsNum].dirX := 0;
-          Monsters[monstrsNum].dirY := 0;
+          monstr[monstrsNum].x := x;
+          monstr[monstrsNum].y := y;
+          monstr[monstrsNum].dx := 0;
+          monstr[monstrsNum].dy := 0;
           INC(monstrsNum)
       | StopMan :
           manPresent := TRUE;
-          manX := x; manY := y; manIdx := idx
+          manX := x; manY := y;
       ELSE END
     UNTIL x = 0
   UNTIL y = 0
@@ -301,9 +299,9 @@ END CanStartFall;
 PROCEDURE CanRollFrom (side: Coords): BOOLEAN;
 (*Разрешение скатывания в сторону (side = SIDE_LEFT или SIDE_RIGHT)*)
 VAR
-  x: Coords; idx: Index;
+  x: Coords;
 BEGIN
-  x := objX + side; idx := objIdx + side DIV 2;
+  x := objX + side;
   IF (x >= 0) & (x <= (FieldWidth-1) * 2) & (objY >= 0) & (objY < (FieldHeight-1) * 2) THEN
     IF (GetCell(x, objY) = None)
      & (GetCell(x, objY + 2) = None) THEN
@@ -487,37 +485,37 @@ BEGIN
   RETURN UserNoKeys
 END GetUserControl;
 *)
-(* -------------------------------------------------------------------------------- *)
-(* --------------- Live of monsters - flyes (babo) and mines (mina) --------------- *)
-(* -------------------------------------------------------------------------------- *)
-PROCEDURE GetMonsterSprite (sprite: Cell): Cell;
-  (*Вычисление противофазы для бабочки или мины*)
+(* -------------------------------------------------------------------------- *)
+(* ------------ Live of monsters - flyes (babo) and mines (mina) ------------ *)
+(* -------------------------------------------------------------------------- *)
+PROCEDURE NextMonstrPhase (cell: Cell): Cell;
+  (* Вычисление противофазы для бабочки или мины *)
 BEGIN
-  CASE sprite OF
-    Mina  : RETURN Mina1
+  CASE cell OF
+  | Mina  : RETURN Mina1
   | Mina1 : RETURN Mina
   | Babo  : RETURN Babo1
   | Babo1 : RETURN Babo
   ELSE END;
   RETURN None
-END GetMonsterSprite;
+END NextMonstrPhase;
 
-PROCEDURE MonsterContinuesGoing (VAR monstr: Monster);
+PROCEDURE MonstrContinuesGoing (VAR monstr: Monstr);
 (*Продолжение движения бабочки или мины - аналогично как для камней или
 человечка. Из промежуточного положения - в целую клетку*)
 VAR
   newX, newY, oldX, oldY: Coords; sprite: Cell;
 BEGIN
-  newX := monstr.coordX + monstr.dirX; oldX := monstr.coordX - monstr.dirX;
-  newY := monstr.coordY + monstr.dirY; oldY := monstr.coordY - monstr.dirY;
-  sprite := GetMonsterSprite(GetCell(oldX, oldY));
+  newX := monstr.x + monstr.dx; oldX := monstr.x - monstr.dx;
+  newY := monstr.y + monstr.dy; oldY := monstr.y - monstr.dy;
+  sprite := NextMonstrPhase(GetCell(oldX, oldY));
   SetCell(oldX, oldY, None); SetCell(newX, newY, sprite);
   Gr.DrawTile(oldX, oldY, Rsrc.None);
   Gr.DrawTile(newX, newY, Rsrc.GetTileByNum( sprite ));
-  monstr.coordX := newX; monstr.coordY := newY
-END MonsterContinuesGoing;
+  monstr.x := newX; monstr.y := newY
+END MonstrContinuesGoing;
 
-PROCEDURE ExcludeMonster (i: INTEGER);
+PROCEDURE ExcludeMonstr (i: INTEGER);
 (*Исключение бабочки или мины, убитой камнем или алмазом, из списка
 действующих объектов*)
 VAR
@@ -525,123 +523,107 @@ VAR
 BEGIN
   (*union object * a = object_array + n,*)
   (* * hb = object_array + num_objects; *)
-  tX := Monsters[i].coordX; tY := Monsters[i].coordY;
+  tX := monstr[i].x; tY := monstr[i].y;
   IF ODD(tX) OR ODD(tY) THEN
-    INC(tX, Monsters[i].dirX); INC(tY, Monsters[i].dirY);
+    INC(tX, monstr[i].dx); INC(tY, monstr[i].dy);
     SetCell(tX, tY, None); Gr.DrawTile(tX, tY, Rsrc.None)
   END;
   (*Удаление из промежуточной позиции*)
   DEC(monstrsNum); (*уменьшение числа объектов*)
   WHILE i < (*=*) monstrsNum DO
-    Monsters[i].coordX := Monsters[i+1].coordX;
-    Monsters[i].coordY := Monsters[i+1].coordY;
-    Monsters[i].idx  := Monsters[i+1].idx;
-    Monsters[i].dirX := Monsters[i+1].dirX;
-    Monsters[i].dirY := Monsters[i+1].dirY;
+    monstr[i].x := monstr[i+1].x;
+    monstr[i].y := monstr[i+1].y;
+    monstr[i].dx := monstr[i+1].dx;
+    monstr[i].dy := monstr[i+1].dy;
     INC(i) (*сдвижка массива*)
   END
-END ExcludeMonster;
+END ExcludeMonstr;
 
-PROCEDURE TryMoveMonster (VAR monstr: Monster);
-  (*Попытка сдвига объекта из клетки*)
-VAR
-  solutionDirX, solutionDirY, negDirX, negDirY,
-  delta, ddX, ddY, max, mark, x, y, tX, tY, vh: Coords;
-  sprite: Cell;
-  DirX, DirY: ARRAY 4 OF Coords;
-  movesNum, i: INTEGER;
+(* ======================== TryMoveMonstr (n: Index) ======================== *)
+(*  Вход:  n - номер монстра (бабочки или мины)
+    Выход: monstr[n].x, monstr[n].y, monstr[n].dx, monstr[n].dy
+*)
 PROCEDURE Sign (x: Coords): Coords;
-  (*Знак аргумента. Результат -1 для отрицательного, 1 для положительного
-  и для нуля*)
-  BEGIN
-    IF x >= 0 THEN RETURN 1 END;
-    RETURN -1
-  END Sign;
+  (* Знак аргумента.
+     Результат: -1 для отрицательного, 1 для положительного и нуля. *)
 BEGIN
-  movesNum := 0;            solutionDirX := 0; solutionDirY := 0;
-  x := monstr.coordX; y := monstr.coordY;
-  (*signed delta, vh;*)
-  (*union direction * p = cross, * solution;*)
-  sprite := GetMonsterSprite(GetCell(x, y));
-  (*Просмотр по 4 сторонам света c севера против часовой стрелки*)
-  delta := -1;
-  REPEAT (* delta := [-1, 1] *)
-  (*for (delta = -1; delta <= 1; delta += 2) ( *Проследить, куда может*)
-    vh := 0;
-    REPEAT
-    (*for (vh = 0; vh <= 1; vh ++) { ( *двинуться объект с этого места*)
-      tX := x; tY := y;
-      IF vh # 0 THEN
-        INC(tX, delta + delta); (* tx += delta << 1; *)
-      ELSE
-        INC(tY, delta + delta); (* ty += delta << 1; *)
-      END;
-      IF (tX >= 0) & (tX <= (FieldWidth-1) * 2) & (tY >= 0) & (tY <= (FieldHeight-1) * 2) THEN
-        CASE GetCell(tX, tY) OF
-          StopMan, None : (*Двинуться можно*)
-            IF vh # 0 THEN
-              DirX[movesNum] := delta; DirY[movesNum] := 0
-            ELSE
-              DirX[movesNum] := 0; DirY[movesNum] := delta
-            END;
-            INC(movesNum) (*Вариант включен в список*)
-        ELSE END
-      END;
-    INC(vh) UNTIL vh > 1;
-  INC(delta, 2) UNTIL delta > 1;
-(*Проверяется все множество вариантов*)
-  IF movesNum = 0 THEN (*Объект зажат со всех сторон - нет выбора*)
-    SetCell(x, y, sprite); Gr.DrawTile(x, y, Rsrc.GetTileByNum( sprite ));
-  ELSE
-    IF movesNum = 1 THEN
-      solutionDirX := DirX[0]; (*Объект отражается от тупика коридора*)
-      solutionDirY := DirY[0]
-    ELSE (*Много вариантов*)
-      (*union direction * i, neg;*)
-      negDirX := -monstr.dirX; negDirY := -monstr.dirY;
-      i := 0;
-      LOOP (*for (i = cross; i < p; i ++)  ( *Поискать худший*)
-        IF (DirX[i] = negDirX) & (DirY[i] = negDirY) THEN (*(обратное движение)*)
-          DEC(movesNum); (*Уменьшить количество вариантов*)
-          WHILE i < movesNum DO
-            DirX[i] := DirX[i+1];
-            DirY[i] := DirY[i+1];
-            INC(i) (*Вычеркнуть - сжать массив*)
-          END;
-          EXIT
-        END;
-        INC(i);
-        IF i >= movesNum THEN EXIT END
-      END;
-      IF movesNum = 1 THEN (*Если остался только один вариант, это обеспечит*)
-        solutionDirX := DirX[0]; (*продвижение объекта по коридору*)
-        solutionDirY := DirY[0]
-      ELSE (*Только здесь оцениваем направление к человечку*)
-        ddX := Sign(manX - x); ddY := Sign(manY - y);
-        max := 0;
-        i := 0;
-        REPEAT (* for (i = cross; i < p; i ++) *)
-          mark := ABS(DirX[i] + ddX) + ABS(DirY[i] + ddY);
-          IF mark > max THEN (*!*)
-            max := mark;
-            solutionDirX := DirX[i];
-            solutionDirY := DirY[i]
-          END;
-          INC(i)
-        UNTIL i >= movesNum
-      END
-    END;
-    monstr.dirX := solutionDirX; INC(monstr.coordX, solutionDirX);
-    monstr.dirY := solutionDirY; INC(monstr.coordY, solutionDirY);
-    Gr.DrawTile(x, y, Rsrc.None);
-    Gr.DrawTile(monstr.coordX, monstr.coordY, Rsrc.GetTileByNum( sprite ));
-    SetCell(monstr.coordX + monstr.dirX, monstr.coordY + monstr.dirY, sprite)
-  END
-END TryMoveMonster;
+  IF x < 0 THEN RETURN -1 END;
+  RETURN 1
+END Sign;
 
-(* -------------------------------------------------------------------------------- *)
-(* ---------------------------- Main cycle of the game ---------------------------- *)
-(* -------------------------------------------------------------------------------- *)
+PROCEDURE TryMoveMonstr (n: Index); (* Попытка сдвига монстра N из клетки. *)
+VAR
+  x, y, dx, dy, tx, ty, max, mark: Coords; cell: Cell; i, moves: Index;
+  canMove: ARRAY 4 OF Index; (* Направления движения монстра. *)
+BEGIN
+  x := monstr[n].x; y := monstr[n].y; cell := NextMonstrPhase(GetCell(x, y));
+
+  (* Просмотр по 4-м сторонам света c севера против часовой стрелки: *)
+  moves := -1;
+  i := 3; REPEAT (* i := 3 TO 0 BY -1 {север, запад, юг, восток} *)
+    (* Проследить, куда может двинуться монстр с этого места: *)
+    tx := x + 2*Rsrc.CrossX[i]; ty := y + 2*Rsrc.CrossY[i];
+    IF ( CHR( tx ) <= CHR( (FieldWidth-1) * 2) ) &
+       ( CHR( ty ) <= CHR( (FieldHeight-1) * 2) )
+       (* tx,ty неявно проверяются здесь и на >= 0 (приведены к беззнаковым) *)
+    THEN
+      CASE GetCell(tx, ty) OF None, StopMan: (* Двинуться можно. *)
+        INC(moves); canMove[moves] := i; (* Вариант включен в список. *)
+      ELSE END;
+    END;
+  DEC(i) UNTIL i < 0;
+  (* Сейчас moves = количество возможных ходов монстра - 1 (оптимизация) *)
+
+  (* ================ Проверяется всё множество вариантов: ================= *)
+  IF moves < 0 THEN (* Монстр зажат со всех сторон - нет выбора. *)
+    SetCell(x, y, cell); Gr.DrawTile(x, y, Rsrc.GetTileByNum(cell));
+    (* monstr[n].dx и monstr[n].dy в 0 не устанавливаем - смещения неважны,
+       ибо продолжение движения возможно только для непарных x и y. *)
+  ELSE
+    IF moves = 0 THEN (* Монстр отражается от тупика коридора. *)
+      dx := Rsrc.CrossX[ canMove[0] ]; dy := Rsrc.CrossY[ canMove[0] ];
+    ELSE (* Много вариантов: *)
+
+      (* Поискать худший (обратное движение): *)
+      dx := -monstr[n].dx; dy := -monstr[n].dy;
+      i := 0; REPEAT (* i := 0 TO moves *)
+        IF (Rsrc.CrossX[canMove[i]] = dx) & (Rsrc.CrossY[canMove[i]] = dy) THEN
+          WHILE CHR( i ) < CHR( moves ) DO (* Уменьшить кол-во вариантов: *)
+            canMove[i] := canMove[i + 1]; INC(i); (* Сжать массив. *)
+          END;
+          DEC(moves); (* Вычеркнуть из списка. *)
+          (* Обратное движение найдено и вычеркнуто, выход из поиска. *)
+        END;
+      INC(i) UNTIL CHR( i ) > CHR( moves );
+
+      IF moves = 0 THEN (* Если остался только один вариант, *)
+        (* это обеспечит продвижение объекта по коридору: *)
+        dx := Rsrc.CrossX[ canMove[0] ]; dy := Rsrc.CrossY[ canMove[0] ];
+      ELSE (* Только здесь оцениваем направление к человечку: *)
+        tx := Sign(manX - x); ty := Sign(manY - y); max := 0;
+        i := 0; REPEAT (* i := 0 TO moves *)
+        (* Можно бы пустить цикл от moves до 0, но нарушится порядок поиска. *)
+          mark := ABS(Rsrc.CrossX[ canMove[i] ] + tx) +
+                  ABS(Rsrc.CrossY[ canMove[i] ] + ty);
+          IF CHR( mark ) > CHR( max ) THEN
+            max := mark;
+            dx := Rsrc.CrossX[ canMove[i] ]; dy := Rsrc.CrossY[ canMove[i] ]
+          END;
+        INC(i) UNTIL CHR( i ) > CHR( moves );
+      END;
+    END;
+
+    (* Направление движения монстра определено [dx, dy]. *)
+    Gr.DrawTile(x, y, Rsrc.None); INC(x, dx); INC(y, dy);
+    Gr.DrawTile(x, y, Rsrc.GetTileByNum(cell));
+    SetCell(x + dx, y + dy, cell);
+    monstr[n].x := x; monstr[n].y := y;
+    monstr[n].dx := dx; monstr[n].dy := dy;
+  END;
+END TryMoveMonstr;
+
+(* ========================================================================== *)
+
 PROCEDURE Play* (room: Level);
 (* Main game - select labirinth, play game, and returns score *)
 VAR
@@ -744,28 +726,29 @@ BEGIN
    END;
 (*#endif  /*STONES*/*)
 (*---------------Д-В-И-Ж-Е-Н-И-Е---Б-А-Б-О-Ч-Е-К---И---М-И-Н---------------*)
-      (*monstr*)number := 0;
-      WHILE (*monstr*)number < monstrsNum DO (* for (ctr = 0; ctr < num_objects;) { *)
+      number := 0;
+      WHILE number < monstrsNum DO (* for (ctr = 0; ctr < num_objects;) { *)
         (*optr = object_array + ctr;*)
-        x := Monsters[(*monstr*)number].coordX; y := Monsters[(*monstr*)number].coordY;
-        IF ODD(x) THEN DEC(x, Monsters[(*monstr*)number].dirX) END; (*Отход назад*)
-        IF ODD(y) THEN DEC(y, Monsters[(*monstr*)number].dirY) END;
+        x := monstr[number].x; y := monstr[number].y;
+        IF ODD(x) THEN DEC(x, monstr[number].dx) END; (*Отход назад*)
+        IF ODD(y) THEN DEC(y, monstr[number].dy) END;
         CASE GetCell(x, y) OF
           Mina, Babo, Mina1, Babo1 :
-            IF ODD(Monsters[(*monstr*)number].coordX) OR ODD(Monsters[(*monstr*)number].coordY) THEN
-              MonsterContinuesGoing(Monsters[(*monstr*)number])
+            IF ODD(monstr[number].x) OR ODD(monstr[number].y) THEN
+              MonstrContinuesGoing(monstr[number])
             ELSE
-              TryMoveMonster(Monsters[(*monstr*)number])
+              TryMoveMonstr(number)
             END;
-            INC((*monstr*)number)
+            INC(number)
         ELSE (*Уничтожить объект - он был разбит*)
-          ExcludeMonster((*monstr*)number) (*Число объектов уменьшается*)
+          ExcludeMonstr(number) (*Число объектов уменьшается*)
         END
       END;
       manPresent := CheckMan();
       IF ~manPresent THEN SceneOfDeath(manX, manY) END;
 (*#endif  /*OBJECTS*/*)
 
+      Scr.Redraw;
       Timer.Until; (*End of phase*)
 
       (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)

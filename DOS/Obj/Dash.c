@@ -1,4 +1,4 @@
-/*  Ofront 1.2 -xtspkaem */
+/* Ofront+ 0.9 -sm */
 #include "SYSTEM.h"
 #include "GrTiles.h"
 #include "Labirint.h"
@@ -38,7 +38,7 @@ static void Dash_ShowTitle (void)
 }
 
 
-export main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	__INIT(argc, argv);
 	__IMPORT(GrTiles__init);
