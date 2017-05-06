@@ -12,7 +12,7 @@
 
 :build
 
-%Bin%\sdcc %Name%.c -mz80 --code-loc %CodeAddr% --data-loc %DataAddr% --opt-code-size --disable-warning 59 --disable-warning 85 -I ..\C -I %Lib%\C -I "." -L %Lib% %Modules%
+%Bin%\sdcc %Name%.c -mz80 --code-loc %CodeAddr% --data-loc %DataAddr% --opt-code-speed --reserve-regs-iy --disable-warning 59 --disable-warning 84 --disable-warning 85 -I ..\C -I %Lib%\C -I "." -L %Lib% %Modules%
 @IF errorlevel 1 PAUSE
 
 %Bin%\hex2bin %Name%.ihx
