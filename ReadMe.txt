@@ -33,6 +33,7 @@ http://asdasd.rpg.fi/~svo/scalar/ware/186/
 http://asdasd.rpg.fi/~svo/scalar/ware/187/
 http://instead-games.ru/game.php?ID=197
 http://goldies.ru/games/1329
+http://yogadestiny.ru/android/bolder.apk
 
 
 2012-2013, Dnepropetrovsk, Ukraine.
