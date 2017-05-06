@@ -1,4 +1,4 @@
-/* Ofront+ 0.9 -xtspkaem */
+/* Ofront+ 0.9 -sm */
 #include "SYSTEM.h"
 #include "Config.h"
 #include "Control.h"
@@ -103,7 +103,7 @@ static SHORTINT Dash_MenuSelect (void)
 	SET keys;
 	GrApp_Cls();
 	Console_Ink(5);
-	Dash_Center(15, (void*)&"VEDAsoft Oberon Club \'2016", (LONGINT)27);
+	Dash_Center(15, (void*)&"VEDAsoft Oberon Club \'2017", (LONGINT)27);
 	Console_Ink(71);
 	Console_At(11, 6);
 	Console_WriteStr((void*)&"PLAY", (LONGINT)5);
@@ -194,7 +194,7 @@ static void Dash_PlayGame (void)
 		for (;;) {
 			switch (Dash_MenuSelect()) {
 				case 0: 
-					Labirint_Play(0);
+					Labirint_Play(2);
 					break;
 				case 2: 
 					if (!Dash_Instruction((void*)&"#  Bolder (boulder) Dash  is  a^chain of  puzzle-caverns.  The^cavern   consists   of   16x16^cells.  Each cell may be  of 8^cases:^  1.  Empty cell.  The man and^other  moving objects  can  go^thru this cells.", (LONGINT)211)) {

@@ -1,7 +1,7 @@
 MODULE Msg;
 
 CONST
-  VEDAsoft* = "VEDAsoft Oberon Club '2016";
+  VEDAsoft* = "VEDAsoft Oberon Club '2017";
 (*
 #define NMENU 4
 #define MENU_1COL 12

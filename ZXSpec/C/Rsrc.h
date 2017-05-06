@@ -18,6 +18,8 @@ extern const unsigned char _Rsrc_Title [Rsrc_TitleSize * 3];
 extern const unsigned char _Rsrc_Levels [7296];
 extern const unsigned char _Rsrc_Font [Rsrc_FontSize];
 extern const unsigned char _Rsrc_Tiles [Rsrc_TileSize * (_LastTitleNum + 1)];
+extern const signed char Rsrc_CrossX [4];
+extern const signed char Rsrc_CrossY [4];
 
 typedef BYTE* Rsrc_Resource;
 typedef unsigned int ADDRESS;

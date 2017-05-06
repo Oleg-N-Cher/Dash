@@ -271,7 +271,7 @@ BEGIN
   IF Ctrl.Get() # {Ctrl.Esc} THEN
     LOOP
       CASE MenuSelect() OF
-      | 0: Labirint.Play(0);
+      | 0: Labirint.Play(2);
       | 2: (*HELP*)
         IF ~ Instruction(Msg.Instruction1) THEN RETURN END;
         IF ~ Instruction(Msg.Instruction2) THEN RETURN END;
