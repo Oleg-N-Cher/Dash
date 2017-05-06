@@ -954,7 +954,7 @@ const unsigned char _Rsrc_Font [Rsrc_FontSize] = {
   0x10,0x38,0x6C,0xC6,0xC6,0xC6,0xC6,0xC6,0xC6,0xC6,0xFE,0x00  // 07FX
 };
 
-/*--------------------------- Dash's set of tiles: ---------------------------*/
+/*------------------------------- Directions: --------------------------------*/
 const signed char Rsrc_CrossX [4] = { 1, 0, -1, 0 };
 const signed char Rsrc_CrossY [4] = { 0, 1, 0, -1 };
 

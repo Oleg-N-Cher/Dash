@@ -48,14 +48,14 @@ TYPE
   Cell   = NatInt;      (* An object of labirinth   *)
   Level  = SHORTINT;    (* A number of level (room) *)
   Index  = INTEGER;
-  Monstr = RECORD x, y, dx, dy: Coords; idx: Index END;
+  Monstr = RECORD x, y, dx, dy: Coords END;
 
 VAR
   field: ARRAY FieldSize OF Cell;
   monstr: ARRAY MaxMonsters OF Monstr;
   monstrsNum: INTEGER;
   objX, objY: Coords; objIdx: Index; objCell: Cell;
-  manX, manY, manDirX, manDirY: Coords; manIdx: Index;
+  manX, manY, manDirX, manDirY: Coords;
   manPresent: BOOLEAN;
   lives, score: INTEGER;(*BYTE?*)
 
@@ -173,13 +173,12 @@ BEGIN
         Mina, Babo :
           monstr[monstrsNum].x := x;
           monstr[monstrsNum].y := y;
-          monstr[monstrsNum].idx := idx;
           monstr[monstrsNum].dx := 0;
           monstr[monstrsNum].dy := 0;
           INC(monstrsNum)
       | StopMan :
           manPresent := TRUE;
-          manX := x; manY := y; manIdx := idx
+          manX := x; manY := y;
       ELSE END
     UNTIL x = 0
   UNTIL y = 0
@@ -300,9 +299,9 @@ END CanStartFall;
 PROCEDURE CanRollFrom (side: Coords): BOOLEAN;
 (*Разрешение скатывания в сторону (side = SIDE_LEFT или SIDE_RIGHT)*)
 VAR
-  x: Coords; idx: Index;
+  x: Coords;
 BEGIN
-  x := objX + side; idx := objIdx + side DIV 2;
+  x := objX + side;
   IF (x >= 0) & (x <= (FieldWidth-1) * 2) & (objY >= 0) & (objY < (FieldHeight-1) * 2) THEN
     IF (GetCell(x, objY) = None)
      & (GetCell(x, objY + 2) = None) THEN
@@ -534,7 +533,6 @@ BEGIN
   WHILE i < (*=*) monstrsNum DO
     monstr[i].x := monstr[i+1].x;
     monstr[i].y := monstr[i+1].y;
-    monstr[i].idx  := monstr[i+1].idx;
     monstr[i].dx := monstr[i+1].dx;
     monstr[i].dy := monstr[i+1].dy;
     INC(i) (*сдвижка массива*)
