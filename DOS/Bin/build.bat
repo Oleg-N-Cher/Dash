@@ -22,4 +22,4 @@ tcc %Name%.c DOSDEV.LIB %Modules%
 @PAUSE
 
 :exit
-..\%Name%.exe
+::..\%Name%.exe

@@ -46,8 +46,8 @@ TYPE
   NatInt = Rsrc.NATINT; (* Native integer *)
   Coords = NatInt;      (* Coordinates in labirinth *)
   Cell   = NatInt;      (* An object of labirinth   *)
-  Level  = SHORTINT;    (* A number of level (room) *)
-  Index  = INTEGER;
+  Level  = NatInt;      (* A number of level (room) *)
+  Index  = INTEGER;     (* Must be enough for field *)
   Monstr = RECORD x, y, dx, dy: Coords END;
 
 VAR
@@ -539,7 +539,7 @@ BEGIN
   END
 END ExcludeMonstr;
 
-(* ======================== TryMoveMonstr (n: Index) ======================== *)
+(* ======================= TryMoveMonstr (n: NatInt) ======================== *)
 (*  Вход:  n - номер монстра (бабочки или мины)
     Выход: monstr[n].x, monstr[n].y, monstr[n].dx, monstr[n].dy
 *)
@@ -551,10 +551,10 @@ BEGIN
   RETURN 1
 END Sign;
 
-PROCEDURE TryMoveMonstr (n: Index); (* Попытка сдвига монстра N из клетки. *)
+PROCEDURE TryMoveMonstr (n: NatInt); (* Попытка сдвига монстра N из клетки. *)
 VAR
-  x, y, dx, dy, tx, ty, max, mark: Coords; cell: Cell; i, moves: Index;
-  canMove: ARRAY 4 OF Index; (* Направления движения монстра. *)
+  x, y, dx, dy, tx, ty, max, mark: Coords; cell: Cell; i, moves: NatInt;
+  canMove: ARRAY 4 OF NatInt; (* Направления движения монстра. *)
 BEGIN
   x := monstr[n].x; y := monstr[n].y; cell := NextMonstrPhase(GetCell(x, y));
 
@@ -627,8 +627,7 @@ END TryMoveMonstr;
 PROCEDURE Play* (room: Level);
 (* Main game - select labirinth, play game, and returns score *)
 VAR
-  x, y, side: Coords;
-  number: INTEGER; keys: Ctrl.Keys;
+  x, y, side: Coords; number: NatInt; keys: Ctrl.Keys;
 BEGIN
 (*------------Н-А-Ч-А-Л-Ь-Н-Ы-Е---Д-Е-Й-С-Т-В-И-Я-------------*)
   (*select_lab ();*)
