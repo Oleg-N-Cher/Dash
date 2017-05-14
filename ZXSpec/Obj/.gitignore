@@ -1,4 +1,5 @@
 *.asm
+*.bin
 *.ihx
 *.lk
 *.lst
