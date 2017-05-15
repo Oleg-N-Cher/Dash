@@ -1,0 +1,4 @@
+Labirint
+
+  ExcludeMonstr (n: Index)	GAME.CPP static void exclude_object (unsigned n)
+  TryMoveMonstr (n: Index)	GAME.CPP static void try_move_object (union object * a)

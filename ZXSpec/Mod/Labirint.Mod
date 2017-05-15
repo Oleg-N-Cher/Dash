@@ -53,7 +53,7 @@ TYPE
 VAR
   field: ARRAY FieldSize OF Cell;
   monstr: ARRAY MaxMonsters OF Monstr;
-  monstrsNum: INTEGER;
+  monstrsNum: NatInt;
   objX, objY: Coords; objIdx: Index; objCell: Cell;
   manX, manY, manDirX, manDirY: Coords;
   manPresent: BOOLEAN;
@@ -515,33 +515,32 @@ BEGIN
   monstr.x := newX; monstr.y := newY
 END MonstrContinuesGoing;
 
-PROCEDURE ExcludeMonstr (i: INTEGER);
-(*Исключение бабочки или мины, убитой камнем или алмазом, из списка
-действующих объектов*)
+(* ======================== ExcludeMonstr (n: Index) ======================== *)
+(*  Вход:      n - номер монстра (бабочки или мины)
+    Обновляет: monstr[], monstrsNum
+*)
+PROCEDURE ExcludeMonstr (n: Index); (* Исключение бабочки или мины,
+  убитой камнем или алмазом, из списка действующих монстров. *)
 VAR
-  tX, tY: Coords;
+  x, y: Coords;
 BEGIN
-  (*union object * a = object_array + n,*)
-  (* * hb = object_array + num_objects; *)
-  tX := monstr[i].x; tY := monstr[i].y;
-  IF ODD(tX) OR ODD(tY) THEN
-    INC(tX, monstr[i].dx); INC(tY, monstr[i].dy);
-    SetCell(tX, tY, None); Gr.DrawTile(tX, tY, Rsrc.None)
+  x := monstr[n].x; y := monstr[n].y;
+  IF ODD(x) OR ODD(y) THEN
+    INC(x, monstr[n].dx); INC(y, monstr[n].dy);
+    SetCell(x, y, None); Gr.DrawTile(x, y, Rsrc.None);
   END;
-  (*Удаление из промежуточной позиции*)
-  DEC(monstrsNum); (*уменьшение числа объектов*)
-  WHILE i < (*=*) monstrsNum DO
-    monstr[i].x := monstr[i+1].x;
-    monstr[i].y := monstr[i+1].y;
-    monstr[i].dx := monstr[i+1].dx;
-    monstr[i].dy := monstr[i+1].dy;
-    INC(i) (*сдвижка массива*)
-  END
+  (* Удаление из промежуточной позиции: *)
+  DEC(monstrsNum); (* Уменьшение числа монстров. *)
+  WHILE CHR( n ) < CHR( monstrsNum ) DO (* Сдвижка массива: *)
+    monstr[n].x := monstr[n + 1].x; monstr[n].y := monstr[n + 1].y;
+    monstr[n].dx := monstr[n + 1].dx; monstr[n].dy := monstr[n + 1].dy;
+    INC(n);
+  END;
 END ExcludeMonstr;
 
-(* ======================= TryMoveMonstr (n: NatInt) ======================== *)
-(*  Вход:  n - номер монстра (бабочки или мины)
-    Выход: monstr[n].x, monstr[n].y, monstr[n].dx, monstr[n].dy
+(* ======================== TryMoveMonstr (n: Index) ======================== *)
+(*  Вход:      n - номер монстра (бабочки или мины)
+    Обновляет: monstr[n]
 *)
 PROCEDURE Sign (x: Coords): Coords;
   (* Знак аргумента.
@@ -551,7 +550,7 @@ BEGIN
   RETURN 1
 END Sign;
 
-PROCEDURE TryMoveMonstr (n: NatInt); (* Попытка сдвига монстра N из клетки. *)
+PROCEDURE TryMoveMonstr (n: Index); (* Попытка сдвига монстра N из клетки. *)
 VAR
   x, y, dx, dy, tx, ty, max, mark: Coords; cell: Cell; i, moves: NatInt;
   canMove: ARRAY 4 OF NatInt; (* Направления движения монстра. *)
