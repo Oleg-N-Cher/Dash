@@ -1,4 +1,4 @@
-MODULE Labirint; (** portable *)
+п»їMODULE Labirint; (** portable *)
 IMPORT
   Scr := GrApp, Gr := GrTiles, Rsrc, Ctrl := Control, Timer, Sound;
 
@@ -161,7 +161,7 @@ VAR
   x, y: Coords;
   idx: Index;
 BEGIN
-  monstrsNum := 0; (*Выловим координаты человека, бабочек и мин*)
+  monstrsNum := 0; (*Р’С‹Р»РѕРІРёРј РєРѕРѕСЂРґРёРЅР°С‚С‹ С‡РµР»РѕРІРµРєР°, Р±Р°Р±РѕС‡РµРє Рё РјРёРЅ*)
   manPresent := FALSE;
   idx := FieldSize;
   y := FieldHeight * 2;
@@ -185,8 +185,8 @@ BEGIN
 END LookForObjects;
 
 PROCEDURE SceneOfDeath (x, y: Coords);
-(*Засыпание алмазами человечка, на которого наехала бабочка или мина,
-и человечка, бабочки или мины, на которых упал камень или алмаз*)
+(*Р—Р°СЃС‹РїР°РЅРёРµ Р°Р»РјР°Р·Р°РјРё С‡РµР»РѕРІРµС‡РєР°, РЅР° РєРѕС‚РѕСЂРѕРіРѕ РЅР°РµС…Р°Р»Р° Р±Р°Р±РѕС‡РєР° РёР»Рё РјРёРЅР°,
+Рё С‡РµР»РѕРІРµС‡РєР°, Р±Р°Р±РѕС‡РєРё РёР»Рё РјРёРЅС‹, РЅР° РєРѕС‚РѕСЂС‹С… СѓРїР°Р» РєР°РјРµРЅСЊ РёР»Рё Р°Р»РјР°Р·*)
 VAR
   plusX, minusX, plusY, minusY, tX, tY: Coords; ctr, lim: INTEGER;
 BEGIN
@@ -226,7 +226,7 @@ END SceneOfDeath;
 (* ---------------- Stone and almas functionality - drop if it can ---------------- *)
 (* -------------------------------------------------------------------------------- *)
 PROCEDURE Deactivate;
-(*Для летящих в клетке камней и алмазов - прилет на опору*)
+(*Р”Р»СЏ Р»РµС‚СЏС‰РёС… РІ РєР»РµС‚РєРµ РєР°РјРЅРµР№ Рё Р°Р»РјР°Р·РѕРІ - РїСЂРёР»РµС‚ РЅР° РѕРїРѕСЂСѓ*)
 BEGIN
   IF objCell = ActiveStone2 THEN
     Gr.DrawTile(objX, objY, Rsrc.Stone);
@@ -240,24 +240,24 @@ BEGIN
 (*
   Sound.Beep(24858 DIV (objY + 100) * 4, 10) (*, snd (200 + (y << 1), 10),*)
 *)
-  (*деактивация и звук падения. Камень или алмаз теперь лежит*)
+  (*РґРµР°РєС‚РёРІР°С†РёСЏ Рё Р·РІСѓРє РїР°РґРµРЅРёСЏ. РљР°РјРµРЅСЊ РёР»Рё Р°Р»РјР°Р· С‚РµРїРµСЂСЊ Р»РµР¶РёС‚*)
 END Deactivate;
 
 PROCEDURE CanFlyThru (): BOOLEAN;
-(*Для летящих в клетке камней и алмазов - разрешение пролета вниз дальше*)
+(*Р”Р»СЏ Р»РµС‚СЏС‰РёС… РІ РєР»РµС‚РєРµ РєР°РјРЅРµР№ Рё Р°Р»РјР°Р·РѕРІ - СЂР°Р·СЂРµС€РµРЅРёРµ РїСЂРѕР»РµС‚Р° РІРЅРёР· РґР°Р»СЊС€Рµ*)
 BEGIN
   IF objY = (FieldHeight-1) * 2 THEN
-    RETURN FALSE (*Нельзя - упали на границу лабиринта*)
+    RETURN FALSE (*РќРµР»СЊР·СЏ - СѓРїР°Р»Рё РЅР° РіСЂР°РЅРёС†Сѓ Р»Р°Р±РёСЂРёРЅС‚Р°*)
   END;
   CASE (*GetCell(objX, objY + 2)*)field[objIdx + FieldWidth] OF
     Wall, Grass, Stone, Almas, ActiveStone1, ActiveAlmas1, ActiveStone2, ActiveAlmas2 :
-      RETURN FALSE (*Нельзя - упали на траву, стену, камень или алмаз*)
+      RETURN FALSE (*РќРµР»СЊР·СЏ - СѓРїР°Р»Рё РЅР° С‚СЂР°РІСѓ, СЃС‚РµРЅСѓ, РєР°РјРµРЅСЊ РёР»Рё Р°Р»РјР°Р·*)
   ELSE END;
-  RETURN TRUE (*Можно - впереди пусто или убиваемый объект*)
+  RETURN TRUE (*РњРѕР¶РЅРѕ - РІРїРµСЂРµРґРё РїСѓСЃС‚Рѕ РёР»Рё СѓР±РёРІР°РµРјС‹Р№ РѕР±СЉРµРєС‚*)
 END CanFlyThru;
 
 PROCEDURE NextFall;
-(*Для летящих в клетке камней - переход в положение между двумя клетками*)
+(*Р”Р»СЏ Р»РµС‚СЏС‰РёС… РІ РєР»РµС‚РєРµ РєР°РјРЅРµР№ - РїРµСЂРµС…РѕРґ РІ РїРѕР»РѕР¶РµРЅРёРµ РјРµР¶РґСѓ РґРІСѓРјСЏ РєР»РµС‚РєР°РјРё*)
 (* WARNING: This procedure may change global vars objX, objIdx *)
 BEGIN
   CASE (*GetCell(objX, objY + 2)*)field[objIdx + FieldWidth] OF
@@ -286,7 +286,7 @@ BEGIN
 END NextFall;
 
 PROCEDURE CanStartFall (): BOOLEAN;
-(*Разрешение падения прямо вниз из неподвижного положения*)
+(*Р Р°Р·СЂРµС€РµРЅРёРµ РїР°РґРµРЅРёСЏ РїСЂСЏРјРѕ РІРЅРёР· РёР· РЅРµРїРѕРґРІРёР¶РЅРѕРіРѕ РїРѕР»РѕР¶РµРЅРёСЏ*)
 BEGIN
   IF objY < (FieldHeight-1) * 2 THEN
     IF (*GetCell(objX, objY + 2)*)field[objIdx + FieldWidth] = None THEN
@@ -297,7 +297,7 @@ BEGIN
 END CanStartFall;
 
 PROCEDURE CanRollFrom (side: Coords): BOOLEAN;
-(*Разрешение скатывания в сторону (side = SIDE_LEFT или SIDE_RIGHT)*)
+(*Р Р°Р·СЂРµС€РµРЅРёРµ СЃРєР°С‚С‹РІР°РЅРёСЏ РІ СЃС‚РѕСЂРѕРЅСѓ (side = SIDE_LEFT РёР»Рё SIDE_RIGHT)*)
 VAR
   x: Coords;
 BEGIN
@@ -312,7 +312,7 @@ BEGIN
 END CanRollFrom;
 
 PROCEDURE RollFrom (side: Coords);
-(*Скатывание в сторону side на 1 клетку*)
+(*РЎРєР°С‚С‹РІР°РЅРёРµ РІ СЃС‚РѕСЂРѕРЅСѓ side РЅР° 1 РєР»РµС‚РєСѓ*)
 (* WARNING: This procedure may change global vars objX, objIdx *)
 BEGIN
   (*SetCell(objX, objY, None);*)
@@ -321,17 +321,17 @@ BEGIN
   (*SetCell(objX + side, objY, objCell);*)
   field[objIdx + side DIV 2] := objCell;
   Gr.DrawTile(objX + side, objY, Rsrc.GetTileByNum( objCell ));
-(*Специфично для скатывания вправо - чтобы этот камень или алмаз мог только
-скатиться и не был повторно обработан в следующей клетке - мы его новую
-клетку пропускаем*)
+(*РЎРїРµС†РёС„РёС‡РЅРѕ РґР»СЏ СЃРєР°С‚С‹РІР°РЅРёСЏ РІРїСЂР°РІРѕ - С‡С‚РѕР±С‹ СЌС‚РѕС‚ РєР°РјРµРЅСЊ РёР»Рё Р°Р»РјР°Р· РјРѕРі С‚РѕР»СЊРєРѕ
+СЃРєР°С‚РёС‚СЊСЃСЏ Рё РЅРµ Р±С‹Р» РїРѕРІС‚РѕСЂРЅРѕ РѕР±СЂР°Р±РѕС‚Р°РЅ РІ СЃР»РµРґСѓСЋС‰РµР№ РєР»РµС‚РєРµ - РјС‹ РµРіРѕ РЅРѕРІСѓСЋ
+РєР»РµС‚РєСѓ РїСЂРѕРїСѓСЃРєР°РµРј*)
   IF side = SideRight THEN INC(objX, SideRight); INC(objIdx) END
 END RollFrom;
 
 PROCEDURE Activate;
-(*Перевод неподвижного камня или алмаза в активное состояние и*)
-(*в положение между 2 клетками*)
+(*РџРµСЂРµРІРѕРґ РЅРµРїРѕРґРІРёР¶РЅРѕРіРѕ РєР°РјРЅСЏ РёР»Рё Р°Р»РјР°Р·Р° РІ Р°РєС‚РёРІРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Рё*)
+(*РІ РїРѕР»РѕР¶РµРЅРёРµ РјРµР¶РґСѓ 2 РєР»РµС‚РєР°РјРё*)
 BEGIN
-  IF objCell = Stone THEN (*Занимает 2 клетки*)
+  IF objCell = Stone THEN (*Р—Р°РЅРёРјР°РµС‚ 2 РєР»РµС‚РєРё*)
     Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
     (*SetCell(objX, objY, ActiveStone1);*)
     field[objIdx] := ActiveStone1;
@@ -350,27 +350,27 @@ END Activate;
 (* ---------------- Man functionality - orders of live man's world ---------------- *)
 (* -------------------------------------------------------------------------------- *)
 PROCEDURE GetManSprite (): Cell;
-(*Номер спрайта первой фазы человечка для заданного направления движения*)
+(*РќРѕРјРµСЂ СЃРїСЂР°Р№С‚Р° РїРµСЂРІРѕР№ С„Р°Р·С‹ С‡РµР»РѕРІРµС‡РєР° РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ РЅР°РїСЂР°РІР»РµРЅРёСЏ РґРІРёР¶РµРЅРёСЏ*)
 BEGIN
-  IF manDirX = 0 THEN (* Движение по вертикали *)
+  IF manDirX = 0 THEN (* Р”РІРёР¶РµРЅРёРµ РїРѕ РІРµСЂС‚РёРєР°Р»Рё *)
     CASE manDirY OF
-      1  : RETURN DownMan (*вниз*)
-    | -1 : RETURN UpMan   (*вверх*)
-    ELSE RETURN StopMan  (*на месте (не бывает)*)
+      1  : RETURN DownMan (*РІРЅРёР·*)
+    | -1 : RETURN UpMan   (*РІРІРµСЂС…*)
+    ELSE RETURN StopMan  (*РЅР° РјРµСЃС‚Рµ (РЅРµ Р±С‹РІР°РµС‚)*)
     END
   END;
-  IF manDirY = 0 THEN (*Движение по горизонтали*)
+  IF manDirY = 0 THEN (*Р”РІРёР¶РµРЅРёРµ РїРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё*)
     CASE manDirX OF
-      1  : RETURN RightMan (*вправо*)
-    | -1 : RETURN LeftMan  (*влево*)
-    ELSE RETURN StopMan   (*на месте (не бывает)*)
+      1  : RETURN RightMan (*РІРїСЂР°РІРѕ*)
+    | -1 : RETURN LeftMan  (*РІР»РµРІРѕ*)
+    ELSE RETURN StopMan   (*РЅР° РјРµСЃС‚Рµ (РЅРµ Р±С‹РІР°РµС‚)*)
     END
   END;
-  RETURN None (*Неверная ситуация (не бывает)*)
+  RETURN None (*РќРµРІРµСЂРЅР°СЏ СЃРёС‚СѓР°С†РёСЏ (РЅРµ Р±С‹РІР°РµС‚)*)
 END GetManSprite;
 
 PROCEDURE ManCanGo (): BOOLEAN;
-(*Разрешение прохода в данном направлении*)
+(*Р Р°Р·СЂРµС€РµРЅРёРµ РїСЂРѕС…РѕРґР° РІ РґР°РЅРЅРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё*)
 VAR
   x, y, tX, tY: Coords; cell: Cell;
 BEGIN
@@ -379,34 +379,34 @@ BEGIN
   IF (x >= 0) & (x < FieldWidth * 2) & (y >= 0) & (y < FieldHeight * 2) THEN
     CASE GetCell(x, y) OF
       Wall, ActiveStone1, ActiveAlmas1 :
-        RETURN FALSE (*Пройти нельзя*)
+        RETURN FALSE (*РџСЂРѕР№С‚Рё РЅРµР»СЊР·СЏ*)
     | Stone, ActiveStone2 :
-        (*unsigned tx, ty, z;*) (*Попробуем протолкнуть камни*)
+        (*unsigned tx, ty, z;*) (*РџРѕРїСЂРѕР±СѓРµРј РїСЂРѕС‚РѕР»РєРЅСѓС‚СЊ РєР°РјРЅРё*)
         tX := x; tY := y;
         LOOP
           IF (tX >= 0) & (tX < FieldWidth * 2) & (tY >= 0) & (tY < FieldHeight * 2) THEN
             cell := GetCell(tX, tY);
             IF (cell # Stone) & (cell # ActiveStone2) THEN
               IF cell = None THEN EXIT END;
-              RETURN FALSE (*Протолкнуть камни нельзя*)
+              RETURN FALSE (*РџСЂРѕС‚РѕР»РєРЅСѓС‚СЊ РєР°РјРЅРё РЅРµР»СЊР·СЏ*)
             END;
             INC(tX, manDirX + manDirX); INC(tY, manDirY + manDirY) (*?*)
           ELSE
-            RETURN FALSE (*Протолкнуть камни нельзя*)
+            RETURN FALSE (*РџСЂРѕС‚РѕР»РєРЅСѓС‚СЊ РєР°РјРЅРё РЅРµР»СЊР·СЏ*)
           END
         END;
         SetCell(tX, tY, Stone); SetCell(x, y, None);
         Gr.DrawTile(tX, tY, Rsrc.Stone);
         Gr.DrawTile(x, y, Rsrc.None)
     ELSE END;
-    RETURN TRUE (*Иначе - пройти в таком направлении можно*)
+    RETURN TRUE (*РРЅР°С‡Рµ - РїСЂРѕР№С‚Рё РІ С‚Р°РєРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё РјРѕР¶РЅРѕ*)
   END;
   RETURN FALSE
 END ManCanGo;
 
 PROCEDURE ManGoing (x, y: Coords): BOOLEAN;
-(*Перевод человечка из текущей клетки в положение между двумя клетками*)
-(*Разрешение дальнейшего существования человечка*)
+(*РџРµСЂРµРІРѕРґ С‡РµР»РѕРІРµС‡РєР° РёР· С‚РµРєСѓС‰РµР№ РєР»РµС‚РєРё РІ РїРѕР»РѕР¶РµРЅРёРµ РјРµР¶РґСѓ РґРІСѓРјСЏ РєР»РµС‚РєР°РјРё*)
+(*Р Р°Р·СЂРµС€РµРЅРёРµ РґР°Р»СЊРЅРµР№С€РµРіРѕ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ С‡РµР»РѕРІРµС‡РєР°*)
 BEGIN
   CASE GetCell(x, y) OF
     Mina, Babo, (*StopMan,*) Mina1, Babo1 :
@@ -430,37 +430,37 @@ BEGIN
     x := manX + manDirX + manDirX;
     y := manY + manDirY + manDirY;
     manPresent := ManGoing(x, y);
-    IF ~manPresent THEN RETURN (*СМЕРТЬ - ВЫХОД*) END;
+    IF ~manPresent THEN RETURN (*РЎРњР•Р РўР¬ - Р’Р«РҐРћР”*) END;
       manSprite := GetManSprite();
-      SetCell(x, y, manSprite); (*Отметить следующую позицию*)
-      Gr.DrawTile(manX, manY, Rsrc.None); (*Стереть предыдущий спрайт*)
+      SetCell(x, y, manSprite); (*РћС‚РјРµС‚РёС‚СЊ СЃР»РµРґСѓСЋС‰СѓСЋ РїРѕР·РёС†РёСЋ*)
+      Gr.DrawTile(manX, manY, Rsrc.None); (*РЎС‚РµСЂРµС‚СЊ РїСЂРµРґС‹РґСѓС‰РёР№ СЃРїСЂР°Р№С‚*)
       INC(manX, manDirX);
-      INC(manY, manDirY) (*Изменить координаты*)
+      INC(manY, manDirY) (*РР·РјРµРЅРёС‚СЊ РєРѕРѕСЂРґРёРЅР°С‚С‹*)
     ELSE
-      manSprite := StopMan (*Остановить человечка*)
+      manSprite := StopMan (*РћСЃС‚Р°РЅРѕРІРёС‚СЊ С‡РµР»РѕРІРµС‡РєР°*)
     END;
-  Gr.DrawTile(manX, manY, Rsrc.GetTileByNum( manSprite )); (*Вывести новый спрайт*)
+  Gr.DrawTile(manX, manY, Rsrc.GetTileByNum( manSprite )); (*Р’С‹РІРµСЃС‚Рё РЅРѕРІС‹Р№ СЃРїСЂР°Р№С‚*)
 END TryMoveMan;
 
 PROCEDURE ManContinuesGoing;
-  (*Перевод человечка из состояния между двумя клетками в одну клетку*)
-  (*(продолжение предыдущего движения)*)
+  (*РџРµСЂРµРІРѕРґ С‡РµР»РѕРІРµС‡РєР° РёР· СЃРѕСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ РґРІСѓРјСЏ РєР»РµС‚РєР°РјРё РІ РѕРґРЅСѓ РєР»РµС‚РєСѓ*)
+  (*(РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РґРІРёР¶РµРЅРёСЏ)*)
 VAR
   plusX, minusX, plusY, minusY: Coords;
 BEGIN
   plusX := manX + manDirX; minusX := manX - manDirX;
   plusY := manY + manDirY; minusY := manY - manDirY;
   Gr.DrawTile(minusX, minusY, Rsrc.None);
-  IF GetCell(minusX, minusY) = StopMan THEN (*Откат на полшага назад*)
-    SetCell(minusX, minusY, None) (*Затирка человечка*)
+  IF GetCell(minusX, minusY) = StopMan THEN (*РћС‚РєР°С‚ РЅР° РїРѕР»С€Р°РіР° РЅР°Р·Р°Рґ*)
+    SetCell(minusX, minusY, None) (*Р—Р°С‚РёСЂРєР° С‡РµР»РѕРІРµС‡РєР°*)
   END;
-  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) + 1) ); (*Бегущая фаза (следующая)*)
+  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) + 1) ); (*Р‘РµРіСѓС‰Р°СЏ С„Р°Р·Р° (СЃР»РµРґСѓСЋС‰Р°СЏ)*)
   SetCell(plusX, plusY, StopMan);
-  manX := plusX; manY := plusY (*Следующие координаты*)
+  manX := plusX; manY := plusY (*РЎР»РµРґСѓСЋС‰РёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹*)
 END ManContinuesGoing;
 
 PROCEDURE CheckMan (): BOOLEAN;
-(*Признак присутствия человечка в клетке, соответствующей его координатам*)
+(*РџСЂРёР·РЅР°Рє РїСЂРёСЃСѓС‚СЃС‚РІРёСЏ С‡РµР»РѕРІРµС‡РєР° РІ РєР»РµС‚РєРµ, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµР№ РµРіРѕ РєРѕРѕСЂРґРёРЅР°С‚Р°Рј*)
 BEGIN
   CASE GetCell(manX, manY)(*Field[manIdx]*) OF
     StopMan, UpMan, DownMan, LeftMan, RightMan,
@@ -489,7 +489,7 @@ END GetUserControl;
 (* ------------ Live of monsters - flyes (babo) and mines (mina) ------------ *)
 (* -------------------------------------------------------------------------- *)
 PROCEDURE NextMonstrPhase (cell: Cell): Cell;
-  (* Вычисление противофазы для бабочки или мины *)
+  (* Р’С‹С‡РёСЃР»РµРЅРёРµ РїСЂРѕС‚РёРІРѕС„Р°Р·С‹ РґР»СЏ Р±Р°Р±РѕС‡РєРё РёР»Рё РјРёРЅС‹ *)
 BEGIN
   CASE cell OF
   | Mina  : RETURN Mina1
@@ -501,8 +501,8 @@ BEGIN
 END NextMonstrPhase;
 
 PROCEDURE MonstrContinuesGoing (VAR monstr: Monstr);
-(*Продолжение движения бабочки или мины - аналогично как для камней или
-человечка. Из промежуточного положения - в целую клетку*)
+(*РџСЂРѕРґРѕР»Р¶РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ Р±Р°Р±РѕС‡РєРё РёР»Рё РјРёРЅС‹ - Р°РЅР°Р»РѕРіРёС‡РЅРѕ РєР°Рє РґР»СЏ РєР°РјРЅРµР№ РёР»Рё
+С‡РµР»РѕРІРµС‡РєР°. РР· РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅРѕРіРѕ РїРѕР»РѕР¶РµРЅРёСЏ - РІ С†РµР»СѓСЋ РєР»РµС‚РєСѓ*)
 VAR
   newX, newY, oldX, oldY: Coords; sprite: Cell;
 BEGIN
@@ -516,11 +516,11 @@ BEGIN
 END MonstrContinuesGoing;
 
 (* ======================== ExcludeMonstr (n: Index) ======================== *)
-(*  Вход:      n - номер монстра (бабочки или мины)
-    Обновляет: monstr[], monstrsNum
+(*  Р’С…РѕРґ:      n - РЅРѕРјРµСЂ РјРѕРЅСЃС‚СЂР° (Р±Р°Р±РѕС‡РєРё РёР»Рё РјРёРЅС‹)
+    РћР±РЅРѕРІР»СЏРµС‚: monstr[], monstrsNum
 *)
-PROCEDURE ExcludeMonstr (n: Index); (* Исключение бабочки или мины,
-  убитой камнем или алмазом, из списка действующих монстров. *)
+PROCEDURE ExcludeMonstr (n: Index); (* РСЃРєР»СЋС‡РµРЅРёРµ Р±Р°Р±РѕС‡РєРё РёР»Рё РјРёРЅС‹,
+  СѓР±РёС‚РѕР№ РєР°РјРЅРµРј РёР»Рё Р°Р»РјР°Р·РѕРј, РёР· СЃРїРёСЃРєР° РґРµР№СЃС‚РІСѓСЋС‰РёС… РјРѕРЅСЃС‚СЂРѕРІ. *)
 VAR
   x, y: Coords;
 BEGIN
@@ -529,9 +529,9 @@ BEGIN
     INC(x, monstr[n].dx); INC(y, monstr[n].dy);
     SetCell(x, y, None); Gr.DrawTile(x, y, Rsrc.None);
   END;
-  (* Удаление из промежуточной позиции: *)
-  DEC(monstrsNum); (* Уменьшение числа монстров. *)
-  WHILE CHR( n ) < CHR( monstrsNum ) DO (* Сдвижка массива: *)
+  (* РЈРґР°Р»РµРЅРёРµ РёР· РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅРѕР№ РїРѕР·РёС†РёРё: *)
+  DEC(monstrsNum); (* РЈРјРµРЅСЊС€РµРЅРёРµ С‡РёСЃР»Р° РјРѕРЅСЃС‚СЂРѕРІ. *)
+  WHILE CHR( n ) < CHR( monstrsNum ) DO (* РЎРґРІРёР¶РєР° РјР°СЃСЃРёРІР°: *)
     monstr[n].x := monstr[n + 1].x; monstr[n].y := monstr[n + 1].y;
     monstr[n].dx := monstr[n + 1].dx; monstr[n].dy := monstr[n + 1].dy;
     INC(n);
@@ -539,69 +539,69 @@ BEGIN
 END ExcludeMonstr;
 
 (* ======================== TryMoveMonstr (n: Index) ======================== *)
-(*  Вход:      n - номер монстра (бабочки или мины)
-    Обновляет: monstr[n]
+(*  Р’С…РѕРґ:      n - РЅРѕРјРµСЂ РјРѕРЅСЃС‚СЂР° (Р±Р°Р±РѕС‡РєРё РёР»Рё РјРёРЅС‹)
+    РћР±РЅРѕРІР»СЏРµС‚: monstr[n]
 *)
 PROCEDURE Sign (x: Coords): Coords;
-  (* Знак аргумента.
-     Результат: -1 для отрицательного, 1 для положительного и нуля. *)
+  (* Р—РЅР°Рє Р°СЂРіСѓРјРµРЅС‚Р°.
+     Р РµР·СѓР»СЊС‚Р°С‚: -1 РґР»СЏ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРіРѕ, 1 РґР»СЏ РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕРіРѕ Рё РЅСѓР»СЏ. *)
 BEGIN
   IF x < 0 THEN RETURN -1 END;
   RETURN 1
 END Sign;
 
-PROCEDURE TryMoveMonstr (n: Index); (* Попытка сдвига монстра N из клетки. *)
+PROCEDURE TryMoveMonstr (n: Index); (* РџРѕРїС‹С‚РєР° СЃРґРІРёРіР° РјРѕРЅСЃС‚СЂР° N РёР· РєР»РµС‚РєРё. *)
 VAR
   x, y, dx, dy, tx, ty, max, mark: Coords; cell: Cell; i, moves: NatInt;
-  canMove: ARRAY 4 OF NatInt; (* Направления движения монстра. *)
+  canMove: ARRAY 4 OF NatInt; (* РќР°РїСЂР°РІР»РµРЅРёСЏ РґРІРёР¶РµРЅРёСЏ РјРѕРЅСЃС‚СЂР°. *)
 BEGIN
   x := monstr[n].x; y := monstr[n].y; cell := NextMonstrPhase(GetCell(x, y));
 
-  (* Просмотр по 4-м сторонам света c севера против часовой стрелки: *)
+  (* РџСЂРѕСЃРјРѕС‚СЂ РїРѕ 4-Рј СЃС‚РѕСЂРѕРЅР°Рј СЃРІРµС‚Р° c СЃРµРІРµСЂР° РїСЂРѕС‚РёРІ С‡Р°СЃРѕРІРѕР№ СЃС‚СЂРµР»РєРё: *)
   moves := -1;
-  i := 3; REPEAT (* i := 3 TO 0 BY -1 {север, запад, юг, восток} *)
-    (* Проследить, куда может двинуться монстр с этого места: *)
+  i := 3; REPEAT (* i := 3 TO 0 BY -1 {СЃРµРІРµСЂ, Р·Р°РїР°Рґ, СЋРі, РІРѕСЃС‚РѕРє} *)
+    (* РџСЂРѕСЃР»РµРґРёС‚СЊ, РєСѓРґР° РјРѕР¶РµС‚ РґРІРёРЅСѓС‚СЊСЃСЏ РјРѕРЅСЃС‚СЂ СЃ СЌС‚РѕРіРѕ РјРµСЃС‚Р°: *)
     tx := x + 2*Rsrc.CrossX[i]; ty := y + 2*Rsrc.CrossY[i];
     IF ( CHR( tx ) <= CHR( (FieldWidth-1) * 2) ) &
        ( CHR( ty ) <= CHR( (FieldHeight-1) * 2) )
-       (* tx,ty неявно проверяются здесь и на >= 0 (приведены к беззнаковым) *)
+       (* tx,ty РЅРµСЏРІРЅРѕ РїСЂРѕРІРµСЂСЏСЋС‚СЃСЏ Р·РґРµСЃСЊ Рё РЅР° >= 0 (РїСЂРёРІРµРґРµРЅС‹ Рє Р±РµР·Р·РЅР°РєРѕРІС‹Рј) *)
     THEN
-      CASE GetCell(tx, ty) OF None, StopMan: (* Двинуться можно. *)
-        INC(moves); canMove[moves] := i; (* Вариант включен в список. *)
+      CASE GetCell(tx, ty) OF None, StopMan: (* Р”РІРёРЅСѓС‚СЊСЃСЏ РјРѕР¶РЅРѕ. *)
+        INC(moves); canMove[moves] := i; (* Р’Р°СЂРёР°РЅС‚ РІРєР»СЋС‡РµРЅ РІ СЃРїРёСЃРѕРє. *)
       ELSE END;
     END;
   DEC(i) UNTIL i < 0;
-  (* Сейчас moves = количество возможных ходов монстра - 1 (оптимизация) *)
+  (* РЎРµР№С‡Р°СЃ moves = РєРѕР»РёС‡РµСЃС‚РІРѕ РІРѕР·РјРѕР¶РЅС‹С… С…РѕРґРѕРІ РјРѕРЅСЃС‚СЂР° - 1 (РѕРїС‚РёРјРёР·Р°С†РёСЏ) *)
 
-  (* ================ Проверяется всё множество вариантов: ================= *)
-  IF moves < 0 THEN (* Монстр зажат со всех сторон - нет выбора. *)
+  (* ================ РџСЂРѕРІРµСЂСЏРµС‚СЃСЏ РІСЃС‘ РјРЅРѕР¶РµСЃС‚РІРѕ РІР°СЂРёР°РЅС‚РѕРІ: ================= *)
+  IF moves < 0 THEN (* РњРѕРЅСЃС‚СЂ Р·Р°Р¶Р°С‚ СЃРѕ РІСЃРµС… СЃС‚РѕСЂРѕРЅ - РЅРµС‚ РІС‹Р±РѕСЂР°. *)
     SetCell(x, y, cell); Gr.DrawTile(x, y, Rsrc.GetTileByNum(cell));
-    (* monstr[n].dx и monstr[n].dy в 0 не устанавливаем - смещения неважны,
-       ибо продолжение движения возможно только для непарных x и y. *)
+    (* monstr[n].dx Рё monstr[n].dy РІ 0 РЅРµ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј - СЃРјРµС‰РµРЅРёСЏ РЅРµРІР°Р¶РЅС‹,
+       РёР±Рѕ РїСЂРѕРґРѕР»Р¶РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ РІРѕР·РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РЅРµРїР°СЂРЅС‹С… x Рё y. *)
   ELSE
-    IF moves = 0 THEN (* Монстр отражается от тупика коридора. *)
+    IF moves = 0 THEN (* РњРѕРЅСЃС‚СЂ РѕС‚СЂР°Р¶Р°РµС‚СЃСЏ РѕС‚ С‚СѓРїРёРєР° РєРѕСЂРёРґРѕСЂР°. *)
       dx := Rsrc.CrossX[ canMove[0] ]; dy := Rsrc.CrossY[ canMove[0] ];
-    ELSE (* Много вариантов: *)
+    ELSE (* РњРЅРѕРіРѕ РІР°СЂРёР°РЅС‚РѕРІ: *)
 
-      (* Поискать худший (обратное движение): *)
+      (* РџРѕРёСЃРєР°С‚СЊ С…СѓРґС€РёР№ (РѕР±СЂР°С‚РЅРѕРµ РґРІРёР¶РµРЅРёРµ): *)
       dx := -monstr[n].dx; dy := -monstr[n].dy;
       i := 0; REPEAT (* i := 0 TO moves *)
         IF (Rsrc.CrossX[canMove[i]] = dx) & (Rsrc.CrossY[canMove[i]] = dy) THEN
-          WHILE CHR( i ) < CHR( moves ) DO (* Уменьшить кол-во вариантов: *)
-            canMove[i] := canMove[i + 1]; INC(i); (* Сжать массив. *)
+          WHILE CHR( i ) < CHR( moves ) DO (* РЈРјРµРЅСЊС€РёС‚СЊ РєРѕР»-РІРѕ РІР°СЂРёР°РЅС‚РѕРІ: *)
+            canMove[i] := canMove[i + 1]; INC(i); (* РЎР¶Р°С‚СЊ РјР°СЃСЃРёРІ. *)
           END;
-          DEC(moves); (* Вычеркнуть из списка. *)
-          (* Обратное движение найдено и вычеркнуто, выход из поиска. *)
+          DEC(moves); (* Р’С‹С‡РµСЂРєРЅСѓС‚СЊ РёР· СЃРїРёСЃРєР°. *)
+          (* РћР±СЂР°С‚РЅРѕРµ РґРІРёР¶РµРЅРёРµ РЅР°Р№РґРµРЅРѕ Рё РІС‹С‡РµСЂРєРЅСѓС‚Рѕ, РІС‹С…РѕРґ РёР· РїРѕРёСЃРєР°. *)
         END;
       INC(i) UNTIL CHR( i ) > CHR( moves );
 
-      IF moves = 0 THEN (* Если остался только один вариант, *)
-        (* это обеспечит продвижение объекта по коридору: *)
+      IF moves = 0 THEN (* Р•СЃР»Рё РѕСЃС‚Р°Р»СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ РІР°СЂРёР°РЅС‚, *)
+        (* СЌС‚Рѕ РѕР±РµСЃРїРµС‡РёС‚ РїСЂРѕРґРІРёР¶РµРЅРёРµ РѕР±СЉРµРєС‚Р° РїРѕ РєРѕСЂРёРґРѕСЂСѓ: *)
         dx := Rsrc.CrossX[ canMove[0] ]; dy := Rsrc.CrossY[ canMove[0] ];
-      ELSE (* Только здесь оцениваем направление к человечку: *)
+      ELSE (* РўРѕР»СЊРєРѕ Р·РґРµСЃСЊ РѕС†РµРЅРёРІР°РµРј РЅР°РїСЂР°РІР»РµРЅРёРµ Рє С‡РµР»РѕРІРµС‡РєСѓ: *)
         tx := Sign(manX - x); ty := Sign(manY - y); max := 0;
         i := 0; REPEAT (* i := 0 TO moves *)
-        (* Можно бы пустить цикл от moves до 0, но нарушится порядок поиска. *)
+        (* РњРѕР¶РЅРѕ Р±С‹ РїСѓСЃС‚РёС‚СЊ С†РёРєР» РѕС‚ moves РґРѕ 0, РЅРѕ РЅР°СЂСѓС€РёС‚СЃСЏ РїРѕСЂСЏРґРѕРє РїРѕРёСЃРєР°. *)
           mark := ABS(Rsrc.CrossX[ canMove[i] ] + tx) +
                   ABS(Rsrc.CrossY[ canMove[i] ] + ty);
           IF CHR( mark ) > CHR( max ) THEN
@@ -612,7 +612,7 @@ BEGIN
       END;
     END;
 
-    (* Направление движения монстра определено [dx, dy]. *)
+    (* РќР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ РјРѕРЅСЃС‚СЂР° РѕРїСЂРµРґРµР»РµРЅРѕ [dx, dy]. *)
     Gr.DrawTile(x, y, Rsrc.None); INC(x, dx); INC(y, dy);
     Gr.DrawTile(x, y, Rsrc.GetTileByNum(cell));
     SetCell(x + dx, y + dy, cell);
@@ -628,24 +628,24 @@ PROCEDURE Play* (room: Level);
 VAR
   x, y, side: Coords; number: NatInt; keys: Ctrl.Keys;
 BEGIN
-(*------------Н-А-Ч-А-Л-Ь-Н-Ы-Е---Д-Е-Й-С-Т-В-И-Я-------------*)
+(*------------Рќ-Рђ-Р§-Рђ-Р›-Р¬-Рќ-Р«-Р•---Р”-Р•-Р™-РЎ-Рў-Р’-Р-РЇ-------------*)
   (*select_lab ();*)
   (*lives := 10; score := 0;*)
   Scr.Cls;
-  (*REPEAT*) (*---В---П-О-С-Л-Е-Д-О-В-А-Т-Е-Л-Ь-Н-Ы-Х---Л-А-Б-И-Р-И-Н-Т-А-Х---*)
+  (*REPEAT*) (*---Р’---Рџ-Рћ-РЎ-Р›-Р•-Р”-Рћ-Р’-Рђ-Рў-Р•-Р›-Р¬-Рќ-Р«-РҐ---Р›-Рђ-Р‘-Р-Р -Р-Рќ-Рў-Рђ-РҐ---*)
     Unpack(room); Display; LookForObjects;
     (*Grax.SetCursorPos(0,0); WriteInt (monstrsNum);*)
     IF (~manPresent) OR (monstrsNum = 0) THEN RETURN (*0*) END;
-      (* Если не с кем играть с самого начала - это нечестно *)
+      (* Р•СЃР»Рё РЅРµ СЃ РєРµРј РёРіСЂР°С‚СЊ СЃ СЃР°РјРѕРіРѕ РЅР°С‡Р°Р»Р° - СЌС‚Рѕ РЅРµС‡РµСЃС‚РЅРѕ *)
     side := SideRight;
-    LOOP (*---В---О-Д-Н-О-М---Л-А-Б-И-Р-И-Н-Т-Е---*)
+    LOOP (*---Р’---Рћ-Р”-Рќ-Рћ-Рњ---Р›-Рђ-Р‘-Р-Р -Р-Рќ-Рў-Р•---*)
       Timer.Start(SHORT(ENTIER(2*Timer.Mul/Timer.Div + 0.5))); (* 1/9 second per phase *)
 (*#ifdef MAN_*)
-      (*---Д-Е-Й-С-Т-В-И-Я---Ч-Е-Л-О-В-Е-Ч-К-А---*)
-      IF ODD(manX) OR ODD(manY) THEN (*Если нечетные координаты*)
-        ManContinuesGoing (*Продолжать начатый ход*)
-      ELSE (*Управлять человечком*)
-        keys := Ctrl.GetCustom(); (*Проверить и зафиксировать управление*)
+      (*---Р”-Р•-Р™-РЎ-Рў-Р’-Р-РЇ---Р§-Р•-Р›-Рћ-Р’-Р•-Р§-Рљ-Рђ---*)
+      IF ODD(manX) OR ODD(manY) THEN (*Р•СЃР»Рё РЅРµС‡РµС‚РЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹*)
+        ManContinuesGoing (*РџСЂРѕРґРѕР»Р¶Р°С‚СЊ РЅР°С‡Р°С‚С‹Р№ С…РѕРґ*)
+      ELSE (*РЈРїСЂР°РІР»СЏС‚СЊ С‡РµР»РѕРІРµС‡РєРѕРј*)
+        keys := Ctrl.GetCustom(); (*РџСЂРѕРІРµСЂРёС‚СЊ Рё Р·Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ СѓРїСЂР°РІР»РµРЅРёРµ*)
         IF keys = {UserUp} THEN manDirX := 0; manDirY :=-1; TryMoveMan
         ELSIF keys = {UserDown} THEN manDirX := 0; manDirY := 1; TryMoveMan
         ELSIF keys = {UserLeft} THEN manDirX :=-1; manDirY := 0; TryMoveMan
@@ -655,61 +655,61 @@ BEGIN
           manDirX := 0; manDirY := 0
         END;
         IF ~manPresent THEN EXIT END
-      END; (*ход из целой позиции*)
+      END; (*С…РѕРґ РёР· С†РµР»РѕР№ РїРѕР·РёС†РёРё*)
 (*#endif /*MAN_*/*)
 
 (*#ifdef STONES*)
 
-(*------------Д-В-И-Ж-Е-Н-И-Е---К-А-М-Н-Е-Й---И---А-Л-М-А-З-О-В------------*)
+(*------------Р”-Р’-Р-Р–-Р•-Рќ-Р-Р•---Рљ-Рђ-Рњ-Рќ-Р•-Р™---Р---Рђ-Р›-Рњ-Рђ-Р—-Рћ-Р’------------*)
    (*almas*)number := 0;
    objIdx := FieldSize - FieldWidth;
    objY := FieldHeight * 2;
-   WHILE objY > 0 DO (*Просмотр снизу вверх по строкам*)
+   WHILE objY > 0 DO (*РџСЂРѕСЃРјРѕС‚СЂ СЃРЅРёР·Сѓ РІРІРµСЂС… РїРѕ СЃС‚СЂРѕРєР°Рј*)
      DEC(objY, 2);
      objX := 0;
-     WHILE objX < FieldWidth * 2 DO (*Просмотр строки слева направо*)
+     WHILE objX < FieldWidth * 2 DO (*РџСЂРѕСЃРјРѕС‚СЂ СЃС‚СЂРѕРєРё СЃР»РµРІР° РЅР°РїСЂР°РІРѕ*)
        objCell := field[objIdx];
-       CASE objCell OF (*Отдельно - подсчет алмазов*)
+       CASE objCell OF (*РћС‚РґРµР»СЊРЅРѕ - РїРѕРґСЃС‡РµС‚ Р°Р»РјР°Р·РѕРІ*)
          Almas, ActiveAlmas1, ActiveAlmas2 :
            INC((*almas*)number)
        ELSE END;
        CASE objCell OF
-         Almas, Stone : (*Неактивный камень или алмаз*)
+         Almas, Stone : (*РќРµР°РєС‚РёРІРЅС‹Р№ РєР°РјРµРЅСЊ РёР»Рё Р°Р»РјР°Р·*)
            IF CanStartFall() THEN
-             Activate (*Начать падение*)
+             Activate (*РќР°С‡Р°С‚СЊ РїР°РґРµРЅРёРµ*)
            ELSE
              side := -side;
-             IF CanRollFrom(side) THEN (*Попытаться скатиться*)
+             IF CanRollFrom(side) THEN (*РџРѕРїС‹С‚Р°С‚СЊСЃСЏ СЃРєР°С‚РёС‚СЊСЃСЏ*)
                RollFrom(side)
-             ELSIF CanRollFrom(-side) THEN (*В другую сторону*)
+             ELSIF CanRollFrom(-side) THEN (*Р’ РґСЂСѓРіСѓСЋ СЃС‚РѕСЂРѕРЅСѓ*)
                RollFrom(-side)
              END
            END
-           (*continue;*) (*Иначе остаться лежать*)
+           (*continue;*) (*РРЅР°С‡Рµ РѕСЃС‚Р°С‚СЊСЃСЏ Р»РµР¶Р°С‚СЊ*)
        | ActiveAlmas2, ActiveStone2 :
-           (*Камень или алмаз, пролетающий через клетку*)
+           (*РљР°РјРµРЅСЊ РёР»Рё Р°Р»РјР°Р·, РїСЂРѕР»РµС‚Р°СЋС‰РёР№ С‡РµСЂРµР· РєР»РµС‚РєСѓ*)
            IF CanFlyThru() THEN
-             NextFall (*либо летит дальше*)
+             NextFall (*Р»РёР±Рѕ Р»РµС‚РёС‚ РґР°Р»СЊС€Рµ*)
              (*continue;*)
            ELSE
-             Deactivate (*либо падает на опору*)
+             Deactivate (*Р»РёР±Рѕ РїР°РґР°РµС‚ РЅР° РѕРїРѕСЂСѓ*)
            END
-           (*Далее он сразу обрабатывается как неактивный*)
-       | ActiveStone1 : (* Stone, пролетающий между клетками*)
+           (*Р”Р°Р»РµРµ РѕРЅ СЃСЂР°Р·Сѓ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ РєР°Рє РЅРµР°РєС‚РёРІРЅС‹Р№*)
+       | ActiveStone1 : (* Stone, РїСЂРѕР»РµС‚Р°СЋС‰РёР№ РјРµР¶РґСѓ РєР»РµС‚РєР°РјРё*)
            Gr.DrawTile(objX, objY - 2, Rsrc.None);
            Gr.DrawTile(objX, objY, Rsrc.Stone);
            (*SetCell(objX, objY, ActiveStone2);*)
            field[objIdx] := ActiveStone2;
            (*SetCell(objX, objY - 2, None)*)
            field[objIdx - FieldWidth] := None
-       | ActiveAlmas1 : (* Almas, пролетающий между клетками*)
+       | ActiveAlmas1 : (* Almas, РїСЂРѕР»РµС‚Р°СЋС‰РёР№ РјРµР¶РґСѓ РєР»РµС‚РєР°РјРё*)
            Gr.DrawTile(objX, objY - 2, Rsrc.None);
            Gr.DrawTile(objX, objY, Rsrc.Almas);
            (*SetCell(objX, objY, ActiveAlmas2)*)
            field[objIdx] := ActiveAlmas2;
            (*SetCell(objX, objY - 2, None);*)
            field[objIdx - FieldWidth] := None
-           (*continue;*) (*Он пролетел в следующую клетку*)
+           (*continue;*) (*РћРЅ РїСЂРѕР»РµС‚РµР» РІ СЃР»РµРґСѓСЋС‰СѓСЋ РєР»РµС‚РєСѓ*)
        ELSE END;
        INC(objX, 2); INC(objIdx)
      END;
@@ -723,12 +723,12 @@ BEGIN
      EXIT
    END;
 (*#endif  /*STONES*/*)
-(*---------------Д-В-И-Ж-Е-Н-И-Е---Б-А-Б-О-Ч-Е-К---И---М-И-Н---------------*)
+(*---------------Р”-Р’-Р-Р–-Р•-Рќ-Р-Р•---Р‘-Рђ-Р‘-Рћ-Р§-Р•-Рљ---Р---Рњ-Р-Рќ---------------*)
       number := 0;
       WHILE number < monstrsNum DO (* for (ctr = 0; ctr < num_objects;) { *)
         (*optr = object_array + ctr;*)
         x := monstr[number].x; y := monstr[number].y;
-        IF ODD(x) THEN DEC(x, monstr[number].dx) END; (*Отход назад*)
+        IF ODD(x) THEN DEC(x, monstr[number].dx) END; (*РћС‚С…РѕРґ РЅР°Р·Р°Рґ*)
         IF ODD(y) THEN DEC(y, monstr[number].dy) END;
         CASE GetCell(x, y) OF
           Mina, Babo, Mina1, Babo1 :
@@ -738,8 +738,8 @@ BEGIN
               TryMoveMonstr(number)
             END;
             INC(number)
-        ELSE (*Уничтожить объект - он был разбит*)
-          ExcludeMonstr(number) (*Число объектов уменьшается*)
+        ELSE (*РЈРЅРёС‡С‚РѕР¶РёС‚СЊ РѕР±СЉРµРєС‚ - РѕРЅ Р±С‹Р» СЂР°Р·Р±РёС‚*)
+          ExcludeMonstr(number) (*Р§РёСЃР»Рѕ РѕР±СЉРµРєС‚РѕРІ СѓРјРµРЅСЊС€Р°РµС‚СЃСЏ*)
         END
       END;
       manPresent := CheckMan();
@@ -749,7 +749,7 @@ BEGIN
       Scr.Redraw;
       Timer.Until; (*End of phase*)
 
-      (*} while (almasNum != 0 && man_present); /*Цикл игры в 1 лабиринте*)
+      (*} while (almasNum != 0 && man_present); /*Р¦РёРєР» РёРіСЂС‹ РІ 1 Р»Р°Р±РёСЂРёРЅС‚Рµ*)
       IF ~manPresent (*OR Grax.terminate*) THEN EXIT END (* *)
     END;
   (*UNTIL FALSE*)
