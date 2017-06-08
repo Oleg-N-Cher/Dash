@@ -13,7 +13,7 @@
 #include "Timer.h"
 
 
-static SHORTINT Dash_controlMethodN;
+static SHORTINT Dash_controlMethodN, Dash_level;
 
 
 static void Dash_Center (SHORTINT y, CHAR *str, LONGINT str__len);
@@ -194,7 +194,11 @@ static void Dash_PlayGame (void)
 		for (;;) {
 			switch (Dash_MenuSelect()) {
 				case 0: 
-					Labirint_Play(2);
+					Dash_level = 36;
+					for (;;) {
+						Labirint_Play(Dash_level);
+						Dash_level += 1;
+					}
 					break;
 				case 2: 
 					if (!Dash_Instruction((void*)&"#  Bolder (boulder) Dash  is  a^chain of  puzzle-caverns.  The^cavern   consists   of   16x16^cells.  Each cell may be  of 8^cases:^  1.  Empty cell.  The man and^other  moving objects  can  go^thru this cells.", (LONGINT)211)) {

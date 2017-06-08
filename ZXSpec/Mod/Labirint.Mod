@@ -100,7 +100,7 @@ END Unpack;
 
 PROCEDURE TwoStep (dy: Coords);
 BEGIN
-  Timer.Start(1);
+  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
   dy := dy * 6;
   IF dy >= 0 THEN
     Scr.ScrollUp(dy)
@@ -108,7 +108,7 @@ BEGIN
     Scr.ScrollDown(-dy)
   END;
   Timer.Until;
-  Timer.Start(1);
+  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
   IF dy >= 0 THEN
     Scr.ScrollUp(dy)
   ELSE
@@ -152,7 +152,7 @@ BEGIN
     Timer.Until;
     INC(i)
   END;
-  Timer.Start(18);
+  Timer.Start(SHORT(ENTIER(18*Timer.Mul/Timer.Div + 0.5)));
   Timer.Until;
 END DisplayInf;
 
@@ -492,12 +492,11 @@ PROCEDURE NextMonstrPhase (cell: Cell): Cell;
   (* Вычисление противофазы для бабочки или мины *)
 BEGIN
   CASE cell OF
-  | Mina  : RETURN Mina1
-  | Mina1 : RETURN Mina
   | Babo  : RETURN Babo1
   | Babo1 : RETURN Babo
+  | Mina  : RETURN Mina1
   ELSE END;
-  RETURN None
+  RETURN Mina
 END NextMonstrPhase;
 
 PROCEDURE MonstrContinuesGoing (VAR monstr: Monstr);

@@ -3,7 +3,7 @@ MODULE Timer;
 IMPORT SYSTEM;
 
 CONST
-  Mul* = 500; Div* = 182;
+  Mul* = 50; Div* = 18.2;
 
 (** Max. delay time = 32767/50/60 ~= 10.922 min *)
 PROCEDURE Start* (ticks: INTEGER); END Start;
