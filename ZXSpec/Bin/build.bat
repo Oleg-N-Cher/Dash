@@ -8,6 +8,9 @@
 @SET Lib=%XDev%\ZXDev\Lib
 
 @IF %1==%Name% GOTO build
+@SET Name=TestTiles
+@IF %1==%Name% GOTO build
+@SET Name=Dash
 @CALL ..\Bin\compile %1
 
 :build
