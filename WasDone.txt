@@ -1,4 +1,8 @@
 Labirint
 
-  ExcludeMonstr (n: Index)	GAME.CPP static void exclude_object (unsigned n)
-  TryMoveMonstr (n: Index)	GAME.CPP static void try_move_object (union object * a)
+  CanFlyThru (): BOOLEAN;		bool can_fly_thru (unsigned x, unsigned y)
+  NextFall;				next_fall (unsigned * x, unsigned y, spr_t z)
+  CanStartFall (): BOOLEAN;		bool can_start_fall (unsigned x, unsigned y)
+  NextMonstrPhase (cell: Cell): Cell;	spr_t smenafaz (spr_t z)
+  ExcludeMonstr (n: Index)		exclude_object (unsigned n)
+  TryMoveMonstr (n: Index)		try_move_object (union object * a)
