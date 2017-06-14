@@ -186,10 +186,14 @@ VAR
   plusX, minusX, plusY, minusY, tX, tY: Coords; ctr, lim: INTEGER;
 BEGIN
   (*unsigned xa, ya,*)
-  IF x > 2 THEN minusX := x - 2 ELSE minusX := 0 END;
-  IF y > 2 THEN minusY := y - 2 ELSE minusY := 0 END;
-  IF x > (FieldWidth-2) * 2 THEN plusX := (FieldWidth-1) * 2 ELSE plusX := x + 2 END;
-  IF y > (FieldHeight-2) * 2 THEN plusY := (FieldHeight-1) * 2 ELSE plusY := y + 2 END;
+  IF CHR(x) > 2X THEN minusX := x - 2 ELSE minusX := 0 END;
+  IF CHR(y) > 2X THEN minusY := y - 2 ELSE minusY := 0 END;
+  IF CHR(x) > CHR( (FieldWidth-2) * 2 ) THEN plusX := (FieldWidth-1) * 2;
+  ELSE plusX := x + 2;
+  END;
+  IF CHR(y) > CHR( (FieldHeight-2) * 2 ) THEN plusY := (FieldHeight-1) * 2;
+  ELSE plusY := y + 2;
+  END;
 
   tY := minusY;
   WHILE tY <= plusY DO
@@ -257,8 +261,7 @@ END CanFlyThru;
 
 PROCEDURE NextFall;
   (* Для летящих в клетке камней - переход в положение между двумя клетками *)
-  (*  Обновляет: objX
-  *)
+  (*  Может изменить: objX *)
 BEGIN
   CASE GetCell(objX, objY + 2) OF
   | None :
@@ -286,48 +289,51 @@ END NextFall;
 PROCEDURE CanStartFall (): BOOLEAN;
   (* Разрешение падения прямо вниз из неподвижного положения. *)
 BEGIN
-  RETURN (objY < (FieldHeight-1) * 2) & (GetCell(objX, objY + 2) = None)
+  RETURN
+    ( CHR(objY) < CHR( (FieldHeight-1) * 2) )
+    & ( GetCell(objX, objY + 2) = None )
 END CanStartFall;
 
-PROCEDURE CanRollFrom (side: Coords): BOOLEAN;
-(*Разрешение скатывания в сторону (side = SIDE_LEFT или SIDE_RIGHT)*)
-VAR
-  x: Coords;
-BEGIN
-  x := objX + side;
-  IF (x >= 0) & (x <= (FieldWidth-1) * 2) & (objY >= 0) & (objY < (FieldHeight-1) * 2) THEN
-    IF (GetCell(x, objY) = None)
-     & (GetCell(x, objY + 2) = None) THEN
-      RETURN TRUE
-    END
-  END;
-  RETURN FALSE
-END CanRollFrom;
+(* ===================== CanRollTo (x: Coords): BOOLEAN ===================== *)
 
-PROCEDURE RollFrom (side: Coords);
-(*Скатывание в сторону side на 1 клетку*)
-(* WARNING: This procedure may change global vars objX, objIdx *)
+PROCEDURE CanRollTo (x: Coords): BOOLEAN;
+  (* Разрешение скатывания в сторону: side = -2 (SideLeft) | 2 (SideRight). *)
+BEGIN
+  RETURN
+    (* x, objY неявно проверяются здесь и на >= 0 (приведены к беззнаковым): *)
+    ( CHR( x ) <= CHR( (FieldWidth-1) * 2) )
+    & ( CHR( objY ) < CHR( (FieldHeight-1) * 2) )
+    & ( GetCell(x, objY) = None )
+    & ( GetCell(x, objY + 2) = None )
+END CanRollTo;
+
+(* ========================= RollTo (side: Coords) ========================== *)
+
+PROCEDURE RollTo (side: Coords); (* Скатывание в сторону side на 1 клетку *)
+  (* Может изменить: objX *)
 BEGIN
   SetCell(objX, objY, None);
-  Gr.DrawTile(objX, objY, Rsrc.None);
   SetCell(objX + side, objY, objCell);
+  Gr.DrawTile(objX, objY, Rsrc.None);
   Gr.DrawTile(objX + side, objY, Rsrc.GetTileByNum( objCell ));
-(*Специфично для скатывания вправо - чтобы этот камень или алмаз мог только
-скатиться и не был повторно обработан в следующей клетке - мы его новую
-клетку пропускаем*)
-  IF side = SideRight THEN INC(objX, SideRight) END
-END RollFrom;
+  (* Специфично для скатывания вправо - чтобы этот камень или алмаз мог
+     только скатиться и не был повторно обработан в следующей клетке -
+     мы его новую клетку пропускаем: *)
+  IF side = SideRight THEN INC(objX, SideRight) END;
+END RollTo;
 
-PROCEDURE Activate;
-(*Перевод неподвижного камня или алмаза в активное состояние и*)
-(*в положение между 2 клетками*)
+(* ================================== Activate ============================== *)
+
+PROCEDURE Activate; (* Перевод неподвижного камня или алмаза
+  в активное состояние и в положение между 2 клетками. *)
 BEGIN
-  IF objCell = Stone THEN (*Занимает 2 клетки*)
-    Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
+  Gr.DrawTile(objX, objY, Rsrc.None);
+  IF objCell = Stone THEN (* Занимает 2 клетки. *)
+    Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
     SetCell(objX, objY, ActiveStone1);
     SetCell(objX, objY + 2, ActiveStone1);
   ELSE
-    Gr.DrawTile(objX, objY, Rsrc.None); Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
+    Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
     SetCell(objX, objY, ActiveAlmas1);
     SetCell(objX, objY + 2, ActiveAlmas1);
   END;
@@ -666,12 +672,12 @@ BEGIN
              Activate (*Начать падение*)
            ELSE
              side := -side;
-             IF CanRollFrom(side) THEN (*Попытаться скатиться*)
-               RollFrom(side)
-             ELSIF CanRollFrom(-side) THEN (*В другую сторону*)
-               RollFrom(-side)
-             END
-           END
+             IF CanRollTo(objX + side) THEN (*Попытаться скатиться*)
+               RollTo(side);
+             ELSIF CanRollTo(objX - side) THEN (*В другую сторону*)
+               RollTo(-side);
+             END;
+           END;
            (*continue;*) (*Иначе остаться лежать*)
        | ActiveAlmas2, ActiveStone2 :
            (*Камень или алмаз, пролетающий через клетку*)

@@ -1,8 +1,11 @@
 Labirint
 
-  CanFlyThru (): BOOLEAN;		bool can_fly_thru (unsigned x, unsigned y)
-  NextFall;				next_fall (unsigned * x, unsigned y, spr_t z)
-  CanStartFall (): BOOLEAN;		bool can_start_fall (unsigned x, unsigned y)
+  CanFlyThru (): BOOLEAN;		boolean can_fly_thru (unsigned x, unsigned y)
+  NextFall;				void next_fall (unsigned * x, unsigned y, spr_t z)
+  CanStartFall (): BOOLEAN;		boolean can_start_fall (unsigned x, unsigned y)
+  CanRollTo (x: Coords): BOOLEAN;	boolean can_roll_from (unsigned x, unsigned y, signed side)
+  RollTo (side: Coords);		void roll_from (unsigned *x, unsigned *y, signed side, spr_t z)
+  Activate;				void activate (unsigned x, unsigned y, spr_t z)
   NextMonstrPhase (cell: Cell): Cell;	spr_t smenafaz (spr_t z)
-  ExcludeMonstr (n: Index)		exclude_object (unsigned n)
-  TryMoveMonstr (n: Index)		try_move_object (union object * a)
+  ExcludeMonstr (n: Index)		void exclude_object (unsigned n)
+  TryMoveMonstr (n: Index)		void try_move_object (union object * a)
