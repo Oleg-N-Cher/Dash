@@ -3,7 +3,7 @@
 void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __z88dk_callee;
 /*================================== Header ==================================*/
 
-void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __z88dk_callee {
+void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __naked __z88dk_callee {
 /*
   unsigned char i; int* spr_addr;
 
@@ -483,5 +483,6 @@ Y_MOD_3$: // y = {3, 7, 11, 15, 19, 23, 27}
     LD   A,(HL)  ; 7t
     LD   (DE),A  ; 7t
 #endif //Config_FastTiles
+    RET
   __endasm;
 } //GrTiles_DrawTile
