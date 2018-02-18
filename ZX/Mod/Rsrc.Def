@@ -23,7 +23,7 @@ VAR
   Title-, Sprites-, Levels-, Font-: ADDRESS;
 
   (* Directions: *)
-  CrossX-, CrossY-: ARRAY 4 OF SHORTINT;
+  CrossX-, CrossY-: ARRAY 4 OF NATINT;
 
 (*============================================================================*)
 (*                            Work with resources                             *)

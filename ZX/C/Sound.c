@@ -1,11 +1,11 @@
 void Sound_TitleNext (void);
-void Sound_Death (unsigned char y);
-void Sound_DropStoneOrAlmas (unsigned char y);
-void Sound_GetAlmas (unsigned int xn_plus_yn);
+void Sound_Death (unsigned char y) __z88dk_fastcall;
+void Sound_DropStoneOrAlmas (unsigned char y) __z88dk_fastcall;
+void Sound_GetAlmas (unsigned int xn_plus_yn) __z88dk_fastcall;
 void Sound_KeyPressed (void);
 /*================================== Header ==================================*/
 
-static void BEEPER (unsigned int de, unsigned int hl) __z88dk_callee {
+static void BEEPER (unsigned int de, unsigned int hl) __naked __z88dk_callee {
   __asm
     POP  BC
     POP  DE
@@ -14,11 +14,12 @@ static void BEEPER (unsigned int de, unsigned int hl) __z88dk_callee {
     PUSH IX
     CALL 0x3B5
     POP  IX
+    RET
 __endasm;
 } //BEEPER
 
 /*--------------------------------- Cut here ---------------------------------*/
-void Sound_Death (unsigned char y) {
+void Sound_Death (unsigned char y) __z88dk_fastcall {
 /*
   unsigned ctr = y << 2, lim = ctr + 16;
   for (;ctr < lim; ctr ++)
@@ -27,14 +28,14 @@ void Sound_Death (unsigned char y) {
 } //Sound_Death
 
 /*--------------------------------- Cut here ---------------------------------*/
-void Sound_DropStoneOrAlmas (unsigned char y) {
+void Sound_DropStoneOrAlmas (unsigned char y) __z88dk_fastcall {
 /*
   snd (200 + (y << 1), 10);
 */
 } //Sound_DropStoneOrAlmas
 
 /*--------------------------------- Cut here ---------------------------------*/
-void Sound_GetAlmas (unsigned int xn_plus_yn) {
+void Sound_GetAlmas (unsigned int xn_plus_yn) __z88dk_fastcall {
 /*
   snd (60 + ((xn + yn) << 1), 8);
 */

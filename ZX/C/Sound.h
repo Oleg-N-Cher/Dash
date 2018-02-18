@@ -6,9 +6,9 @@
 
 #ifdef Config_UseSound
   extern void Sound_TitleNext (void);
-  extern void Sound_Death (unsigned char y);
-  extern void Sound_DropStoneOrAlmas (unsigned char y);
-  extern void Sound_GetAlmas (unsigned int xn_plus_yn);
+  extern void Sound_Death (unsigned char y) __z88dk_fastcall;
+  extern void Sound_DropStoneOrAlmas (unsigned char y) __z88dk_fastcall;
+  extern void Sound_GetAlmas (unsigned int xn_plus_yn) __z88dk_fastcall;
   extern void Sound_KeyPressed (void);
   extern void Sound__init (void);
 #else
