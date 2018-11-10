@@ -1,6 +1,8 @@
 #include "Rsrc.h"
 
 Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall;
+unsigned char Rsrc_GetCell (unsigned char x, unsigned char y) __z88dk_callee;
+unsigned char Rsrc_SetCell (unsigned char x, unsigned char y, unsigned char cell) __z88dk_callee;
 
 #define _None      0
 #define _Grass     1
@@ -961,15 +963,60 @@ const signed char Rsrc_CrossY [4] = { 0, 1, 0, -1 };
 /*--------------------------------- Cut here ---------------------------------*/
 Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall {
   __asm
-    LD   H,#0
-    LD   C,L   ; L = num
-    LD   B,H
-    ADD  HL,HL
-    ADD  HL,BC
-    ADD  HL,HL
-    ADD  HL,HL
-    ADD  HL,HL ; tile*24
-    LD   BC,#__Rsrc_Tiles
-    ADD  HL,BC ; + _Rsrc_Tiles
+    LD   H, #0
+    LD   C, L   ; L = num
+    LD   B, H
+    ADD  HL, HL
+    ADD  HL, BC
+    ADD  HL, HL
+    ADD  HL, HL
+    ADD  HL, HL ; tile*24
+    LD   BC, #__Rsrc_Tiles
+    ADD  HL, BC ; + _Rsrc_Tiles
 __endasm;
 } //Rsrc_GetTileByNum
+
+/*--------------------------------- Cut here ---------------------------------*/
+unsigned char Rsrc_GetCell (unsigned char x, unsigned char y) __naked __z88dk_callee {
+// RETURN field [y DIV 2 * FieldWidth + x DIV 2]
+  __asm         
+    POP  HL
+    EX   (SP), HL
+    LD   A, H   ; y
+    SRL  A      ; y DIV 2
+    ADD  A
+    ADD  A
+    ADD  A
+    ADD  A      ; y DIV 2 * FieldWidth
+    SRL  L      ; x DIV 2
+    ADD  L      ; y DIV 2 * FieldWidth + x DIV 2
+    LD   L, A
+    LD   H, #>_Rsrc_field
+    LD   L, (HL)
+    RET
+__endasm;
+} //Rsrc_GetCell
+
+/*--------------------------------- Cut here ---------------------------------*/
+unsigned char Rsrc_SetCell (unsigned char x, unsigned char y, unsigned char cell) __naked __z88dk_callee {
+// field [y DIV 2 * FieldWidth + x DIV 2] := cell
+  __asm         
+    POP  DE
+    POP  HL     ; L = x; H = y
+    DEC  SP
+    POP  BC     ; B = cell
+    PUSH DE
+    LD   A, H   ; y
+    SRL  A      ; y DIV 2
+    ADD  A
+    ADD  A
+    ADD  A
+    ADD  A      ; y DIV 2 * FieldWidth
+    SRL  L      ; x DIV 2
+    ADD  L      ; y DIV 2 * FieldWidth + x DIV 2
+    LD   L, A
+    LD   H, #>_Rsrc_field
+    LD   (HL), B
+    RET
+__endasm;
+} //Rsrc_SetCell

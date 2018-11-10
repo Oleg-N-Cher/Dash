@@ -2,6 +2,7 @@
 #define Rsrc__h
 
 #include "SYSTEM.h"
+#include "Config.h"
 
 
 #define Rsrc_TitleSize     114 /* cells, a cell occupies 3 bytes */
@@ -14,6 +15,7 @@
 #define Rsrc_FontSize       (96 * Rsrc_CharSize) // bytes
 #define _LastTitleNum       17
 
+unsigned char __at((unsigned int)Config_FieldArray * 0x100) Rsrc_field [256];
 extern const unsigned char _Rsrc_Title [Rsrc_TitleSize * 3];
 extern const unsigned char _Rsrc_Levels [7296];
 extern const unsigned char _Rsrc_Font [Rsrc_FontSize];
@@ -23,6 +25,9 @@ extern const signed char Rsrc_CrossY [4];
 
 typedef BYTE* Rsrc_Resource;
 typedef unsigned int ADDRESS;
+typedef struct Rsrc_Monstr {
+  signed char x, y, dx, dy;
+} Rsrc_Monstr;
 
 /* Set of game tiles: */
 #define Rsrc_None      ((Rsrc_Resource)( 0 * Rsrc_TileSize + &_Rsrc_Tiles[0]))
@@ -51,10 +56,13 @@ typedef unsigned int ADDRESS;
 #define Rsrc_Font    __Rsrc_Font
 
 #define Rsrc_Close(rsrc)
-extern Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall __preserves_regs(a,d,e,iyl,iyh);
 #define Rsrc_Open(name) ((ADDRESS)name)
 #define Rsrc_OpenAt(pos,name) ((ADDRESS)name + pos)
 #define Rsrc_ReadByte(rsrc) (*(BYTE*)rsrc++)
+
+extern Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall __preserves_regs(a,d,e,iyl,iyh);
+extern unsigned char Rsrc_GetCell (unsigned char x, unsigned char y) __z88dk_callee __preserves_regs(b,c,d,e,iyl,iyh);
+extern unsigned char Rsrc_SetCell (unsigned char x, unsigned char y, unsigned char cell) __z88dk_callee __preserves_regs(iyl,iyh);
 
 #define Rsrc__init()
 

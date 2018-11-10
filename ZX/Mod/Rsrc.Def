@@ -3,16 +3,22 @@ MODULE Rsrc; (* non-portable (z80) *)
 IMPORT SYSTEM;
 
 CONST
-  TitleSize*     = 114; (* cells, a cell occupies 3 bytes *)
-  MaxLevelNumber*=  75;
-  LevelSize*     =  96; (* bytes *)
+  TitleSize      * = 114; (* cells, a cell occupies 3 bytes *)
+  MaxLevelNumber * =  75;
+  LevelSize      * =  96; (* bytes *)
+  FieldWidth     * =  16;
+  FieldHeight    * =  16;
+  FieldSize      * = FieldWidth * FieldHeight;
 
 TYPE
-  ADDRESS = (* UNSIGNED *) INTEGER;
-  Ident* = ADDRESS;
-  Resource* = ADDRESS;
-  Tile* = Resource;
-  NATINT* = SHORTINT; (* Native integer *)
+  ADDRESS    = (* UNSIGNED *) SHORTINT;
+  Ident    * = ADDRESS;
+  Resource * = ADDRESS;
+  Tile     * = Resource;
+  NATINT   * = BYTE; (* Native integer *)
+  Cell     * = BYTE;
+  Coords   * = BYTE;
+  Monstr   * = RECORD [1] x*, y*, dx*, dy*: Coords END;
 
 VAR
   (* Set of game tiles: *)
@@ -25,14 +31,28 @@ VAR
   (* Directions: *)
   CrossX-, CrossY-: ARRAY 4 OF NATINT;
 
+  field*: ARRAY FieldSize OF Cell;
+
 (*============================================================================*)
 (*                            Work with resources                             *)
 (*============================================================================*)
+PROCEDURE Open* (name: Ident): Resource;                  END Open;
+PROCEDURE OpenAt* (pos: SHORTINT; name: Ident): Resource; END OpenAt;
+PROCEDURE ReadByte* (rsrc: Resource): BYTE;               END ReadByte;
+PROCEDURE Close* (rsrc: Resource);                        END Close;
+PROCEDURE GetTileByNum* (num: (* {0..17} *) BYTE): Tile;  END GetTileByNum;
 
-PROCEDURE Open* (name: Ident): Resource;                     END Open;
-PROCEDURE OpenAt* (pos: INTEGER; name: Ident): Resource;     END OpenAt;
-PROCEDURE ReadByte* (rsrc: Resource): SHORTINT;              END ReadByte;
-PROCEDURE Close* (rsrc: Resource);                           END Close;
-PROCEDURE GetTileByNum* (num: (* {0..17} *) SHORTINT): Tile; END GetTileByNum;
+(*============================================================================*)
+(*                          Optimized access to field                         *)
+(*============================================================================*)
+PROCEDURE SetCell* (x, y: Coords; cell: Cell);
+BEGIN
+  field [y DIV 2 * FieldWidth + x DIV 2] := cell
+END SetCell;
+
+PROCEDURE GetCell* (x, y: Coords): Cell;
+BEGIN
+  RETURN field [y DIV 2 * FieldWidth + x DIV 2]
+END GetCell;
 
 END Rsrc.
