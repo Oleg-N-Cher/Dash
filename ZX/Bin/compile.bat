@@ -12,7 +12,7 @@
 %sdcc% -c %1.c --reserve-regs-iy
 @IF errorlevel 1 PAUSE
 @IF %1==%Main% GOTO exit
-@IF EXIST %1.c DEL %1.c
+::@IF EXIST %1.c DEL %1.c
 @GOTO exit
 
 :modC
