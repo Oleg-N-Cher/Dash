@@ -2,9 +2,9 @@ MODULE Strings;
 
 IMPORT SYSTEM;
 
-PROCEDURE Length* (IN str: ARRAY OF CHAR): INTEGER;
+PROCEDURE Length* (IN str: ARRAY OF SHORTCHAR): SHORTINT;
 VAR
-  len: INTEGER;
+  len: SHORTINT;
 BEGIN
   len := 0;
   WHILE (len < SHORT(LEN(str))) & (str[len] # 0X) DO INC(len) END;

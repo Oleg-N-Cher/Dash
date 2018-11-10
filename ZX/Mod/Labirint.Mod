@@ -1,12 +1,12 @@
 ﻿MODULE Labirint; (** portable *)
 IMPORT
-  Scr := GrApp, Gr := GrTiles, Rsrc, Ctrl := Control, Timer, Sound;
+  Scr := GrApp, Gr := GrTiles, R := Rsrc, Ctrl := Control, Timer, Sound;
 
 CONST
   MaxMonsters  = 128;
-  FieldWidth   =  16;
-  FieldHeight  =  16;
-  FieldSize    = FieldWidth * FieldHeight;
+  FieldWidth   = R.FieldWidth;
+  FieldHeight  = R.FieldHeight;
+  FieldSize    = R.FieldSize;
 
   None         =  0;
   Grass        =  1;
@@ -43,59 +43,48 @@ CONST
   SideRight  =  2;
 
 TYPE
-  NatInt = Rsrc.NATINT; (* Native integer *)
+  NatInt = R.NATINT; (* Native integer *)
   Coords = NatInt;      (* Coordinates in labirinth *)
   Cell   = NatInt;      (* An object of labirinth   *)
   Level  = NatInt;      (* A number of level (room) *)
-  Index  = INTEGER;     (* Must be enough for field *)
-  Monstr = RECORD x, y, dx, dy: Coords END;
+  Index  = SHORTINT;    (* Must be enough for field *)
+  Monstr = R.Monstr;
 
 VAR
-  field: ARRAY FieldSize OF Cell;
   monstr: ARRAY MaxMonsters OF Monstr;
   monstrsNum: NatInt;
   objX, objY: Coords; objCell: Cell;
   manX, manY, manDirX, manDirY: Coords;
   manPresent: BOOLEAN;
-  lives, score: INTEGER;(*BYTE?*)
+  lives, score: SHORTINT;(*BYTE?*)
 
 (* -------------------------------------------------------------------------------- *)
 (* Base procedures for manipulating cell array, unpack levels and display labirinth *)
 (* -------------------------------------------------------------------------------- *)
 
-PROCEDURE SetCell (x, y: Coords; cell: Cell); (*?*)
-BEGIN
-  field [((y DIV 2) * FieldWidth) + x DIV 2] := cell
-END SetCell;
-
-PROCEDURE GetCell (x, y: Coords): Cell; (*?*)
-BEGIN
-  RETURN field [((y DIV 2) * FieldWidth) + x DIV 2]
-END GetCell;
-
 PROCEDURE Unpack (room: Level);
 VAR
-  level: Rsrc.Resource; idx: Index; cell: Cell;
-  bitsCount, n: (* UNSIGNED *) SHORTINT; val: NatInt;
+  level: R.Resource; idx: Index; cell: Cell;
+  bitsCount, n: (* UNSIGNED *) BYTE; val: NatInt;
 BEGIN
-  level := Rsrc.OpenAt(room * Rsrc.LevelSize, Rsrc.Levels);
-  idx := 0; val := Rsrc.ReadByte(level); bitsCount := 8;
+  level := R.OpenAt(room * R.LevelSize, R.Levels);
+  idx := 0; val := R.ReadByte(level); bitsCount := 8;
   REPEAT
     (* Unpacking and normalizing 3 bits from package: *)
     cell := 0;
     FOR n := 2 TO 0 BY -1 DO
-      IF bitsCount = 0 THEN val := Rsrc.ReadByte(level); bitsCount := 8 END;
+      IF bitsCount = 0 THEN val := R.ReadByte(level); bitsCount := 8 END;
       DEC(bitsCount); (* INC(cell, SHORT(SHORT(ASH(val MOD 2, n)))) *)
       cell := cell DIV 2 + 4*(val MOD 2); val := val DIV 2;
     END;
-    field[idx] := cell; INC(idx);
+    R.field[idx] := cell; INC(idx);
   UNTIL idx = FieldSize;
-  Rsrc.Close(level);
+  R.Close(level);
 END Unpack;
 
 PROCEDURE TwoStep (dy: Coords);
 BEGIN
-  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+  Timer.Start(ENTIER(1*Timer.Mul/Timer.Div + 0.5));
   dy := dy * 6;
   IF dy >= 0 THEN
     Scr.ScrollUp(dy)
@@ -103,7 +92,7 @@ BEGIN
     Scr.ScrollDown(-dy)
   END;
   Timer.Until;
-  Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+  Timer.Start(ENTIER(1*Timer.Mul/Timer.Div + 0.5));
   IF dy >= 0 THEN
     Scr.ScrollUp(dy)
   ELSE
@@ -120,7 +109,7 @@ BEGIN
     TwoStep(+1);
     x := 0;
     WHILE x < FieldWidth * 2 DO
-      Gr.DrawTile(x, (FieldHeight-1) * 2, Rsrc.GetTileByNum( GetCell(x, y)) );
+      Gr.DrawTile(x, (FieldHeight-1) * 2, R.GetTileByNum( R.GetCell(x, y)) );
       INC(x, 2);
     END;
     Scr.Redraw;
@@ -131,7 +120,7 @@ END Display;
 
 PROCEDURE DisplayInf;
 VAR
-  i: INTEGER;
+  i: SHORTINT;
 BEGIN
   TwoStep(-1);
   (*strcpy (mmm, _M[LIVES_N]);
@@ -147,7 +136,7 @@ BEGIN
     Timer.Until;
     INC(i)
   END;
-  Timer.Start(SHORT(ENTIER(18*Timer.Mul/Timer.Div + 0.5)));
+  Timer.Start(ENTIER(18*Timer.Mul/Timer.Div + 0.5));
   Timer.Until;
 END DisplayInf;
 
@@ -164,7 +153,7 @@ BEGIN
     DEC(y, 2); x := FieldWidth * 2;
     REPEAT
       DEC(x, 2); DEC(idx);
-      CASE field[idx] OF
+      CASE R.field[idx] OF
       | Mina, Babo :
           monstr[monstrsNum].x := x;
           monstr[monstrsNum].y := y;
@@ -183,7 +172,7 @@ PROCEDURE SceneOfDeath (x, y: Coords);
 (*Засыпание алмазами человечка, на которого наехала бабочка или мина,
 и человечка, бабочки или мины, на которых упал камень или алмаз*)
 VAR
-  plusX, minusX, plusY, minusY, tX, tY: Coords; ctr, lim: INTEGER;
+  plusX, minusX, plusY, minusY, tX, tY: Coords; ctr, lim: SHORTINT;
 BEGIN
   (*unsigned xa, ya,*)
   IF CHR(x) > 2X THEN minusX := x - 2 ELSE minusX := 0 END;
@@ -199,8 +188,8 @@ BEGIN
   WHILE tY <= plusY DO
     tX := minusX;
     WHILE tX <= plusX DO
-      Gr.DrawTile(tX, tY, Rsrc.Almas);
-      SetCell(tX, tY, Almas);
+      Gr.DrawTile(tX, tY, R.Almas);
+      R.SetCell(tX, tY, Almas);
       INC(tX, 2)
     END;
     INC(tY, 2)
@@ -228,11 +217,11 @@ PROCEDURE Deactivate;
 (*Для летящих в клетке камней и алмазов - прилет на опору*)
 BEGIN
   IF objCell = ActiveStone2 THEN
-    Gr.DrawTile(objX, objY, Rsrc.Stone);
-    SetCell(objX, objY, Stone);
+    Gr.DrawTile(objX, objY, R.Stone);
+    R.SetCell(objX, objY, Stone);
   ELSE
-    Gr.DrawTile(objX, objY, Rsrc.Almas);
-    SetCell(objX, objY, Almas);
+    Gr.DrawTile(objX, objY, R.Almas);
+    R.SetCell(objX, objY, Almas);
   END;
 (*
   Sound.Beep(24858 DIV (objY + 100) * 4, 10) (*, snd (200 + (y << 1), 10),*)
@@ -248,7 +237,7 @@ BEGIN
   IF objY = (FieldHeight-1) * 2 THEN
     RETURN FALSE (* Нельзя - упали на границу лабиринта. *)
   END;
-  CASE GetCell(objX, objY + 2) OF
+  CASE R.GetCell(objX, objY + 2) OF
     Wall, Grass, Stone, Almas,
     ActiveStone1, ActiveAlmas1,
     ActiveStone2, ActiveAlmas2 :
@@ -263,17 +252,17 @@ PROCEDURE NextFall;
   (* Для летящих в клетке камней - переход в положение между двумя клетками *)
   (*  Может изменить: objX *)
 BEGIN
-  CASE GetCell(objX, objY + 2) OF
+  CASE R.GetCell(objX, objY + 2) OF
   | None :
-      Gr.DrawTile(objX, objY, Rsrc.None);
+      Gr.DrawTile(objX, objY, R.None);
       IF objCell = ActiveStone2 THEN
-        Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
-        SetCell(objX, objY, ActiveStone1);
-        SetCell(objX, objY + 2, ActiveStone1);
+        Gr.DrawTile(objX, objY + 1, R.Stone);
+        R.SetCell(objX, objY, ActiveStone1);
+        R.SetCell(objX, objY + 2, ActiveStone1);
       ELSE
-        Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
-        SetCell(objX, objY, ActiveAlmas1);
-        SetCell(objX, objY + 2, ActiveAlmas1);
+        Gr.DrawTile(objX, objY + 1, R.Almas);
+        R.SetCell(objX, objY, ActiveAlmas1);
+        R.SetCell(objX, objY + 2, ActiveAlmas1);
       END;
   | Babo, Mina, Babo1, Mina1,
     StopMan,
@@ -291,7 +280,7 @@ PROCEDURE CanStartFall (): BOOLEAN;
 BEGIN
   RETURN
     ( CHR(objY) < CHR( (FieldHeight-1) * 2) )
-    & ( GetCell(objX, objY + 2) = None )
+    & ( R.GetCell(objX, objY + 2) = None )
 END CanStartFall;
 
 (* ===================== CanRollTo (x: Coords): BOOLEAN ===================== *)
@@ -303,8 +292,8 @@ BEGIN
     (* x, objY неявно проверяются здесь и на >= 0 (приведены к беззнаковым): *)
     ( CHR( x ) <= CHR( (FieldWidth-1) * 2) )
     & ( CHR( objY ) < CHR( (FieldHeight-1) * 2) )
-    & ( GetCell(x, objY) = None )
-    & ( GetCell(x, objY + 2) = None )
+    & ( R.GetCell(x, objY) = None )
+    & ( R.GetCell(x, objY + 2) = None )
 END CanRollTo;
 
 (* ========================= RollTo (side: Coords) ========================== *)
@@ -312,10 +301,10 @@ END CanRollTo;
 PROCEDURE RollTo (side: Coords); (* Скатывание в сторону side на 1 клетку *)
   (* Может изменить: objX *)
 BEGIN
-  SetCell(objX, objY, None);
-  SetCell(objX + side, objY, objCell);
-  Gr.DrawTile(objX, objY, Rsrc.None);
-  Gr.DrawTile(objX + side, objY, Rsrc.GetTileByNum( objCell ));
+  R.SetCell(objX, objY, None);
+  R.SetCell(objX + side, objY, objCell);
+  Gr.DrawTile(objX, objY, R.None);
+  Gr.DrawTile(objX + side, objY, R.GetTileByNum( objCell ));
   (* Специфично для скатывания вправо - чтобы этот камень или алмаз мог
      только скатиться и не был повторно обработан в следующей клетке -
      мы его новую клетку пропускаем: *)
@@ -327,15 +316,15 @@ END RollTo;
 PROCEDURE Activate; (* Перевод неподвижного камня или алмаза
   в активное состояние и в положение между 2 клетками. *)
 BEGIN
-  Gr.DrawTile(objX, objY, Rsrc.None);
+  Gr.DrawTile(objX, objY, R.None);
   IF objCell = Stone THEN (* Занимает 2 клетки. *)
-    Gr.DrawTile(objX, objY + 1, Rsrc.Stone);
-    SetCell(objX, objY, ActiveStone1);
-    SetCell(objX, objY + 2, ActiveStone1);
+    Gr.DrawTile(objX, objY + 1, R.Stone);
+    R.SetCell(objX, objY, ActiveStone1);
+    R.SetCell(objX, objY + 2, ActiveStone1);
   ELSE
-    Gr.DrawTile(objX, objY + 1, Rsrc.Almas);
-    SetCell(objX, objY, ActiveAlmas1);
-    SetCell(objX, objY + 2, ActiveAlmas1);
+    Gr.DrawTile(objX, objY + 1, R.Almas);
+    R.SetCell(objX, objY, ActiveAlmas1);
+    R.SetCell(objX, objY + 2, ActiveAlmas1);
   END;
 END Activate;
 
@@ -370,7 +359,7 @@ BEGIN
   x := manX + manDirX + manDirX;
   y := manY + manDirY + manDirY;
   IF (x >= 0) & (x < FieldWidth * 2) & (y >= 0) & (y < FieldHeight * 2) THEN
-    CASE GetCell(x, y) OF
+    CASE R.GetCell(x, y) OF
       Wall, ActiveStone1, ActiveAlmas1 :
         RETURN FALSE (*Пройти нельзя*)
     | Stone, ActiveStone2 :
@@ -378,7 +367,7 @@ BEGIN
         tX := x; tY := y;
         LOOP
           IF (tX >= 0) & (tX < FieldWidth * 2) & (tY >= 0) & (tY < FieldHeight * 2) THEN
-            cell := GetCell(tX, tY);
+            cell := R.GetCell(tX, tY);
             IF (cell # Stone) & (cell # ActiveStone2) THEN
               IF cell = None THEN EXIT END;
               RETURN FALSE (*Протолкнуть камни нельзя*)
@@ -388,9 +377,9 @@ BEGIN
             RETURN FALSE (*Протолкнуть камни нельзя*)
           END
         END;
-        SetCell(tX, tY, Stone); SetCell(x, y, None);
-        Gr.DrawTile(tX, tY, Rsrc.Stone);
-        Gr.DrawTile(x, y, Rsrc.None)
+        R.SetCell(tX, tY, Stone); R.SetCell(x, y, None);
+        Gr.DrawTile(tX, tY, R.Stone);
+        Gr.DrawTile(x, y, R.None)
     ELSE END;
     RETURN TRUE (*Иначе - пройти в таком направлении можно*)
   END;
@@ -401,7 +390,7 @@ PROCEDURE ManGoing (x, y: Coords): BOOLEAN;
 (*Перевод человечка из текущей клетки в положение между двумя клетками*)
 (*Разрешение дальнейшего существования человечка*)
 BEGIN
-  CASE GetCell(x, y) OF
+  CASE R.GetCell(x, y) OF
     Mina, Babo, (*StopMan,*) Mina1, Babo1 :
       SceneOfDeath(x, y);
       RETURN FALSE
@@ -425,14 +414,14 @@ BEGIN
     manPresent := ManGoing(x, y);
     IF ~manPresent THEN RETURN (*СМЕРТЬ - ВЫХОД*) END;
       manSprite := GetManSprite();
-      SetCell(x, y, manSprite); (*Отметить следующую позицию*)
-      Gr.DrawTile(manX, manY, Rsrc.None); (*Стереть предыдущий спрайт*)
+      R.SetCell(x, y, manSprite); (*Отметить следующую позицию*)
+      Gr.DrawTile(manX, manY, R.None); (*Стереть предыдущий спрайт*)
       INC(manX, manDirX);
       INC(manY, manDirY) (*Изменить координаты*)
     ELSE
       manSprite := StopMan (*Остановить человечка*)
     END;
-  Gr.DrawTile(manX, manY, Rsrc.GetTileByNum( manSprite )); (*Вывести новый спрайт*)
+  Gr.DrawTile(manX, manY, R.GetTileByNum( manSprite )); (*Вывести новый спрайт*)
 END TryMoveMan;
 
 PROCEDURE ManContinuesGoing;
@@ -443,19 +432,19 @@ VAR
 BEGIN
   plusX := manX + manDirX; minusX := manX - manDirX;
   plusY := manY + manDirY; minusY := manY - manDirY;
-  Gr.DrawTile(minusX, minusY, Rsrc.None);
-  IF GetCell(minusX, minusY) = StopMan THEN (*Откат на полшага назад*)
-    SetCell(minusX, minusY, None) (*Затирка человечка*)
+  Gr.DrawTile(minusX, minusY, R.None);
+  IF R.GetCell(minusX, minusY) = StopMan THEN (*Откат на полшага назад*)
+    R.SetCell(minusX, minusY, None) (*Затирка человечка*)
   END;
-  Gr.DrawTile(plusX, plusY, Rsrc.GetTileByNum( GetCell(plusX, plusY) + 1) ); (*Бегущая фаза (следующая)*)
-  SetCell(plusX, plusY, StopMan);
+  Gr.DrawTile(plusX, plusY, R.GetTileByNum( R.GetCell(plusX, plusY) + 1) ); (*Бегущая фаза (следующая)*)
+  R.SetCell(plusX, plusY, StopMan);
   manX := plusX; manY := plusY (*Следующие координаты*)
 END ManContinuesGoing;
 
 PROCEDURE CheckMan (): BOOLEAN;
 (*Признак присутствия человечка в клетке, соответствующей его координатам*)
 BEGIN
-  CASE GetCell(manX, manY)(*Field[manIdx]*) OF
+  CASE R.GetCell(manX, manY)(*Field[manIdx]*) OF
     StopMan, UpMan, DownMan, LeftMan, RightMan,
     UpMan1, DownMan1, LeftMan1, RightMan1 :
       RETURN TRUE
@@ -500,10 +489,10 @@ VAR
 BEGIN
   newX := monstr.x + monstr.dx; oldX := monstr.x - monstr.dx;
   newY := monstr.y + monstr.dy; oldY := monstr.y - monstr.dy;
-  sprite := NextMonstrPhase(GetCell(oldX, oldY));
-  SetCell(oldX, oldY, None); SetCell(newX, newY, sprite);
-  Gr.DrawTile(oldX, oldY, Rsrc.None);
-  Gr.DrawTile(newX, newY, Rsrc.GetTileByNum( sprite ));
+  sprite := NextMonstrPhase(R.GetCell(oldX, oldY));
+  R.SetCell(oldX, oldY, None); R.SetCell(newX, newY, sprite);
+  Gr.DrawTile(oldX, oldY, R.None);
+  Gr.DrawTile(newX, newY, R.GetTileByNum( sprite ));
   monstr.x := newX; monstr.y := newY
 END MonstrContinuesGoing;
 
@@ -520,7 +509,7 @@ BEGIN
   x := monstr[n].x; y := monstr[n].y;
   IF ODD(x) OR ODD(y) THEN
     INC(x, monstr[n].dx); INC(y, monstr[n].dy);
-    SetCell(x, y, None); Gr.DrawTile(x, y, Rsrc.None);
+    R.SetCell(x, y, None); Gr.DrawTile(x, y, R.None);
   END;
   (* Удаление из промежуточной позиции: *)
   DEC(monstrsNum); (* Уменьшение числа монстров. *)
@@ -549,18 +538,18 @@ VAR
   x, y, dx, dy, tx, ty, max, mark: Coords; cell: Cell; i, moves: NatInt;
   canMove: ARRAY 4 OF NatInt; (* Направления движения монстра. *)
 BEGIN
-  x := monstr[n].x; y := monstr[n].y; cell := NextMonstrPhase(GetCell(x, y));
+  x := monstr[n].x; y := monstr[n].y; cell := NextMonstrPhase(R.GetCell(x, y));
 
   (* Просмотр по 4-м сторонам света c севера против часовой стрелки: *)
   moves := -1;
   i := 3; REPEAT (* i := 3 TO 0 BY -1 {север, запад, юг, восток} *)
     (* Проследить, куда может двинуться монстр с этого места: *)
-    tx := x + 2*Rsrc.CrossX[i]; ty := y + 2*Rsrc.CrossY[i];
+    tx := x + 2*R.CrossX[i]; ty := y + 2*R.CrossY[i];
     IF ( CHR( tx ) <= CHR( (FieldWidth-1) * 2) ) &
        ( CHR( ty ) <= CHR( (FieldHeight-1) * 2) )
        (* tx,ty неявно проверяются здесь и на >= 0 (приведены к беззнаковым) *)
     THEN
-      CASE GetCell(tx, ty) OF None, StopMan: (* Двинуться можно. *)
+      CASE R.GetCell(tx, ty) OF None, StopMan: (* Двинуться можно. *)
         INC(moves); canMove[moves] := i; (* Вариант включен в список. *)
       ELSE END;
     END;
@@ -569,18 +558,18 @@ BEGIN
 
   (* ================ Проверяется всё множество вариантов: ================= *)
   IF moves < 0 THEN (* Монстр зажат со всех сторон - нет выбора. *)
-    SetCell(x, y, cell); Gr.DrawTile(x, y, Rsrc.GetTileByNum(cell));
+    R.SetCell(x, y, cell); Gr.DrawTile(x, y, R.GetTileByNum(cell));
     (* monstr[n].dx и monstr[n].dy в 0 не устанавливаем - смещения неважны,
        ибо продолжение движения возможно только для непарных x и y. *)
   ELSE
     IF moves = 0 THEN (* Монстр отражается от тупика коридора. *)
-      dx := Rsrc.CrossX[ canMove[0] ]; dy := Rsrc.CrossY[ canMove[0] ];
+      dx := R.CrossX[ canMove[0] ]; dy := R.CrossY[ canMove[0] ];
     ELSE (* Много вариантов: *)
 
       (* Поискать худший (обратное движение): *)
       dx := -monstr[n].dx; dy := -monstr[n].dy;
       i := 0; REPEAT (* i := 0 TO moves *)
-        IF (Rsrc.CrossX[canMove[i]] = dx) & (Rsrc.CrossY[canMove[i]] = dy) THEN
+        IF (R.CrossX[canMove[i]] = dx) & (R.CrossY[canMove[i]] = dy) THEN
           WHILE CHR( i ) < CHR( moves ) DO (* Уменьшить кол-во вариантов: *)
             canMove[i] := canMove[i + 1]; INC(i); (* Сжать массив. *)
           END;
@@ -591,25 +580,25 @@ BEGIN
 
       IF moves = 0 THEN (* Если остался только один вариант, *)
         (* это обеспечит продвижение объекта по коридору: *)
-        dx := Rsrc.CrossX[ canMove[0] ]; dy := Rsrc.CrossY[ canMove[0] ];
+        dx := R.CrossX[ canMove[0] ]; dy := R.CrossY[ canMove[0] ];
       ELSE (* Только здесь оцениваем направление к человечку: *)
         tx := Sign(manX - x); ty := Sign(manY - y); max := 0;
         i := 0; REPEAT (* i := 0 TO moves *)
         (* Можно бы пустить цикл от moves до 0, но нарушится порядок поиска. *)
-          mark := ABS(Rsrc.CrossX[ canMove[i] ] + tx) +
-                  ABS(Rsrc.CrossY[ canMove[i] ] + ty);
+          mark := ABS(R.CrossX[ canMove[i] ] + tx) +
+                  ABS(R.CrossY[ canMove[i] ] + ty);
           IF CHR( mark ) > CHR( max ) THEN
             max := mark;
-            dx := Rsrc.CrossX[ canMove[i] ]; dy := Rsrc.CrossY[ canMove[i] ]
+            dx := R.CrossX[ canMove[i] ]; dy := R.CrossY[ canMove[i] ]
           END;
         INC(i) UNTIL CHR( i ) > CHR( moves );
       END;
     END;
 
     (* Направление движения монстра определено [dx, dy]. *)
-    Gr.DrawTile(x, y, Rsrc.None); INC(x, dx); INC(y, dy);
-    Gr.DrawTile(x, y, Rsrc.GetTileByNum(cell));
-    SetCell(x + dx, y + dy, cell);
+    Gr.DrawTile(x, y, R.None); INC(x, dx); INC(y, dy);
+    Gr.DrawTile(x, y, R.GetTileByNum(cell));
+    R.SetCell(x + dx, y + dy, cell);
     monstr[n].x := x; monstr[n].y := y;
     monstr[n].dx := dx; monstr[n].dy := dy;
   END;
@@ -633,7 +622,7 @@ BEGIN
       (* Если не с кем играть с самого начала - это нечестно *)
     side := SideRight;
     LOOP (*---В---О-Д-Н-О-М---Л-А-Б-И-Р-И-Н-Т-Е---*)
-      Timer.Start(SHORT(ENTIER(2*Timer.Mul/Timer.Div + 0.5))); (* 1/9 second per phase *)
+      Timer.Start(ENTIER(2*Timer.Mul/Timer.Div + 0.5)); (* 1/9 second per phase *)
 (*#ifdef MAN_*)
       (*---Д-Е-Й-С-Т-В-И-Я---Ч-Е-Л-О-В-Е-Ч-К-А---*)
       IF ODD(manX) OR ODD(manY) THEN (*Если нечетные координаты*)
@@ -661,7 +650,7 @@ BEGIN
      DEC(objY, 2);
      objX := 0;
      WHILE objX < FieldWidth * 2 DO (*Просмотр строки слева направо*)
-       objCell := GetCell(objX, objY);
+       objCell := R.GetCell(objX, objY);
        CASE objCell OF (*Отдельно - подсчет алмазов*)
          Almas, ActiveAlmas1, ActiveAlmas2 :
            INC((*almas*)number)
@@ -689,15 +678,15 @@ BEGIN
            END
            (*Далее он сразу обрабатывается как неактивный*)
        | ActiveStone1 : (* Stone, пролетающий между клетками*)
-           Gr.DrawTile(objX, objY - 2, Rsrc.None);
-           Gr.DrawTile(objX, objY, Rsrc.Stone);
-           SetCell(objX, objY, ActiveStone2);
-           SetCell(objX, objY - 2, None);
+           Gr.DrawTile(objX, objY - 2, R.None);
+           Gr.DrawTile(objX, objY, R.Stone);
+           R.SetCell(objX, objY, ActiveStone2);
+           R.SetCell(objX, objY - 2, None);
        | ActiveAlmas1 : (* Almas, пролетающий между клетками*)
-           Gr.DrawTile(objX, objY - 2, Rsrc.None);
-           Gr.DrawTile(objX, objY, Rsrc.Almas);
-           SetCell(objX, objY, ActiveAlmas2);
-           SetCell(objX, objY - 2, None);
+           Gr.DrawTile(objX, objY - 2, R.None);
+           Gr.DrawTile(objX, objY, R.Almas);
+           R.SetCell(objX, objY, ActiveAlmas2);
+           R.SetCell(objX, objY - 2, None);
            (*continue;*) (*Он пролетел в следующую клетку*)
        ELSE END;
        INC(objX, 2);
@@ -718,7 +707,7 @@ BEGIN
         x := monstr[number].x; y := monstr[number].y;
         IF ODD(x) THEN DEC(x, monstr[number].dx) END; (*Отход назад*)
         IF ODD(y) THEN DEC(y, monstr[number].dy) END;
-        CASE GetCell(x, y) OF
+        CASE R.GetCell(x, y) OF
           Mina, Babo, Mina1, Babo1 :
             IF ODD(monstr[number].x) OR ODD(monstr[number].y) THEN
               MonstrContinuesGoing(monstr[number])

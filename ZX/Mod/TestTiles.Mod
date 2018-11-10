@@ -3,7 +3,7 @@ MODULE TestTiles; (*$MAIN*)
 IMPORT Scr := GrApp, GrTiles, Rsrc;
 
 VAR
-  i: SHORTINT;
+  i: BYTE;
 
 BEGIN
   FOR i := 0 TO 17 DO

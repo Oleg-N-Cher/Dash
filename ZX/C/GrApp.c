@@ -260,6 +260,7 @@ NextPiece$:
 /*--------------------------------- Cut here ---------------------------------*/
 void GrApp__init (void) {
   __asm
+    LD   IY,#0x5C3A
     XOR  A                ; Black
     LD   (_GrApp_paper),A
     CALL 0x229B           ;  => border color

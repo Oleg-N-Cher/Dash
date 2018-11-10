@@ -6,7 +6,7 @@ CONST
   Mul* = 50; Div* = 18.2;
 
 (** Max. delay time = 32767/50/60 ~= 10.922 min *)
-PROCEDURE Start* (ticks: INTEGER); END Start;
+PROCEDURE Start* (ticks: LONGINT); END Start;
 PROCEDURE Until* ;                 END Until;
 
 END Timer.

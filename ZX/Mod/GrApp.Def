@@ -3,12 +3,12 @@ MODULE GrApp;
 IMPORT SYSTEM, Timer;
 
 TYPE
-  Coords* = SHORTINT; Color* = INTEGER;
+  Coords* = BYTE; Color* = SHORTINT;
 
-PROCEDURE Close*  ;                                    END Close;
-PROCEDURE Cls*    ;                                    END Cls;
-PROCEDURE Redraw* ;                                    END Redraw;
-PROCEDURE ScrollDown* (lines: (* {1..191} *) INTEGER); END ScrollDown;
-PROCEDURE ScrollUp* (lines: (* {1..191} *) INTEGER);   END ScrollUp;
+PROCEDURE Close*  ;                                     END Close;
+PROCEDURE Cls*    ;                                     END Cls;
+PROCEDURE Redraw* ;                                     END Redraw;
+PROCEDURE ScrollDown* (lines: (* {1..191} *) SHORTINT); END ScrollDown;
+PROCEDURE ScrollUp* (lines: (* {1..191} *) SHORTINT);   END ScrollUp;
 
 END GrApp.

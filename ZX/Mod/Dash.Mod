@@ -7,8 +7,8 @@ IMPORT
     Abort = -1;
 
   VAR
-    controlMethodN: (* UNSIGNED *) SHORTINT;
-    level: (* UNSIGNED *) SHORTINT;
+    controlMethodN: (* UNSIGNED *) BYTE;
+    level: (* UNSIGNED *) BYTE;
 
 (*
 static void game_title (void)             // PROCEDURE ShowTitle;
@@ -51,13 +51,13 @@ static void game_title (void)             // PROCEDURE ShowTitle;
 PROCEDURE ShowTitle;
 VAR
   title: Rsrc.Resource;
-  titleSize: SHORTINT; (* 0..127 is enough here. *)
+  titleSize: BYTE; (* 0..127 is enough here. *)
   x, y: Gr.Coords;
 BEGIN
   title := Rsrc.Open(Rsrc.Title);
   titleSize := Rsrc.TitleSize; (* Must be > 0. *)
   LOOP
-    Timer.Start(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5)));
+    Timer.Start(SHORT(SHORT(ENTIER(1*Timer.Mul/Timer.Div + 0.5))));
       IF titleSize # 0 THEN
         DEC(titleSize);
         x := Rsrc.ReadByte(title);
@@ -91,7 +91,7 @@ BEGIN
   key := Ctrl.ReadKey(); Sound.KeyPressed; RETURN key
 END ReadKeyBeep;
 
-PROCEDURE Center (y: (*UNSIGNED*) SHORTINT; IN str: ARRAY OF CHAR);
+PROCEDURE Center (y: (*UNSIGNED*) BYTE; IN str: ARRAY OF SHORTCHAR);
 (*
 void center (unsigned line, char * s)
 {{
@@ -108,7 +108,7 @@ void center (unsigned line, char * s)
 }}
 *)
 VAR
-  i, x, len: (*UNSIGNED*) SHORTINT;
+  i, x, len: (*UNSIGNED*) BYTE;
 BEGIN
   len := SHORT( Strings.Length(str) );
   x := 16 - (len DIV 2);
@@ -171,9 +171,9 @@ static unsigned menu_select (void)
 }}
 *)
 
-PROCEDURE MenuSelect (): (* UNSIGNED *) SHORTINT;
+PROCEDURE MenuSelect (): (* UNSIGNED *) BYTE;
 VAR
-  item: (* UNSIGNED *) SHORTINT; key: Ctrl.Key; keys: Ctrl.Keys;
+  item: (* UNSIGNED *) BYTE; key: Ctrl.Key; keys: Ctrl.Keys;
 BEGIN
   Scr.Cls;
   IO.Ink(IO.Cyan); Center(15, Msg.VEDAsoft);
@@ -223,7 +223,7 @@ BEGIN
   Center(15, Msg.PressAnyKey); IF ReadKeyBeep() = 0X THEN END;
 END PressAnyKey;
 
-PROCEDURE Instruction (IN text: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE Instruction (IN text: ARRAY OF SHORTCHAR): BOOLEAN;
 (*
 static void instruction (void)
 {{
@@ -249,7 +249,7 @@ static void instruction (void)
 }}
 *)
 VAR
-  i: INTEGER; ch: CHAR;
+  i: SHORTINT; ch: SHORTCHAR;
 BEGIN
   i := 0; ch := text[i];
   WHILE ch # 0X DO
