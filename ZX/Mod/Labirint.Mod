@@ -248,9 +248,8 @@ END CanFlyThru;
 
 (* ================================== NextFall ============================== *)
 
-PROCEDURE NextFall;
+PROCEDURE NextFall; (* Может изменить objX *)
   (* Для летящих в клетке камней - переход в положение между двумя клетками *)
-  (*  Может изменить: objX *)
 BEGIN
   CASE R.GetCell(objX, objY + 2) OF
   | None :
@@ -264,13 +263,12 @@ BEGIN
         R.SetCell(objX, objY, ActiveAlmas1);
         R.SetCell(objX, objY + 2, ActiveAlmas1);
       END;
-  | Babo, Mina, Babo1, Mina1,
-    StopMan,
-    UpMan, UpMan1, DownMan, DownMan1,
-    RightMan, RightMan1, LeftMan, LeftMan1 :
-      SceneOfDeath(objX, objY + 2);
-      INC(objX, 2);
-  ELSE END;
+  | Grass, Stone, Almas, Wall :
+  ELSE (* Babo, Mina, Babo1, Mina1, StopMan, UpMan, UpMan1,
+          DownMan, DownMan1, RightMan, RightMan1, LeftMan, LeftMan1 *)
+    SceneOfDeath(objX, objY + 2);
+    INC(objX, 2);
+  END;
 END NextFall;
 
 (* ========================== CanStartFall (): BOOLEAN ====================== *)
@@ -298,8 +296,8 @@ END CanRollTo;
 
 (* ========================= RollTo (side: Coords) ========================== *)
 
-PROCEDURE RollTo (side: Coords); (* Скатывание в сторону side на 1 клетку *)
-  (* Может изменить: objX *)
+PROCEDURE RollTo (side: Coords); (* Может изменить objX *)
+  (* Скатывание в сторону side на 1 клетку *)
 BEGIN
   R.SetCell(objX, objY, None);
   R.SetCell(objX + side, objY, objCell);
