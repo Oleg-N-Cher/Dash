@@ -15,7 +15,7 @@
 #define Rsrc_FontSize       (96 * Rsrc_CharSize) // bytes
 #define _LastTitleNum       17
 
-unsigned char __at((unsigned int)Config_FieldArray * 0x100) Rsrc_field [256];
+extern unsigned char __at((unsigned int)Config_FieldArray * 0x100) Rsrc_field [256];
 extern const unsigned char _Rsrc_Title [Rsrc_TitleSize * 3];
 extern const unsigned char _Rsrc_Levels [7296];
 extern const unsigned char _Rsrc_Font [Rsrc_FontSize];

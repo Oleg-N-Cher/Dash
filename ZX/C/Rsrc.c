@@ -960,6 +960,8 @@ const unsigned char _Rsrc_Font [Rsrc_FontSize] = {
 const signed char Rsrc_CrossX [4] = { 1, 0, -1, 0 };
 const signed char Rsrc_CrossY [4] = { 0, 1, 0, -1 };
 
+unsigned char __at((unsigned int)Config_FieldArray * 0x100) Rsrc_field [256];
+
 /*--------------------------------- Cut here ---------------------------------*/
 Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall {
   __asm
