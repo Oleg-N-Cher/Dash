@@ -3,29 +3,23 @@ IMPORT
   Scr := GrApp, Gr := GrTiles, R := Rsrc, Ctrl := Control, Timer, Sound;
 
 CONST
-  MaxMonsters  = 128;
-  FieldWidth   = R.FieldWidth;
-  FieldHeight  = R.FieldHeight;
-  FieldSize    = R.FieldSize;
+  MaxMonsters = 128;
+  FieldWidth  = R.FieldWidth;
+  FieldHeight = R.FieldHeight;
+  FieldSize   = R.FieldSize;
 
-  None         =  0;
-  Grass        =  1;
-  Stone        =  2;
-  Almas        =  3;
-  StopMan      =  4;
-  Wall         =  5;
-  Mina         =  6;
-  Babo         =  7;
-  LeftMan      =  8;
-  LeftMan1     =  9;
-  RightMan     = 10;
-  RightMan1    = 11;
-  UpMan        = 12;
-  UpMan1       = 13;
-  DownMan      = 14;
-  DownMan1     = 15;
-  Mina1        = 16;
-  Babo1        = 17;
+  None    =  0;
+  Grass   =  1;
+  Stone   =  2;
+  Almas   =  3;
+  StopMan =  4;
+  Wall    =  5;
+  Mina    =  6;
+  Babo    =  7;
+  LeftMan =  8; LeftMan1 = 9; RightMan = 10; RightMan1 = 11; (* Don't change *)
+  UpMan   = 12; UpMan1  = 13; DownMan  = 14; DownMan1  = 15; (* the order!!! *)
+  Mina1   = 16;
+  Babo1   = 17;
   LastSprite   = Babo1;
   ActiveStone1 = LastSprite + 1;
   ActiveStone2 = LastSprite + 2;
@@ -440,31 +434,16 @@ BEGIN
 END ManContinuesGoing;
 
 PROCEDURE CheckMan (): BOOLEAN;
-(*Признак присутствия человечка в клетке, соответствующей его координатам*)
+(* Признак присутствия человечка в клетке, соответствующей его координатам *)
+VAR
+  cell: Cell;
 BEGIN
-  CASE R.GetCell(manX, manY)(*Field[manIdx]*) OF
-    StopMan, UpMan, DownMan, LeftMan, RightMan,
-    UpMan1, DownMan1, LeftMan1, RightMan1 :
-      RETURN TRUE
-  ELSE END;
-  RETURN FALSE (*If the man became a victim*)
+  cell := R.GetCell(manX, manY);
+  RETURN
+    (cell = StopMan) OR
+    (CHR( cell ) >= CHR( LeftMan )) & (CHR( cell ) <= CHR( DownMan1 ))
 END CheckMan;
-(*
-PROCEDURE GetUserControl (): Ctrl.Keys;
-BEGIN
-  IF Ctrl.Get() = {Ctrl.Esc} THEN
-    RETURN UserAbort END;
-  IF Ctrl.Get() = {UserUp} THEN
-    RETURN UserUp END;
-  IF Ctrl.Get() = {UserDown} THEN
-    RETURN UserDown END;
-  IF Ctrl.Get() = {UserLeft} THEN
-    RETURN UserLeft END;
-  IF Ctrl.Get() = {UserRight} THEN
-    RETURN UserRight END;
-  RETURN UserNoKeys
-END GetUserControl;
-*)
+
 (* -------------------------------------------------------------------------- *)
 (* ------------ Live of monsters - flyes (babo) and mines (mina) ------------ *)
 (* -------------------------------------------------------------------------- *)
@@ -480,8 +459,8 @@ BEGIN
 END NextMonstrPhase;
 
 PROCEDURE MonstrContinuesGoing (VAR monstr: Monstr);
-(*Продолжение движения бабочки или мины - аналогично как для камней или
-человечка. Из промежуточного положения - в целую клетку*)
+  (* Продолжение движения бабочки или мины - аналогично как для камней
+     или человечка. Из промежуточного положения - в целую клетку *)
 VAR
   newX, newY, oldX, oldY: Coords; sprite: Cell;
 BEGIN
@@ -491,7 +470,7 @@ BEGIN
   R.SetCell(oldX, oldY, None); R.SetCell(newX, newY, sprite);
   Gr.DrawTile(oldX, oldY, R.None);
   Gr.DrawTile(newX, newY, R.GetTileByNum( sprite ));
-  monstr.x := newX; monstr.y := newY
+  monstr.x := newX; monstr.y := newY;
 END MonstrContinuesGoing;
 
 (* ======================== ExcludeMonstr (n: Index) ======================== *)
