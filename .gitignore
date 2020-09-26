@@ -4,6 +4,7 @@ ZX/Bin/z80doc.zip
 ZX/Bin/z80v309.lzh
 ZX/Obj/*.asm
 ZX/Obj/*.bin
+ZX/Obj/*.c
 ZX/Obj/*.ihx
 ZX/Obj/*.lk
 ZX/Obj/*.lst

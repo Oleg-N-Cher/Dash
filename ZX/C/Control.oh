@@ -1,5 +1,5 @@
-#ifndef Control__h
-#define Control__h
+#ifndef Control__oh
+#define Control__oh
 
 
 extern unsigned char Control_Get (void) __preserves_regs(b,d,e,iyl,iyh);

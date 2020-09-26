@@ -38,10 +38,10 @@ CONST
 
 TYPE
   NatInt = R.NATINT; (* Native integer *)
-  Coords = NatInt;      (* Coordinates in labirinth *)
-  Cell   = NatInt;      (* An object of labirinth   *)
-  Level  = NatInt;      (* A number of level (room) *)
-  Index  = SHORTINT;    (* Must be enough for field *)
+  Index  = R.INDEX;  (* Must be enough for field *)
+  Coords = NatInt;   (* Coordinates in labirinth *)
+  Cell   = NatInt;   (* An object of labirinth   *)
+  Level  = NatInt;   (* A number of level (room) *)
   Monstr = R.Monstr;
 
 VAR
@@ -50,7 +50,7 @@ VAR
   objX, objY: Coords; objCell: Cell;
   manX, manY, manDirX, manDirY: Coords;
   manPresent: BOOLEAN;
-  lives, score: SHORTINT;(*BYTE?*)
+  lives, score: Index;(*BYTE?*)
 
 (* -------------------------------------------------------------------------------- *)
 (* Base procedures for manipulating cell array, unpack levels and display labirinth *)
@@ -153,13 +153,13 @@ BEGIN
           monstr[monstrsNum].y := y;
           monstr[monstrsNum].dx := 0;
           monstr[monstrsNum].dy := 0;
-          INC(monstrsNum)
+          INC(monstrsNum);
       | StopMan :
           manPresent := TRUE;
           manX := x; manY := y;
-      ELSE END
-    UNTIL x = 0
-  UNTIL y = 0
+      ELSE END;
+    UNTIL x = 0;
+  UNTIL y = 0;
 END LookForObjects;
 
 PROCEDURE SceneOfDeath (x, y: Coords);
@@ -207,15 +207,12 @@ END SceneOfDeath;
 (* -------------------------------------------------------------------------------- *)
 (* ---------------- Stone and almas functionality - drop if it can ---------------- *)
 (* -------------------------------------------------------------------------------- *)
-PROCEDURE Deactivate;
-(*Для летящих в клетке камней и алмазов - прилет на опору*)
+PROCEDURE Deactivate; (* Для летящих в клетке камней и алмазов - прилёт на опору *)
 BEGIN
   IF objCell = ActiveStone2 THEN
-    Gr.DrawTile(objX, objY, R.Stone);
-    R.SetCell(objX, objY, Stone);
+    Gr.DrawTile(objX, objY, R.Stone); R.SetCell(objX, objY, Stone);
   ELSE
-    Gr.DrawTile(objX, objY, R.Almas);
-    R.SetCell(objX, objY, Almas);
+    Gr.DrawTile(objX, objY, R.Almas); R.SetCell(objX, objY, Almas);
   END;
 (*
   Sound.Beep(24858 DIV (objY + 100) * 4, 10) (*, snd (200 + (y << 1), 10),*)
@@ -378,7 +375,7 @@ BEGIN
   RETURN FALSE
 END ManCanGo;
 
-PROCEDURE ManGoing (x, y: Coords): BOOLEAN;
+PROCEDURE ManGoingTo (x, y: Coords): BOOLEAN;
 (*Перевод человечка из текущей клетки в положение между двумя клетками*)
 (*Разрешение дальнейшего существования человечка*)
 BEGIN
@@ -394,7 +391,7 @@ BEGIN
 *)
   ELSE END;
   RETURN TRUE
-END ManGoing;
+END ManGoingTo;
 
 PROCEDURE TryMoveMan ();
 VAR
@@ -403,7 +400,7 @@ BEGIN
   IF ManCanGo() THEN
     x := manX + manDirX + manDirX;
     y := manY + manDirY + manDirY;
-    manPresent := ManGoing(x, y);
+    manPresent := ManGoingTo(x, y);
     IF ~manPresent THEN RETURN (*СМЕРТЬ - ВЫХОД*) END;
       manSprite := GetManSprite();
       R.SetCell(x, y, manSprite); (*Отметить следующую позицию*)
@@ -687,7 +684,7 @@ BEGIN
         CASE R.GetCell(x, y) OF
           Mina, Babo, Mina1, Babo1 :
             IF ODD(monstr[number].x) OR ODD(monstr[number].y) THEN
-              MonstrContinuesGoing(monstr[number])
+              MonstrContinuesGoing(@monstr[number])
             ELSE
               TryMoveMonstr(number)
             END;

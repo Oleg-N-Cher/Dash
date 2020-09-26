@@ -1,0 +1,15 @@
+/* Ofront+ 1.0 -sx3 -21 */
+
+#ifndef Labirint__oh
+#define Labirint__oh
+
+#include "SYSTEM.oh"
+
+
+
+
+import void Labirint_Play (BYTE room);
+import void *Labirint__init (void);
+
+
+#endif

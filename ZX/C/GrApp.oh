@@ -1,5 +1,5 @@
-#ifndef GrApp__h
-#define GrApp__h
+#ifndef GrApp__oh
+#define GrApp__oh
 
 
 extern unsigned char GrApp_ink, GrApp_paper;

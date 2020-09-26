@@ -22,8 +22,8 @@ CONST
 
 PROCEDURE At* (x (* {0..31} *), y: (* {0..15} *) BYTE); END At;
 PROCEDURE Ink* (color: (* {0..7; 40H..47H} *) BYTE);    END Ink;
-PROCEDURE WriteCh* (ch: SHORTCHAR);                     END WriteCh;
+PROCEDURE WriteCh* (ch: CHAR);                     END WriteCh;
 PROCEDURE WriteLn* ;                                    END WriteLn;
-PROCEDURE WriteStr* (IN str: ARRAY OF SHORTCHAR);       END WriteStr;
+PROCEDURE WriteStr* (str: ARRAY OF CHAR);       END WriteStr;
 
 END Console.

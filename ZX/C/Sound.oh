@@ -1,7 +1,7 @@
-#ifndef Sound__h
-#define Sound__h
+#ifndef Sound__oh
+#define Sound__oh
 
-#include "Config.h"
+#include "Config.oh"
 
 
 #ifdef Config_UseSound

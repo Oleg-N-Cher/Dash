@@ -1,8 +1,8 @@
 /* Ver 1.0.0 for ZX Spectrum 48/128 */
 /* Use ZXDev to compile this module */
 
-#include "Timer.h"
-#include "Config.h"
+#include "Timer.oh"
+#include "Config.oh"
 
 void GrApp_Close (void);
 void GrApp_Cls (void);

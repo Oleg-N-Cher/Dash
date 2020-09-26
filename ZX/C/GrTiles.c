@@ -1,4 +1,4 @@
-#include "Config.h"
+#include "Config.oh"
 
 void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __z88dk_callee;
 /*================================== Header ==================================*/

@@ -91,7 +91,7 @@ BEGIN
   key := Ctrl.ReadKey(); Sound.KeyPressed; RETURN key
 END ReadKeyBeep;
 
-PROCEDURE Center (y: (*UNSIGNED*) BYTE; IN str: ARRAY OF SHORTCHAR);
+PROCEDURE Center (y: (*UNSIGNED*) BYTE; str: ARRAY OF CHAR);
 (*
 void center (unsigned line, char * s)
 {{
@@ -223,7 +223,7 @@ BEGIN
   Center(15, Msg.PressAnyKey); IF ReadKeyBeep() = 0X THEN END;
 END PressAnyKey;
 
-PROCEDURE Instruction (IN text: ARRAY OF SHORTCHAR): BOOLEAN;
+PROCEDURE Instruction (text: ARRAY OF CHAR): BOOLEAN;
 (*
 static void instruction (void)
 {{
@@ -249,7 +249,7 @@ static void instruction (void)
 }}
 *)
 VAR
-  i: SHORTINT; ch: SHORTCHAR;
+  i: SHORTINT; ch: CHAR;
 BEGIN
   i := 0; ch := text[i];
   WHILE ch # 0X DO
@@ -272,7 +272,7 @@ BEGIN
   IF Ctrl.Get() # {Ctrl.Esc} THEN
     LOOP
       CASE MenuSelect() OF
-      | 0: level := 36; LOOP Labirint.Play(level); INC(level) END;
+      | 0: level := 0; LOOP Labirint.Play(level); INC(level) END;
       | 2: (*HELP*)
         IF ~ Instruction(Msg.Instruction1) THEN RETURN END;
         IF ~ Instruction(Msg.Instruction2) THEN RETURN END;

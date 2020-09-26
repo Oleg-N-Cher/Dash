@@ -1,4 +1,4 @@
-#include "Rsrc.h"
+#include "Rsrc.oh"
 
 Rsrc_Resource Rsrc_GetTileByNum (unsigned char num) __z88dk_fastcall;
 unsigned char Rsrc_GetCell (unsigned char x, unsigned char y) __z88dk_callee;

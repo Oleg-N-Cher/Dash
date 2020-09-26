@@ -1,5 +1,5 @@
-#ifndef Msg__h
-#define Msg__h
+#ifndef Msg__oh
+#define Msg__oh
 
 
 #define Msg__init()

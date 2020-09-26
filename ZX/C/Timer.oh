@@ -1,5 +1,5 @@
-#ifndef Timer__h
-#define Timer__h
+#ifndef Timer__oh
+#define Timer__oh
 
 
 extern int Timer_ticks;

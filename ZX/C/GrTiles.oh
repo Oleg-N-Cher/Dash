@@ -1,5 +1,5 @@
-#ifndef GrTiles__h
-#define GrTiles__h
+#ifndef GrTiles__oh
+#define GrTiles__oh
 
 
 extern void GrTiles_DrawTile (unsigned char x, unsigned char y, unsigned char* tile) __z88dk_callee __preserves_regs(iyl,iyh);

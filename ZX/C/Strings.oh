@@ -1,5 +1,5 @@
-#ifndef Strings__h
-#define Strings__h
+#ifndef Strings__oh
+#define Strings__oh
 
 
 extern unsigned int Strings_LengthEx (unsigned char *str) __z88dk_fastcall __preserves_regs(d,e,iyl,iyh);

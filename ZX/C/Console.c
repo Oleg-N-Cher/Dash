@@ -1,6 +1,6 @@
-#include "Rsrc.h"
-#include "Config.h"
-#include "GrApp.h"
+#include "Rsrc.oh"
+#include "Config.oh"
+#include "GrApp.oh"
 
 void Console_Ink (unsigned char color) __z88dk_fastcall;
 void Console_WriteCh (unsigned char ch) __z88dk_fastcall; // Uses font 8x12 pixels

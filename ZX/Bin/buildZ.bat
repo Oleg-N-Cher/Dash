@@ -7,8 +7,8 @@ EXIT
 :XDev
 SET Modules=..\C\Rsrc.c ..\C\GrApp.c ..\C\GrTiles.c ..\C\Control.c ..\C\Timer.c ..\C\Sound.c ..\C\Console.c ..\C\Strings.c Labirint.c Dash.c
 SET Opt=--max-allocs-per-node200000
-SET ZCCCFG=%XDev%\ZXDev\Bin\z88dk\lib\config
-SET PATH=%XDev%\ZXDev\Bin\z88dk\bin
+::SET ZCCCFG=%XDev%\ZXDev\Bin\z88dk\lib\config
+::SET PATH=%XDev%\ZXDev\Bin\z88dk\bin
 SET Lib=%XDev%\ZXDev\Lib
 CD ..\Obj
 

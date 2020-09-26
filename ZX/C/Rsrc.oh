@@ -1,8 +1,8 @@
-#ifndef Rsrc__h
-#define Rsrc__h
+#ifndef Rsrc__oh
+#define Rsrc__oh
 
-#include "SYSTEM.h"
-#include "Config.h"
+#include "SYSTEM.oh"
+#include "Config.oh"
 
 
 #define Rsrc_TitleSize     114 /* cells, a cell occupies 3 bytes */

@@ -16,6 +16,7 @@ TYPE
   Resource * = ADDRESS;
   Tile     * = Resource;
   NATINT   * = BYTE; (* Native integer *)
+  INDEX    * = SHORTINT;
   Cell     * = BYTE;
   Coords   * = BYTE;
   Monstr   * = RECORD [1] x*, y*, dx*, dy*: Coords END;

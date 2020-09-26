@@ -1,5 +1,5 @@
-#ifndef Console__h
-#define Console__h
+#ifndef Console__oh
+#define Console__oh
 
 
 extern unsigned char Console_x, Console_y, Console_atr;

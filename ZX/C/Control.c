@@ -1,4 +1,4 @@
-#include "GrApp.h"
+#include "GrApp.oh"
 
 void Control_ChangePalette (void) __preserves_regs(iyl,iyh);
 unsigned char Control_Get (void);
